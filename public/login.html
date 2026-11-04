@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>VHYROX Money</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/login.css?v=20260713-7"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- Override logo disimpan langsung di HTML agar tidak terkena cache CSS lama -->
+    <style id="vhyroxAnimatedLogoStyles">
+        .brand-section {
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        .brand-section .logo {
+            position: relative !important;
+            isolation: isolate;
+            width: 100% !important;
+            margin: 0 0 24px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-self: center !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        .brand-section .logo::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 42%;
+            z-index: -1;
+            width: min(430px, 92%);
+            height: 118px;
+            border-radius: 999px;
+            background: radial-gradient(
+                ellipse,
+                rgba(255, 45, 138, 0.38) 0%,
+                rgba(255, 93, 169, 0.20) 38%,
+                transparent 72%
+            );
+            filter: blur(24px);
+            transform: translate(-50%, -50%);
+            animation: vhyroxAuraPulse 1.8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .brand-section .logo-name {
+            position: relative !important;
+            display: inline-block !important;
+            overflow: visible !important;
+            font-family: "Outfit", sans-serif !important;
+            font-size: clamp(54px, 6vw, 76px) !important;
+            font-weight: 900 !important;
+            line-height: 0.92 !important;
+            letter-spacing: 3px !important;
+            text-align: center !important;
+            color: transparent !important;
+            -webkit-text-fill-color: transparent !important;
+            -webkit-text-stroke: 0.45px rgba(255, 255, 255, 0.34);
+            background-image: linear-gradient(
+                90deg,
+                #ffffff 0%,
+                #ffffff 8%,
+                #ffc1df 18%,
+                #ff77b9 29%,
+                #ff2d8a 39%,
+                #ff5ca8 48%,
+                #ffffff 58%,
+                #ffb5d9 68%,
+                #ff2d8a 79%,
+                #ff85c2 89%,
+                #ffffff 100%
+            ) !important;
+            background-size: 300% 100% !important;
+            background-position: 0% 50%;
+            background-repeat: repeat-x !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            filter:
+                drop-shadow(0 0 7px rgba(255, 255, 255, 0.25))
+                drop-shadow(0 0 20px rgba(255, 45, 138, 0.72));
+            animation:
+                vhyroxGradientMove 2.1s linear infinite,
+                vhyroxLogoPulse 1.55s ease-in-out infinite !important;
+            will-change: background-position, filter, transform;
+        }
+
+        .brand-section .logo-name::after {
+            content: attr(data-text);
+            position: absolute;
+            inset: 0;
+            display: block;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(
+                110deg,
+                transparent 0%,
+                transparent 34%,
+                rgba(255, 255, 255, 0.20) 42%,
+                #ffffff 50%,
+                rgba(255, 255, 255, 0.35) 58%,
+                transparent 68%,
+                transparent 100%
+            );
+            background-size: 55% 100%;
+            background-repeat: no-repeat;
+            background-position: -130% 0;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: vhyroxWhiteSheen 1.7s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .brand-section .logo-product {
+            margin-top: 12px !important;
+            padding-left: 9px !important;
+            font-family: "Outfit", sans-serif !important;
+            font-size: 16px !important;
+            font-weight: 800 !important;
+            line-height: 1 !important;
+            letter-spacing: 9px !important;
+            text-align: center !important;
+            text-transform: uppercase !important;
+            color: transparent !important;
+            -webkit-text-fill-color: transparent !important;
+            background-image: linear-gradient(
+                90deg,
+                #ffffff,
+                #ff85c2,
+                #ff2d8a,
+                #ffffff,
+                #ff2d8a,
+                #ff85c2,
+                #ffffff
+            ) !important;
+            background-size: 260% 100% !important;
+            background-position: 0% 50%;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            filter: drop-shadow(0 0 11px rgba(255, 45, 138, 0.65));
+            animation: vhyroxMoneyMove 2.6s linear infinite !important;
+            will-change: background-position;
+        }
+
+        @keyframes vhyroxGradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: -200% 50%; }
+        }
+
+        @keyframes vhyroxWhiteSheen {
+            0%, 8% {
+                background-position: -130% 0;
+                opacity: 0;
+            }
+            20% { opacity: 1; }
+            68% {
+                background-position: 230% 0;
+                opacity: 1;
+            }
+            100% {
+                background-position: 230% 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes vhyroxMoneyMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: -160% 50%; }
+        }
+
+        @keyframes vhyroxLogoPulse {
+            0%, 100% {
+                transform: scale(1);
+                filter:
+                    drop-shadow(0 0 7px rgba(255, 255, 255, 0.23))
+                    drop-shadow(0 0 18px rgba(255, 45, 138, 0.60));
+            }
+            50% {
+                transform: scale(1.025);
+                filter:
+                    drop-shadow(0 0 12px rgba(255, 255, 255, 0.40))
+                    drop-shadow(0 0 30px rgba(255, 45, 138, 0.95));
+            }
+        }
+
+        @keyframes vhyroxAuraPulse {
+            0%, 100% {
+                opacity: 0.65;
+                transform: translate(-50%, -50%) scale(0.92);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.10);
+            }
+        }
+
+        @media (max-width: 540px) {
+            .brand-section .logo-name {
+                font-size: 46px !important;
+                letter-spacing: 2px !important;
+            }
+
+            .brand-section .logo-product {
+                font-size: 12px !important;
+                letter-spacing: 6px !important;
+            }
+        }
+    </style>
+
+
+    <style id="vhyroxSmoothGradientFix">
+        /* Smooth logo animation: satu layer saja agar huruf tidak pecah/bertumpuk. */
+        .brand-section .logo-name::after {
+            content: none !important;
+            display: none !important;
+            animation: none !important;
+        }
+
+        .brand-section .logo-name {
+            color: transparent !important;
+            -webkit-text-fill-color: transparent !important;
+            -webkit-text-stroke: 0 !important;
+            background-image: linear-gradient(
+                110deg,
+                #fffafc 0%,
+                #ffe1ee 18%,
+                #ffb4d3 34%,
+                #ff78b5 52%,
+                #ff2d8a 68%,
+                #ff83bb 82%,
+                #fff6fb 100%
+            ) !important;
+            background-size: 220% 100% !important;
+            background-repeat: no-repeat !important;
+            background-position: 0% 50%;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            filter:
+                drop-shadow(0 0 5px rgba(255, 255, 255, 0.18))
+                drop-shadow(0 0 14px rgba(255, 45, 138, 0.42)) !important;
+            transform: none !important;
+            animation: vhyroxSmoothGradient 5.8s ease-in-out infinite alternate !important;
+            will-change: background-position;
+        }
+
+        /* MONEY putih dan statis; hanya tulisan VHYROX yang bergerak. */
+        .brand-section .logo-product {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            background: none !important;
+            -webkit-background-clip: initial !important;
+            background-clip: initial !important;
+            text-shadow:
+                0 0 8px rgba(255, 255, 255, 0.20),
+                0 0 14px rgba(255, 45, 138, 0.22) !important;
+            filter: none !important;
+            animation: none !important;
+            transform: none !important;
+            will-change: auto !important;
+        }
+
+        .brand-section .logo::before {
+            opacity: 0.55 !important;
+            animation: vhyroxAuraSoft 4s ease-in-out infinite !important;
+        }
+
+        @keyframes vhyroxSmoothGradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        @keyframes vhyroxMoneySmooth {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        @keyframes vhyroxAuraSoft {
+            0%, 100% {
+                opacity: 0.42;
+                transform: translate(-50%, -50%) scale(0.96);
+            }
+            50% {
+                opacity: 0.68;
+                transform: translate(-50%, -50%) scale(1.04);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .brand-section .logo-name,
+            .brand-section .logo-product,
+            .brand-section .logo::before {
+                animation: none !important;
+                background-position: 50% 50% !important;
+            }
+        }
+    </style>
+
+    <style id="vhyroxLoginAuthFixStyles">
+        [hidden] { display: none !important; }
+
+        .google-btn:disabled,
+        .login-btn:disabled,
+        .forgot-password:disabled,
+        .otp-action:disabled {
+            cursor: not-allowed !important;
+            opacity: 0.62 !important;
+        }
+
+        .form-message {
+            display: none;
+            margin: 2px 0 14px;
+            padding: 11px 13px;
+            border: 1px solid rgba(255, 68, 111, 0.34);
+            border-radius: 12px;
+            background: rgba(255, 68, 111, 0.10);
+            color: #ff9ab5;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .form-message.show { display: block; }
+
+        .form-message.success {
+            border-color: rgba(0, 229, 160, 0.34);
+            background: rgba(0, 229, 160, 0.09);
+            color: #62f4c7;
+        }
+
+        #loginOtpDialog {
+            width: min(430px, calc(100vw - 28px));
+            margin: auto;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid rgba(255, 45, 138, 0.30);
+            border-radius: 22px;
+            background: #111027;
+            color: #f4f1fa;
+            box-shadow: 0 28px 90px rgba(0, 0, 0, 0.68);
+        }
+
+        #loginOtpDialog::backdrop {
+            background: rgba(4, 3, 16, 0.84);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .otp-card {
+            padding: 26px;
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+
+        .otp-card h3 {
+            margin: 0 0 8px;
+            font-family: "Outfit", sans-serif;
+            font-size: 25px;
+        }
+
+        .otp-card > p {
+            margin: 0 0 20px;
+            color: #9c96ba;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .otp-card strong {
+            color: #ffffff;
+            overflow-wrap: anywhere;
+        }
+
+        .otp-code-input {
+            box-sizing: border-box;
+            width: 100%;
+            height: 58px;
+            margin-bottom: 14px;
+            padding: 0 15px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.045);
+            color: #ffffff;
+            font-family: "Outfit", sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 9px;
+            text-align: center;
+        }
+
+        .otp-code-input:focus {
+            border-color: #ff2d8a;
+            box-shadow: 0 0 0 4px rgba(255, 45, 138, 0.12);
+        }
+
+        .otp-primary {
+            width: 100%;
+            height: 50px;
+            border: 0;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #ff2d8a, #c850c0);
+            color: #ffffff;
+            font-family: "Outfit", sans-serif;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .otp-secondary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .otp-action {
+            padding: 5px 0;
+            border: 0;
+            background: transparent;
+            color: #c7c1dd;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .otp-action:hover { color: #ff79b6; }
+
+        @media (max-width: 520px) {
+            .otp-card { padding: 21px; }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Love dibuat otomatis melalui JavaScript -->
+    <div
+        class="love-container"
+        id="loveContainer"
+        aria-hidden="true"
+    ></div>
+
+    <main class="login-page">
+
+        <!-- BRAND SECTION -->
+        <section class="brand-section">
+
+            <div class="logo">
+                <div class="logo-name" data-text="VHYROX">VHYROX</div>
+                <div class="logo-product">MONEY</div>
+            </div>
+
+            <div class="mascot-wrapper">
+
+                <div class="mascot-glow"></div>
+
+                <img
+                    class="mascot-image"
+                    src="assets/Vmoney.png"
+                    alt="VHYROX Money mascot"
+                >
+
+                <div class="mascot-shadow"></div>
+
+            </div>
+
+            <div class="brand-copy">
+
+                <h1>
+                    Your money.
+                    <span>Your control.</span>
+                </h1>
+
+                <h2>
+                    Your smarter financial companion.
+                </h2>
+
+                <p>
+                    AI-powered financial assistant that tracks your spending,
+                    manages your budget, and helps you make smarter decisions
+                    every day.
+                </p>
+
+            </div>
+
+            <div class="features">
+
+                <div class="feature-pill">
+                    <span class="feature-dot"></span>
+                    AI Powered
+                </div>
+
+                <div class="feature-pill">
+                    <span class="feature-dot"></span>
+                    Smart Budget
+                </div>
+
+                <div class="feature-pill">
+                    <span class="feature-dot"></span>
+                    Expense Tracking
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- LOGIN SECTION -->
+        <section class="login-card">
+
+            <div class="card-highlight"></div>
+
+            <div class="login-header">
+
+                <h2>Welcome back 👋</h2>
+
+                <p>
+                    Sign in to your VHYROX account
+                </p>
+
+            </div>
+
+            <button
+                class="google-btn"
+                id="googleLoginButton"
+                type="button"
+            >
+                <svg
+                    class="google-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+                    <path
+                        fill="#4285F4"
+                        d="M21.6 12.23c0-.71-.06-1.39-.18-2.05H12v3.87h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.24c1.9-1.75 2.98-4.33 2.98-7.35Z"
+                    />
+                    <path
+                        fill="#34A853"
+                        d="M12 22c2.7 0 4.97-.9 6.63-2.42l-3.24-2.51c-.9.6-2.05.96-3.39.96-2.61 0-4.82-1.76-5.61-4.13H3.04v2.59A10 10 0 0 0 12 22Z"
+                    />
+                    <path
+                        fill="#FBBC05"
+                        d="M6.39 13.9A6.01 6.01 0 0 1 6.08 12c0-.66.11-1.3.31-1.9V7.51H3.04A10 10 0 0 0 2 12c0 1.61.38 3.14 1.04 4.49l3.35-2.59Z"
+                    />
+                    <path
+                        fill="#EA4335"
+                        d="M12 5.97c1.47 0 2.79.51 3.83 1.5l2.87-2.87A9.62 9.62 0 0 0 12 2a10 10 0 0 0-8.96 5.51l3.35 2.59C7.18 7.73 9.39 5.97 12 5.97Z"
+                    />
+                </svg>
+
+                <span>Continue with Google</span>
+            </button>
+
+            <div class="divider">
+                <span></span>
+                <p>or continue with email</p>
+                <span></span>
+            </div>
+
+            <form
+                class="login-form"
+                id="loginForm"
+            >
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <svg
+                            class="input-icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M4 6h16v12H4z"
+                            />
+                            <path
+                                d="m4 7 8 6 8-6"
+                            />
+                        </svg>
+
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            placeholder="name@email.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <div class="label-row">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <button
+                            class="forgot-password"
+                            id="forgotPasswordButton"
+                            type="button"
+                        >
+                            Forgot password?
+                        </button>
+
+                    </div>
+
+                    <div class="input-wrapper">
+
+                        <svg
+                            class="input-icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <rect
+                                x="5"
+                                y="10"
+                                width="14"
+                                height="10"
+                                rx="2"
+                            />
+                            <path
+                                d="M8 10V7a4 4 0 0 1 8 0v3"
+                            />
+                        </svg>
+
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            class="password-toggle"
+                            id="passwordToggle"
+                            type="button"
+                            aria-label="Show password"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"
+                                />
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="2.5"
+                                />
+                            </svg>
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div
+                    class="form-message"
+                    id="formMessage"
+                    role="alert"
+                ></div>
+
+                <button
+                    class="login-btn"
+                    id="emailLoginButton"
+                    type="submit"
+                >
+                    <span>Sign in</span>
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path d="M5 12h14"></path>
+                        <path d="m14 7 5 5-5 5"></path>
+                    </svg>
+                </button>
+
+            </form>
+
+            <p class="register">
+                Don't have an account?
+
+                <button
+                    id="createAccountButton"
+                    type="button"
+                >
+                    Create account
+                </button>
+            </p>
+
+            <div class="terms">
+                By continuing, you agree to our
+                <a href="/terms-of-use.html" target="_blank" rel="noopener">Terms of Use</a>
+                and
+                <a href="/privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.
+            </div>
+
+        </section>
+
+    </main>
+
+    <dialog id="loginOtpDialog" aria-labelledby="loginOtpTitle">
+        <form class="otp-card" id="loginOtpForm">
+            <h3 id="loginOtpTitle">Verifikasi login</h3>
+
+            <p>
+                Masukkan kode OTP 6 digit untuk
+                <strong id="loginOtpEmail">email kamu</strong>.
+            </p>
+
+            <input
+                class="otp-code-input"
+                id="loginOtpCode"
+                name="otp"
+                type="text"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                placeholder="000000"
+                aria-label="Kode OTP 6 digit"
+                required
+            >
+
+            <div
+                class="form-message"
+                id="loginOtpMessage"
+                role="alert"
+            ></div>
+
+            <button
+                class="otp-primary"
+                id="verifyLoginOtpButton"
+                type="submit"
+            >
+                <span>Verifikasi &amp; masuk</span>
+            </button>
+
+            <div class="otp-secondary-row">
+                <button
+                    class="otp-action"
+                    id="cancelLoginOtpButton"
+                    type="button"
+                >
+                    Kembali
+                </button>
+
+                <button
+                    class="otp-action"
+                    id="resendLoginOtpButton"
+                    type="button"
+                >
+                    Kirim ulang OTP
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    <script type="module">
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+        import {
+            getAuth,
+            GoogleAuthProvider,
+            sendPasswordResetEmail,
+            signInWithEmailAndPassword,
+            signInWithPopup,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrrSGhefZulij5vJhxkJkkUZUGs192txc",
+            authDomain: "vhyrox-90dea.firebaseapp.com",
+            projectId: "vhyrox-90dea",
+            storageBucket: "vhyrox-90dea.firebasestorage.app",
+            messagingSenderId: "266667672492",
+            appId: "1:266667672492:web:56987e32332366eaa83009",
+            measurementId: "G-45Q9FR2N9R"
+        };
+
+        const firebaseApp = initializeApp(firebaseConfig);
+        const auth = getAuth(firebaseApp);
+        const googleProvider = new GoogleAuthProvider();
+
+        googleProvider.setCustomParameters({
+            prompt: "select_account"
+        });
+
+        const loveContainer =
+            document.getElementById("loveContainer");
+
+        const totalHearts = 70;
+
+        for (
+            let index = 0;
+            index < totalHearts;
+            index += 1
+        ) {
+            const heart =
+                document.createElement("span");
+
+            heart.className =
+                "falling-heart";
+
+            heart.textContent =
+                "♡";
+
+            const left =
+                Math.random() * 100;
+
+            const size =
+                15 + Math.random() * 24;
+
+            const duration =
+                18 + Math.random() * 18;
+
+            const delay =
+                -(Math.random() * duration);
+
+            const sway =
+                -50 + Math.random() * 100;
+
+            const rotation =
+                100 + Math.random() * 260;
+
+            heart.style.setProperty(
+                "--heart-left",
+                `${left}%`
+            );
+
+            heart.style.setProperty(
+                "--heart-size",
+                `${size}px`
+            );
+
+            heart.style.setProperty(
+                "--heart-duration",
+                `${duration}s`
+            );
+
+            heart.style.setProperty(
+                "--heart-delay",
+                `${delay}s`
+            );
+
+            heart.style.setProperty(
+                "--heart-sway",
+                `${sway}px`
+            );
+
+            heart.style.setProperty(
+                "--heart-rotation",
+                `${rotation}deg`
+            );
+
+            loveContainer.appendChild(
+                heart
+            );
+        }
+
+        const loginForm = document.getElementById("loginForm");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const passwordToggle = document.getElementById("passwordToggle");
+        const formMessage = document.getElementById("formMessage");
+        const emailLoginButton = document.getElementById("emailLoginButton");
+        const googleLoginButton = document.getElementById("googleLoginButton");
+        const forgotPasswordButton = document.getElementById("forgotPasswordButton");
+        const loginOtpDialog = document.getElementById("loginOtpDialog");
+        const loginOtpForm = document.getElementById("loginOtpForm");
+        const loginOtpEmail = document.getElementById("loginOtpEmail");
+        const loginOtpCode = document.getElementById("loginOtpCode");
+        const loginOtpMessage = document.getElementById("loginOtpMessage");
+        const verifyLoginOtpButton = document.getElementById("verifyLoginOtpButton");
+        const resendLoginOtpButton = document.getElementById("resendLoginOtpButton");
+        const cancelLoginOtpButton = document.getElementById("cancelLoginOtpButton");
+
+        let pendingLogin = null;
+
+        function getSafeReturnTo() {
+    const allowedPaths = new Set([
+        "/dashboard",
+        "/dashboard.html",
+        "/transaksi",
+        "/transaksi.html",
+        "/budget",
+        "/budget.html",
+        "/kategori",
+        "/kategori.html",
+        "/analitik",
+        "/analitik.html",
+        "/peringatan",
+        "/peringatan.html",
+        "/bot",
+        "/bot.html",
+        "/profile",
+        "/profile.html"
+    ]);
+
+    const rawValue = new URLSearchParams(
+        window.location.search
+    ).get("returnTo");
+
+    if (!rawValue) {
+        return "/dashboard";
+    }
+
+    try {
+        const target = new URL(
+            rawValue,
+            window.location.origin
+        );
+
+        if (
+            target.origin !==
+            window.location.origin
+        ) {
+            return "/dashboard";
+        }
+
+        const normalizedPath =
+            target.pathname.length > 1
+                ? target.pathname.replace(/\/+$/, "")
+                : target.pathname;
+
+        if (!allowedPaths.has(normalizedPath)) {
+            return "/dashboard";
+        }
+
+        return (
+            normalizedPath +
+            target.search +
+            target.hash
+        );
+    } catch {
+        return "/dashboard";
+    }
+}
+
+        function redirectAfterLogin() {
+            window.location.replace(getSafeReturnTo());
+        }
+
+        function showMessage(element, message, type = "error") {
+            element.textContent = String(message || "");
+            element.classList.add("show");
+            element.classList.toggle("success", type === "success");
+        }
+
+        function hideMessage(element) {
+            element.textContent = "";
+            element.classList.remove("show", "success");
+        }
+
+        function setButtonLoading(
+            button,
+            loading,
+            loadingText,
+            normalText
+        ) {
+            button.disabled = loading;
+
+            const label = button.querySelector("span");
+
+            if (label) {
+                label.textContent = loading
+                    ? loadingText
+                    : normalText;
+            }
+        }
+
+        async function parseApiResponse(response) {
+            const raw = await response.text();
+
+            if (!raw) {
+                return {};
+            }
+
+            try {
+                return JSON.parse(raw);
+            } catch {
+                return {
+                    error: "Respons server tidak valid."
+                };
+            }
+        }
+
+        async function postJson(url, payload) {
+            const response = await fetch(url, {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await parseApiResponse(response);
+
+            if (!response.ok || data.error) {
+                throw new Error(
+                    data.error || "Proses login gagal diproses server."
+                );
+            }
+
+            return data;
+        }
+
+        function firebaseErrorMessage(error) {
+            const code = String(error?.code || "");
+
+            const messages = {
+                "auth/invalid-email": "Format email tidak valid.",
+                "auth/invalid-credential": "Email atau password salah.",
+                "auth/user-disabled": "Akun ini sedang dinonaktifkan.",
+                "auth/too-many-requests": "Terlalu banyak percobaan login. Coba beberapa saat lagi.",
+                "auth/popup-closed-by-user": "Jendela Google ditutup sebelum login selesai.",
+                "auth/popup-blocked": "Popup Google diblokir browser. Izinkan popup lalu coba lagi.",
+                "auth/cancelled-popup-request": "Permintaan login Google sebelumnya dibatalkan.",
+                "auth/network-request-failed": "Koneksi ke Firebase gagal. Periksa internetmu.",
+                "auth/unauthorized-domain": "Domain ini belum diizinkan pada Firebase Authentication."
+            };
+
+            return messages[code] ||
+                error?.message ||
+                "Proses autentikasi gagal.";
+        }
+
+        async function requestLoginOtp(firebaseUser) {
+            const idToken = await firebaseUser.getIdToken(true);
+
+            const data = await postJson(
+                "/api/auth/login/start",
+                { id_token: idToken }
+            );
+
+            pendingLogin = {
+                firebaseUser,
+                email: String(firebaseUser.email || emailInput.value)
+                    .trim()
+                    .toLowerCase(),
+                challengeToken: data.challenge_token
+            };
+
+            return pendingLogin;
+        }
+
+        function openOtpDialog() {
+            loginOtpEmail.textContent = pendingLogin?.email || "email kamu";
+            loginOtpCode.value = "";
+            hideMessage(loginOtpMessage);
+
+            if (!loginOtpDialog.open) {
+                loginOtpDialog.showModal();
+            }
+
+            setTimeout(() => loginOtpCode.focus(), 50);
+        }
+
+        async function syncExistingSession() {
+            try {
+                const response = await fetch("/api/auth/session", {
+                    credentials: "same-origin",
+                    headers: { Accept: "application/json" }
+                });
+
+                const data = await parseApiResponse(response);
+
+                if (response.ok && data.authenticated) {
+                    redirectAfterLogin();
+                }
+            } catch {
+                // Halaman login tetap bisa dipakai jika pemeriksaan sesi gagal.
+            }
+        }
+
+        passwordToggle.addEventListener("click", () => {
+            const isPassword = passwordInput.type === "password";
+
+            passwordInput.type = isPassword ? "text" : "password";
+
+            passwordToggle.setAttribute(
+                "aria-label",
+                isPassword ? "Hide password" : "Show password"
+            );
+        });
+
+        googleLoginButton.addEventListener("click", async () => {
+            hideMessage(formMessage);
+
+            setButtonLoading(
+                googleLoginButton,
+                true,
+                "Connecting to Google...",
+                "Continue with Google"
+            );
+
+            try {
+                const result = await signInWithPopup(
+                    auth,
+                    googleProvider
+                );
+
+                const idToken = await result.user.getIdToken(true);
+
+                await postJson("/api/auth/google", {
+                    id_token: idToken
+                });
+
+                showMessage(
+                    formMessage,
+                    "Login Google berhasil. Mengalihkan ke dashboard...",
+                    "success"
+                );
+
+                redirectAfterLogin();
+            } catch (error) {
+  console.error(
+    "Google login gagal:",
+    {
+      code: error?.code,
+      message: error?.message,
+      customData: error?.customData,
+      error
+    }
+  );
+
+  showMessage(
+    formMessage,
+    firebaseErrorMessage(error)
+  );
+
+                try {
+                    await signOut(auth);
+                } catch {
+                    // Abaikan kegagalan membersihkan sesi Firebase lokal.
+                }
+            } finally {
+                setButtonLoading(
+                    googleLoginButton,
+                    false,
+                    "Connecting to Google...",
+                    "Continue with Google"
+                );
+            }
+        });
+
+        loginForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            hideMessage(formMessage);
+
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showMessage(formMessage, "Email dan password wajib diisi.");
+                return;
+            }
+
+            setButtonLoading(
+                emailLoginButton,
+                true,
+                "Checking account...",
+                "Sign in"
+            );
+
+            try {
+                const credential = await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+                await requestLoginOtp(credential.user);
+                openOtpDialog();
+            } catch (error) {
+                showMessage(
+                    formMessage,
+                    firebaseErrorMessage(error)
+                );
+            } finally {
+                setButtonLoading(
+                    emailLoginButton,
+                    false,
+                    "Checking account...",
+                    "Sign in"
+                );
+            }
+        });
+
+        loginOtpCode.addEventListener("input", () => {
+            loginOtpCode.value = loginOtpCode.value
+                .replace(/\D/g, "")
+                .slice(0, 6);
+        });
+
+        loginOtpForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            hideMessage(loginOtpMessage);
+
+            const otp = loginOtpCode.value.trim();
+
+            if (!pendingLogin?.challengeToken) {
+                showMessage(
+                    loginOtpMessage,
+                    "Sesi verifikasi tidak ditemukan. Silakan login ulang."
+                );
+                return;
+            }
+
+            if (!/^\d{6}$/.test(otp)) {
+                showMessage(loginOtpMessage, "Kode OTP harus berisi 6 angka.");
+                return;
+            }
+
+            setButtonLoading(
+                verifyLoginOtpButton,
+                true,
+                "Verifying...",
+                "Verifikasi & masuk"
+            );
+
+            try {
+                await postJson("/api/auth/login/verify", {
+                    challenge_token: pendingLogin.challengeToken,
+                    otp
+                });
+
+                showMessage(
+                    loginOtpMessage,
+                    "Login berhasil. Mengalihkan ke dashboard...",
+                    "success"
+                );
+
+                redirectAfterLogin();
+            } catch (error) {
+                showMessage(loginOtpMessage, error.message);
+            } finally {
+                setButtonLoading(
+                    verifyLoginOtpButton,
+                    false,
+                    "Verifying...",
+                    "Verifikasi & masuk"
+                );
+            }
+        });
+
+        resendLoginOtpButton.addEventListener("click", async () => {
+            if (!pendingLogin?.firebaseUser) {
+                showMessage(
+                    loginOtpMessage,
+                    "Silakan kembali dan login ulang."
+                );
+                return;
+            }
+
+            hideMessage(loginOtpMessage);
+            resendLoginOtpButton.disabled = true;
+
+            try {
+                await requestLoginOtp(pendingLogin.firebaseUser);
+
+                showMessage(
+                    loginOtpMessage,
+                    "Kode OTP baru sudah dikirim.",
+                    "success"
+                );
+            } catch (error) {
+                showMessage(
+                    loginOtpMessage,
+                    firebaseErrorMessage(error)
+                );
+            } finally {
+                resendLoginOtpButton.disabled = false;
+            }
+        });
+
+        cancelLoginOtpButton.addEventListener("click", async () => {
+            pendingLogin = null;
+            loginOtpDialog.close();
+
+            try {
+                await signOut(auth);
+            } catch {
+                // Tidak ada sesi Firebase yang perlu dibersihkan.
+            }
+        });
+
+        forgotPasswordButton.addEventListener("click", async () => {
+            hideMessage(formMessage);
+
+            const email = emailInput.value.trim().toLowerCase();
+
+            if (!email) {
+                showMessage(
+                    formMessage,
+                    "Isi alamat email terlebih dahulu untuk mereset password."
+                );
+                emailInput.focus();
+                return;
+            }
+
+            forgotPasswordButton.disabled = true;
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+
+                showMessage(
+                    formMessage,
+                    "Tautan reset password sudah dikirim ke emailmu.",
+                    "success"
+                );
+            } catch (error) {
+                showMessage(
+                    formMessage,
+                    firebaseErrorMessage(error)
+                );
+            } finally {
+                forgotPasswordButton.disabled = false;
+            }
+        });
+
+        document
+            .getElementById("createAccountButton")
+            .addEventListener("click", () => {
+                window.location.href = "/register.html";
+            });
+
+        syncExistingSession();
+    </script>
+
+</body>
+</html>

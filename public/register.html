@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create VHYROX Account</title>
+
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/register.css?v=20260713-3">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style id="registerCriticalStyles">
+        /* Critical fallback agar bantuan password tetap kecil walau cache CSS lama masih aktif. */
+        .register-card .password-help {
+            margin: 7px 0 0 !important;
+            color: #ff85c2 !important;
+            font-family: "Plus Jakarta Sans", sans-serif !important;
+            font-size: 10px !important;
+            font-weight: 500 !important;
+            line-height: 1.5 !important;
+        }
+
+        .register-card .password-help.valid {
+            color: #69f3c8 !important;
+        }
+
+        .register-card .agreement-row {
+            display: grid !important;
+            grid-template-columns: 14px minmax(0, 1fr) !important;
+            align-items: start !important;
+            gap: 8px !important;
+            color: #8b85b0 !important;
+            font-size: 10.5px !important;
+            font-weight: 500 !important;
+            line-height: 1.65 !important;
+        }
+
+        .register-card .agreement-row > span {
+            color: #8b85b0 !important;
+            font-size: 10.5px !important;
+            font-weight: 500 !important;
+            line-height: 1.65 !important;
+        }
+
+        .register-card .agreement-row input {
+            width: 14px !important;
+            height: 14px !important;
+            margin-top: 2px !important;
+            accent-color: #ff2d8a !important;
+        }
+
+        .register-card .agreement-row a,
+        .register-card .agreement-row a:visited {
+            color: #ff85c2 !important;
+            font-size: inherit !important;
+            font-weight: 600 !important;
+            text-decoration: none !important;
+        }
+
+        .register-card .agreement-row a:hover {
+            color: #ff2d8a !important;
+            text-decoration: underline !important;
+        }
+    </style>
+
+    <style>
+        .register .register-link,
+        .register .register-link:link,
+        .register .register-link:visited {
+            color: #ff2d8a !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .register .register-link:hover,
+        .register .register-link:focus-visible {
+            color: #ff85c2 !important;
+            text-decoration: none !important;
+        }
+    </style>
+
+
+
+    <style id="registerVhyroxLogoSync">
+        /* Logo register disamakan dengan logo login tanpa mengubah bagian lain. */
+        .register-page .brand-section {
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        .register-page .brand-section .logo {
+            position: relative !important;
+            isolation: isolate;
+            width: 100% !important;
+            margin: 0 0 24px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-self: center !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            text-decoration: none !important;
+        }
+
+        .register-page .brand-section .logo::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 42%;
+            z-index: -1;
+            width: min(430px, 92%);
+            height: 118px;
+            border-radius: 999px;
+            background: radial-gradient(
+                ellipse,
+                rgba(255, 45, 138, 0.34) 0%,
+                rgba(255, 93, 169, 0.17) 38%,
+                transparent 72%
+            );
+            filter: blur(24px);
+            opacity: 0.55;
+            transform: translate(-50%, -50%) scale(0.96);
+            animation: registerVhyroxAura 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .register-page .brand-section .logo-name {
+            position: relative !important;
+            display: inline-block !important;
+            overflow: visible !important;
+            font-family: "Outfit", sans-serif !important;
+            font-size: clamp(54px, 6vw, 76px) !important;
+            font-weight: 900 !important;
+            line-height: 0.92 !important;
+            letter-spacing: 3px !important;
+            text-align: center !important;
+            color: transparent !important;
+            -webkit-text-fill-color: transparent !important;
+            -webkit-text-stroke: 0 !important;
+            background-image: linear-gradient(
+                110deg,
+                #fffafc 0%,
+                #ffe1ee 18%,
+                #ffb4d3 34%,
+                #ff78b5 52%,
+                #ff2d8a 68%,
+                #ff83bb 82%,
+                #fff6fb 100%
+            ) !important;
+            background-size: 220% 100% !important;
+            background-repeat: no-repeat !important;
+            background-position: 0% 50%;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            filter:
+                drop-shadow(0 0 5px rgba(255, 255, 255, 0.18))
+                drop-shadow(0 0 14px rgba(255, 45, 138, 0.42)) !important;
+            transform: none !important;
+            animation: registerVhyroxGradient 5.8s ease-in-out infinite alternate !important;
+            will-change: background-position;
+        }
+
+        .register-page .brand-section .logo-name::after {
+            content: none !important;
+            display: none !important;
+            animation: none !important;
+        }
+
+        .register-page .brand-section .logo-product {
+            margin-top: 12px !important;
+            padding-left: 9px !important;
+            font-family: "Outfit", sans-serif !important;
+            font-size: 16px !important;
+            font-weight: 800 !important;
+            line-height: 1 !important;
+            letter-spacing: 9px !important;
+            text-align: center !important;
+            text-transform: uppercase !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            background: none !important;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.18)) !important;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.16) !important;
+            animation: none !important;
+            transform: none !important;
+        }
+
+        @keyframes registerVhyroxGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes registerVhyroxAura {
+            0%,
+            100% {
+                opacity: 0.42;
+                transform: translate(-50%, -50%) scale(0.96);
+            }
+
+            50% {
+                opacity: 0.68;
+                transform: translate(-50%, -50%) scale(1.04);
+            }
+        }
+
+        @media (max-width: 540px) {
+            .register-page .brand-section .logo-name {
+                font-size: 46px !important;
+                letter-spacing: 2px !important;
+            }
+
+            .register-page .brand-section .logo-product {
+                margin-top: 10px !important;
+                padding-left: 6px !important;
+                font-size: 12px !important;
+                letter-spacing: 6px !important;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .register-page .brand-section .logo-name,
+            .register-page .brand-section .logo::before {
+                animation: none !important;
+            }
+
+            .register-page .brand-section .logo-name {
+                background-position: 50% 50% !important;
+            }
+        }
+    </style>
+
+    <style id="registerOtpCriticalStyles">
+        /* OTP dibuat mandiri agar tidak rusak walau register.css masih tercache. */
+        .register-card .otp-step[hidden] {
+            display: none !important;
+        }
+
+        .register-card .otp-step {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .register-card .back-button {
+            display: inline-flex !important;
+            align-items: center !important;
+            width: auto !important;
+            margin: 0 0 22px !important;
+            padding: 0 !important;
+            border: 0 !important;
+            outline: 0 !important;
+            background: transparent !important;
+            color: #ff85c2 !important;
+            font: 600 13px/1.4 "Plus Jakarta Sans", sans-serif !important;
+            cursor: pointer !important;
+            appearance: none !important;
+        }
+
+        .register-card .back-button:hover {
+            color: #ff2d8a !important;
+        }
+
+        .register-card .otp-icon {
+            display: grid !important;
+            place-items: center !important;
+            width: 54px !important;
+            height: 54px !important;
+            margin: 0 0 16px !important;
+            border: 1px solid rgba(255, 45, 138, 0.28) !important;
+            border-radius: 16px !important;
+            background: rgba(255, 45, 138, 0.1) !important;
+            color: #ff85c2 !important;
+            font-size: 24px !important;
+            box-shadow: 0 0 24px rgba(255, 45, 138, 0.12) !important;
+        }
+
+        .register-card .otp-header {
+            margin-bottom: 22px !important;
+        }
+
+        .register-card .otp-header p {
+            overflow-wrap: anywhere !important;
+        }
+
+        .register-card .otp-header strong {
+            color: #ff85c2 !important;
+        }
+
+        .register-card .otp-form {
+            width: 100% !important;
+        }
+
+        .register-card .otp-inputs {
+            display: grid !important;
+            grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+            gap: 10px !important;
+            width: 100% !important;
+            margin: 0 0 18px !important;
+        }
+
+        .register-card .otp-inputs input {
+            box-sizing: border-box !important;
+            display: block !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            height: 58px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 1px solid rgba(255, 255, 255, 0.13) !important;
+            border-radius: 14px !important;
+            outline: 0 !important;
+            background: rgba(8, 7, 27, 0.72) !important;
+            color: #ffffff !important;
+            caret-color: #ff2d8a !important;
+            font: 800 23px/1 "Outfit", sans-serif !important;
+            text-align: center !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025) !important;
+            appearance: none !important;
+        }
+
+        .register-card .otp-inputs input:focus {
+            border-color: #ff2d8a !important;
+            box-shadow:
+                0 0 0 3px rgba(255, 45, 138, 0.13),
+                0 0 22px rgba(255, 45, 138, 0.12) !important;
+        }
+
+        .register-card .resend-row {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 5px !important;
+            margin-top: 16px !important;
+            color: #8b85b0 !important;
+            font: 500 12px/1.5 "Plus Jakarta Sans", sans-serif !important;
+            text-align: center !important;
+        }
+
+        .register-card .resend-row button {
+            width: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 0 !important;
+            background: transparent !important;
+            color: #ff85c2 !important;
+            font: 700 12px/1.5 "Plus Jakarta Sans", sans-serif !important;
+            cursor: pointer !important;
+            appearance: none !important;
+        }
+
+        .register-card .resend-row button:disabled {
+            color: #5f5a7c !important;
+            cursor: not-allowed !important;
+        }
+
+        @media (max-width: 540px) {
+            .register-card .otp-inputs {
+                gap: 6px !important;
+            }
+
+            .register-card .otp-inputs input {
+                height: 50px !important;
+                border-radius: 11px !important;
+                font-size: 20px !important;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div
+        class="love-container"
+        id="loveContainer"
+        aria-hidden="true"
+    ></div>
+
+    <main class="login-page register-page">
+        <section class="brand-section">
+            <div class="logo" aria-label="VHYROX Money">
+                <div class="logo-name" data-text="VHYROX">VHYROX</div>
+                <div class="logo-product">MONEY</div>
+            </div>
+
+            <div class="mascot-wrapper">
+                <div class="mascot-glow"></div>
+
+                <img
+                    class="mascot-image"
+                    src="/assets/Vmoney.png"
+                    alt="VHYROX Money mascot"
+                >
+
+                <div class="mascot-shadow"></div>
+            </div>
+
+            <div class="brand-copy">
+                <h1>
+                    Start smarter.
+                    <span>Build your future.</span>
+                </h1>
+
+                <h2>Your personal financial companion.</h2>
+
+                <p>
+                    Create your VHYROX account, organize every transaction,
+                    control your budget, and get smarter financial insights.
+                </p>
+            </div>
+
+            <div class="features">
+                <div class="feature-pill">
+                    <span class="feature-dot"></span>
+                    Secure Account
+                </div>
+
+                <div class="feature-pill">
+                    <span class="feature-dot"></span>
+                    Email OTP
+                </div>
+
+                <div class="feature-pill">
+                    <span class="feature-dot"></span>
+                    Google Sign-In
+                </div>
+            </div>
+        </section>
+
+        <section class="login-card register-card">
+            <div class="card-highlight"></div>
+
+            <div id="registerStep">
+                <div class="login-header">
+                    <h2>Create account ✨</h2>
+                    <p>Join VHYROX and take control of your money</p>
+                </div>
+
+                <button
+                    class="google-btn"
+                    id="googleRegisterButton"
+                    type="button"
+                >
+                    <svg
+                        class="google-icon"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path
+                            fill="#4285F4"
+                            d="M21.6 12.23c0-.71-.06-1.39-.18-2.05H12v3.87h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.24c1.9-1.75 2.98-4.33 2.98-7.35Z"
+                        />
+                        <path
+                            fill="#34A853"
+                            d="M12 22c2.7 0 4.97-.9 6.63-2.42l-3.24-2.51c-.9.6-2.05.96-3.39.96-2.61 0-4.82-1.76-5.61-4.13H3.04v2.59A10 10 0 0 0 12 22Z"
+                        />
+                        <path
+                            fill="#FBBC05"
+                            d="M6.39 13.9A6.01 6.01 0 0 1 6.08 12c0-.66.11-1.3.31-1.9V7.51H3.04A10 10 0 0 0 2 12c0 1.61.38 3.14 1.04 4.49l3.35-2.59Z"
+                        />
+                        <path
+                            fill="#EA4335"
+                            d="M12 5.97c1.47 0 2.79.51 3.83 1.5l2.87-2.87A9.62 9.62 0 0 0 12 2a10 10 0 0 0-8.96 5.51l3.35 2.59C7.18 7.73 9.39 5.97 12 5.97Z"
+                        />
+                    </svg>
+
+                    <span>Continue with Google</span>
+                </button>
+
+                <div class="divider">
+                    <span></span>
+                    <p>or create account with email</p>
+                    <span></span>
+                </div>
+
+                <form class="login-form" id="registerForm" novalidate>
+                    <div class="form-group">
+                        <label for="name">Full name</label>
+
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="8" r="4"></circle>
+                                <path d="M4 21a8 8 0 0 1 16 0"></path>
+                            </svg>
+
+                            <input
+                                id="name"
+                                name="name"
+                                type="text"
+                                maxlength="120"
+                                placeholder="Your full name"
+                                autocomplete="name"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 6h16v12H4z"></path>
+                                <path d="m4 7 8 6 8-6"></path>
+                            </svg>
+
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                maxlength="190"
+                                placeholder="name@email.com"
+                                autocomplete="email"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                                <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                            </svg>
+
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                minlength="8"
+                                maxlength="128"
+                                placeholder="Minimum 8 characters"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button
+                                class="password-toggle"
+                                type="button"
+                                data-password-toggle="password"
+                                aria-label="Show password"
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path>
+                                    <circle cx="12" cy="12" r="2.5"></circle>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <p class="password-help" id="passwordRules">
+                            Minimum 8 characters with uppercase, lowercase, and a number.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm password</label>
+
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                                <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                            </svg>
+
+                            <input
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                type="password"
+                                minlength="8"
+                                maxlength="128"
+                                placeholder="Repeat your password"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button
+                                class="password-toggle"
+                                type="button"
+                                data-password-toggle="confirmPassword"
+                                aria-label="Show password"
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path>
+                                    <circle cx="12" cy="12" r="2.5"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <label class="agreement-row">
+                        <input id="agreeTerms" type="checkbox" required>
+                        <span>
+                            I agree to the
+                            <a href="/terms-of-use.html" target="_blank" rel="noopener">Terms of Use</a>
+                            and
+                            <a href="/privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.
+                        </span>
+                    </label>
+
+                    <div
+                        class="form-message"
+                        id="registerMessage"
+                        role="alert"
+                    ></div>
+
+                    <button
+                        class="login-btn"
+                        id="createAccountSubmit"
+                        type="submit"
+                    >
+                        <span>Create account</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12h14"></path>
+                            <path d="m14 7 5 5-5 5"></path>
+                        </svg>
+                    </button>
+                </form>
+
+                <p class="register">
+                    Already have an account?
+                    <a class="register-link" href="/login.html">Sign in</a>
+                </p>
+            </div>
+
+            <div id="otpStep" class="otp-step" hidden>
+                <button
+                    class="back-button"
+                    id="backToRegisterButton"
+                    type="button"
+                >
+                    ← Edit account details
+                </button>
+
+                <div class="otp-icon">✉</div>
+
+                <div class="login-header otp-header">
+                    <h2>Verify your email</h2>
+                    <p>
+                        We sent a 6-digit code to
+                        <strong id="otpEmailText">your email</strong>
+                    </p>
+                </div>
+
+                <form id="otpForm" class="otp-form" novalidate>
+                    <div class="otp-inputs" id="otpInputs">
+                        <input inputmode="numeric" maxlength="1" aria-label="OTP digit 1" required>
+                        <input inputmode="numeric" maxlength="1" aria-label="OTP digit 2" required>
+                        <input inputmode="numeric" maxlength="1" aria-label="OTP digit 3" required>
+                        <input inputmode="numeric" maxlength="1" aria-label="OTP digit 4" required>
+                        <input inputmode="numeric" maxlength="1" aria-label="OTP digit 5" required>
+                        <input inputmode="numeric" maxlength="1" aria-label="OTP digit 6" required>
+                    </div>
+
+                    <div
+                        class="form-message otp-message"
+                        id="otpMessage"
+                        role="alert"
+                    ></div>
+
+                    <button
+                        class="login-btn"
+                        id="verifyOtpButton"
+                        type="submit"
+                    >
+                        <span>Verify &amp; create account</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12h14"></path>
+                            <path d="m14 7 5 5-5 5"></path>
+                        </svg>
+                    </button>
+                </form>
+
+                <div class="resend-row">
+                    <span>Didn't receive the code?</span>
+                    <button id="resendOtpButton" type="button">Resend code</button>
+                    <span id="resendCountdown"></span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+        import {
+            createUserWithEmailAndPassword,
+            deleteUser,
+            getAuth,
+            GoogleAuthProvider,
+            signInWithPopup,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrrSGhefZulij5vJhxkJkkUZUGs192txc",
+            authDomain: "vhyrox-90dea.firebaseapp.com",
+            projectId: "vhyrox-90dea",
+            storageBucket: "vhyrox-90dea.firebasestorage.app",
+            messagingSenderId: "266667672492",
+            appId: "1:266667672492:web:56987e32332366eaa83009",
+            measurementId: "G-45Q9FR2N9R"
+        };
+
+        const firebaseApp = initializeApp(firebaseConfig);
+        const auth = getAuth(firebaseApp);
+        const googleProvider = new GoogleAuthProvider();
+
+        googleProvider.setCustomParameters({
+            prompt: "select_account"
+        });
+
+        const registerStep = document.getElementById("registerStep");
+        const otpStep = document.getElementById("otpStep");
+        const registerForm = document.getElementById("registerForm");
+        const otpForm = document.getElementById("otpForm");
+        const registerMessage = document.getElementById("registerMessage");
+        const otpMessage = document.getElementById("otpMessage");
+        const createAccountSubmit = document.getElementById("createAccountSubmit");
+        const verifyOtpButton = document.getElementById("verifyOtpButton");
+        const googleRegisterButton = document.getElementById("googleRegisterButton");
+        const resendOtpButton = document.getElementById("resendOtpButton");
+        const resendCountdown = document.getElementById("resendCountdown");
+        const otpEmailText = document.getElementById("otpEmailText");
+        const otpInputs = [...document.querySelectorAll("#otpInputs input")];
+        const passwordInput = document.getElementById("password");
+        const confirmPasswordInput = document.getElementById("confirmPassword");
+
+        let pendingRegistration = null;
+        let resendTimer = null;
+        let resendSeconds = 0;
+
+        function showMessage(element, message, type = "error") {
+            element.textContent = message;
+            element.classList.add("show");
+            element.classList.toggle("success", type === "success");
+        }
+
+        function hideMessage(element) {
+            element.textContent = "";
+            element.classList.remove("show", "success");
+        }
+
+        function setButtonLoading(button, loading, loadingText, normalText) {
+            button.disabled = loading;
+            const label = button.querySelector("span");
+
+            if (label) {
+                label.textContent = loading ? loadingText : normalText;
+            }
+        }
+
+        async function parseApiResponse(response) {
+            const raw = await response.text();
+
+            if (!raw) {
+                return {};
+            }
+
+            try {
+                return JSON.parse(raw);
+            } catch {
+                return { error: raw };
+            }
+        }
+
+        async function postJson(url, payload) {
+            const response = await fetch(url, {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await parseApiResponse(response);
+
+            if (!response.ok || data.error) {
+                throw new Error(data.error || "Request failed.");
+            }
+
+            return data;
+        }
+
+        function validatePassword(password) {
+            return {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /\d/.test(password)
+            };
+        }
+
+        function updatePasswordRules() {
+            const result = validatePassword(passwordInput.value);
+            const isValid = Object.values(result).every(Boolean);
+            const passwordHelp = document.getElementById("passwordRules");
+
+            passwordHelp.classList.toggle("valid", isValid);
+
+            return isValid;
+        }
+
+        function getOtpCode() {
+            return otpInputs.map((input) => input.value).join("");
+        }
+
+        function clearOtpInputs() {
+            otpInputs.forEach((input) => {
+                input.value = "";
+            });
+
+            otpInputs[0].focus();
+        }
+
+        function startResendCountdown(seconds = 60) {
+            clearInterval(resendTimer);
+            resendSeconds = seconds;
+            resendOtpButton.disabled = true;
+
+            const render = () => {
+                resendCountdown.textContent =
+                    resendSeconds > 0
+                        ? `(${resendSeconds}s)`
+                        : "";
+
+                if (resendSeconds <= 0) {
+                    clearInterval(resendTimer);
+                    resendOtpButton.disabled = false;
+                    return;
+                }
+
+                resendSeconds -= 1;
+            };
+
+            render();
+            resendTimer = setInterval(render, 1000);
+        }
+
+        function showOtpStep() {
+            registerStep.hidden = true;
+            otpStep.hidden = false;
+            otpEmailText.textContent = pendingRegistration.email;
+            clearOtpInputs();
+            startResendCountdown();
+        }
+
+        function showRegisterStep() {
+            otpStep.hidden = true;
+            registerStep.hidden = false;
+            hideMessage(otpMessage);
+            clearInterval(resendTimer);
+        }
+
+        function firebaseErrorMessage(error) {
+            const code = String(error?.code || "");
+
+            const messages = {
+                "auth/email-already-in-use": "Email ini sudah terdaftar. Silakan masuk melalui halaman login.",
+                "auth/invalid-email": "Format email tidak valid.",
+                "auth/weak-password": "Password belum memenuhi ketentuan keamanan.",
+                "auth/popup-closed-by-user": "Jendela Google ditutup sebelum proses selesai.",
+                "auth/popup-blocked": "Popup Google diblokir browser. Izinkan popup lalu coba lagi.",
+                "auth/network-request-failed": "Koneksi ke Firebase gagal. Periksa internetmu."
+            };
+
+            return messages[code] || error?.message || "Proses autentikasi gagal.";
+        }
+
+        async function requestRegistrationOtp() {
+            const data = await postJson("/api/auth/register/start", {
+                nama: pendingRegistration.name,
+                email: pendingRegistration.email
+            });
+
+            pendingRegistration.challengeToken = data.challenge_token;
+        }
+
+        registerForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            hideMessage(registerMessage);
+
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim().toLowerCase();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            const agreeTerms = document.getElementById("agreeTerms").checked;
+
+            if (name.length < 2) {
+                showMessage(registerMessage, "Nama minimal 2 karakter.");
+                return;
+            }
+
+            if (!/^\S+@\S+\.\S+$/.test(email)) {
+                showMessage(registerMessage, "Masukkan alamat email yang valid.");
+                return;
+            }
+
+            if (!updatePasswordRules()) {
+                showMessage(
+                    registerMessage,
+                    "Password minimal 8 karakter dan harus memiliki huruf besar, huruf kecil, serta angka."
+                );
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage(registerMessage, "Konfirmasi password tidak sama.");
+                return;
+            }
+
+            if (!agreeTerms) {
+                showMessage(registerMessage, "Kamu harus menyetujui Terms of Use dan Privacy Policy.");
+                return;
+            }
+
+            pendingRegistration = {
+                name,
+                email,
+                password,
+                challengeToken: ""
+            };
+
+            setButtonLoading(
+                createAccountSubmit,
+                true,
+                "Sending OTP...",
+                "Create account"
+            );
+
+            try {
+                await requestRegistrationOtp();
+                showOtpStep();
+            } catch (error) {
+                showMessage(registerMessage, error.message);
+                pendingRegistration = null;
+            } finally {
+                setButtonLoading(
+                    createAccountSubmit,
+                    false,
+                    "Sending OTP...",
+                    "Create account"
+                );
+            }
+        });
+
+        otpForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            hideMessage(otpMessage);
+
+            if (!pendingRegistration?.challengeToken) {
+                showMessage(otpMessage, "Sesi pendaftaran tidak ditemukan. Ulangi dari awal.");
+                return;
+            }
+
+            const otp = getOtpCode();
+
+            if (!/^\d{6}$/.test(otp)) {
+                showMessage(otpMessage, "Masukkan kode OTP 6 digit.");
+                return;
+            }
+
+            setButtonLoading(
+                verifyOtpButton,
+                true,
+                "Creating account...",
+                "Verify & create account"
+            );
+
+            let firebaseUser = null;
+
+            try {
+                const verification = await postJson(
+                    "/api/auth/register/verify",
+                    {
+                        challenge_token: pendingRegistration.challengeToken,
+                        otp
+                    }
+                );
+
+                const credential = await createUserWithEmailAndPassword(
+                    auth,
+                    pendingRegistration.email,
+                    pendingRegistration.password
+                );
+
+                firebaseUser = credential.user;
+
+                await updateProfile(firebaseUser, {
+                    displayName: pendingRegistration.name
+                });
+
+                const idToken = await firebaseUser.getIdToken(true);
+
+                await postJson("/api/auth/register/complete", {
+                    registration_token: verification.registration_token,
+                    id_token: idToken
+                });
+
+                showMessage(otpMessage, "Akun berhasil dibuat. Mengalihkan ke dashboard...", "success");
+                pendingRegistration.password = "";
+
+                setTimeout(() => {
+                    window.location.replace("/");
+                }, 700);
+            } catch (error) {
+                if (firebaseUser) {
+                    try {
+                        await deleteUser(firebaseUser);
+                    } catch {
+                        // Akun Firebase mungkin sudah tersinkron. Backend akan menjadi sumber status akhirnya.
+                    }
+                }
+
+                showMessage(otpMessage, firebaseErrorMessage(error));
+            } finally {
+                setButtonLoading(
+                    verifyOtpButton,
+                    false,
+                    "Creating account...",
+                    "Verify & create account"
+                );
+            }
+        });
+
+        googleRegisterButton.addEventListener("click", async () => {
+            hideMessage(registerMessage);
+            googleRegisterButton.disabled = true;
+            const label = googleRegisterButton.querySelector("span");
+            const originalText = label.textContent;
+            label.textContent = "Connecting to Google...";
+
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const idToken = await result.user.getIdToken(true);
+
+                await postJson("/api/auth/google", {
+                    id_token: idToken
+                });
+
+                window.location.replace("/");
+            } catch (error) {
+                showMessage(registerMessage, firebaseErrorMessage(error));
+            } finally {
+                googleRegisterButton.disabled = false;
+                label.textContent = originalText;
+            }
+        });
+
+        resendOtpButton.addEventListener("click", async () => {
+            if (!pendingRegistration) {
+                showRegisterStep();
+                return;
+            }
+
+            hideMessage(otpMessage);
+            resendOtpButton.disabled = true;
+
+            try {
+                await requestRegistrationOtp();
+                clearOtpInputs();
+                startResendCountdown();
+                showMessage(otpMessage, "Kode OTP baru sudah dikirim.", "success");
+            } catch (error) {
+                resendOtpButton.disabled = false;
+                showMessage(otpMessage, error.message);
+            }
+        });
+
+        document
+            .getElementById("backToRegisterButton")
+            .addEventListener("click", showRegisterStep);
+
+        passwordInput.addEventListener("input", updatePasswordRules);
+
+        document
+            .querySelectorAll("[data-password-toggle]")
+            .forEach((button) => {
+                button.addEventListener("click", () => {
+                    const input = document.getElementById(
+                        button.dataset.passwordToggle
+                    );
+
+                    const show = input.type === "password";
+                    input.type = show ? "text" : "password";
+                    button.setAttribute(
+                        "aria-label",
+                        show ? "Hide password" : "Show password"
+                    );
+                });
+            });
+
+        otpInputs.forEach((input, index) => {
+            input.addEventListener("input", () => {
+                input.value = input.value.replace(/\D/g, "").slice(0, 1);
+
+                if (input.value && otpInputs[index + 1]) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener("keydown", (event) => {
+                if (
+                    event.key === "Backspace" &&
+                    !input.value &&
+                    otpInputs[index - 1]
+                ) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener("paste", (event) => {
+                const pasted = event.clipboardData
+                    .getData("text")
+                    .replace(/\D/g, "")
+                    .slice(0, 6);
+
+                if (!pasted) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                pasted.split("").forEach((digit, digitIndex) => {
+                    if (otpInputs[digitIndex]) {
+                        otpInputs[digitIndex].value = digit;
+                    }
+                });
+
+                otpInputs[Math.min(pasted.length, 6) - 1].focus();
+            });
+        });
+
+        const loveContainer = document.getElementById("loveContainer");
+
+        for (let index = 0; index < 70; index += 1) {
+            const heart = document.createElement("span");
+            heart.className = "falling-heart";
+            heart.textContent = "♡";
+
+            const duration = 18 + Math.random() * 18;
+
+            heart.style.setProperty("--heart-left", `${Math.random() * 100}%`);
+            heart.style.setProperty("--heart-size", `${15 + Math.random() * 24}px`);
+            heart.style.setProperty("--heart-duration", `${duration}s`);
+            heart.style.setProperty("--heart-delay", `${-(Math.random() * duration)}s`);
+            heart.style.setProperty("--heart-sway", `${-50 + Math.random() * 100}px`);
+            heart.style.setProperty("--heart-rotation", `${100 + Math.random() * 260}deg`);
+
+            loveContainer.appendChild(heart);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>VHYROX | Pusat Peringatan</title>
+
+  <style id="vhyrox-theme-compat">
+    :root {
+      --accent: #FF2D8A;
+      --accent-rgb: 255, 45, 138;
+      --accent-dark: #C850C0;
+      --accent-dark-rgb: 200, 80, 192;
+      --secondary: #7B5CF0;
+      --secondary-rgb: 123, 92, 240;
+      --bg-rgb: 8, 7, 26;
+    }
+  </style>
+
+  <link rel="stylesheet" href="/dashboard.css">
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --bg: #08071A;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border: rgba(255, 255, 255, 0.07);
+      --text: #F0EEF8;
+      --text-soft: #8B85B0;
+      --pink: #FF2D8A;
+      --pink-dark: #C850C0;
+      --green: #00E5A0;
+      --red: #FF3B5C;
+      --yellow: #FFB547;
+      --purple: #7B5CF0;
+      --radius: 16px;
+    }
+
+    button {
+      font-family: inherit;
+    }
+    .nav-item,
+    .nav-item:link,
+    .nav-item:visited,
+    .nav-item:hover,
+    .nav-item:active {
+      text-decoration: none;
+    }
+
+    .btn-refresh:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* =====================================================
+       PAGE HEADER
+    ===================================================== */
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-title h2 {
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .page-title p {
+      margin-top: 3px;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    /* =====================================================
+       RINGKASAN
+    ===================================================== */
+    .alert-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .summary-card {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+    }
+
+    .summary-card span {
+      display: block;
+      color: var(--text-soft);
+      font-size: 12px;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 5px;
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+    }
+
+    .summary-card.kritis {
+      border-color: rgba(255, 59, 92, 0.22);
+    }
+
+    .summary-card.perhatian {
+      border-color: rgba(255, 181, 71, 0.22);
+    }
+
+    .summary-card.info {
+      border-color: rgba(0, 229, 160, 0.2);
+    }
+
+    .summary-card.kritis strong {
+      color: var(--red);
+    }
+
+    .summary-card.perhatian strong {
+      color: var(--yellow);
+    }
+
+    .summary-card.info strong {
+      color: var(--green);
+    }
+
+    /* =====================================================
+       ALERT CARD
+    ===================================================== */
+    .alert-card {
+      padding: 20px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      transition: 0.2s;
+    }
+
+    .alert-card:hover {
+      transform: translateY(-1px);
+    }
+
+    .alert-card.kritis {
+      border-color: rgba(255, 59, 92, 0.25);
+      background: rgba(255, 59, 92, 0.07);
+    }
+
+    .alert-card.perhatian {
+      border-color: rgba(255, 181, 71, 0.22);
+      background: rgba(255, 181, 71, 0.06);
+    }
+
+    .alert-card.info {
+      border-color: rgba(0, 229, 160, 0.2);
+      background: rgba(0, 229, 160, 0.05);
+    }
+
+    .alert-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .alert-icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 20px;
+    }
+
+    .alert-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .alert-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .alert-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+    }
+
+    .alert-badge.kritis {
+      background: rgba(255, 59, 92, 0.09);
+      color: var(--red);
+    }
+
+    .alert-badge.perhatian {
+      background: rgba(255, 181, 71, 0.09);
+      color: var(--yellow);
+    }
+
+    .alert-badge.info {
+      background: rgba(0, 229, 160, 0.09);
+      color: var(--green);
+    }
+
+    .alert-time {
+      color: var(--text-soft);
+      font-size: 12px;
+    }
+
+    .alert-content h4 {
+      margin-top: 6px;
+      margin-bottom: 4px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .alert-content p {
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    /* =====================================================
+       EMPTY DAN ERROR
+    ===================================================== */
+    .empty-state {
+      padding: 45px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      color: var(--text-soft);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .empty-state strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .empty-state.error {
+      border-color: rgba(255, 59, 92, 0.25);
+      background: rgba(255, 59, 92, 0.06);
+      color: #FF8095;
+    }
+
+    /* =====================================================
+       MOBILE NAVIGATION
+    ===================================================== */
+    .mobile-nav-toggle {
+      display: none;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.035);
+      color: white;
+      cursor: pointer;
+    }
+
+    .mobile-nav-toggle span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      margin: 4px auto;
+      border-radius: 999px;
+      background: #F0EEF8;
+      transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+    }
+
+    .mobile-nav-toggle.is-open span:nth-child(1) {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    .mobile-nav-toggle.is-open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .mobile-nav-toggle.is-open span:nth-child(3) {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+
+    @keyframes mobileNavOpen {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+    @media (max-width: 860px) {
+      body {
+        padding: 14px;
+      }
+
+      .topbar {
+        position: relative;
+        display: grid;
+        grid-template-columns:
+          minmax(0, 1fr)
+          auto
+          auto;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 12px;
+        border-radius: 17px;
+      }
+
+      .brand,
+      .brand-link {
+        min-width: 0;
+      }
+
+      .brand-text,
+      .brand-sub {
+        white-space: nowrap;
+      }
+
+      .top-actions {
+        gap: 7px;
+      }
+
+      .mobile-nav-toggle {
+        display: block;
+      }
+
+      .topbar .nav {
+        grid-column: 1 / -1;
+        display: none;
+        width: 100%;
+        padding: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.075);
+        border-radius: 14px;
+        background: #100D24;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+      }
+
+      .topbar .nav.is-open {
+        display: flex;
+        animation: mobileNavOpen 0.2s ease;
+      }
+
+      .topbar .nav .nav-item {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 42px;
+        padding: 10px 13px;
+        border-radius: 11px;
+        font-size: 13px;
+        text-align: left;
+      }
+
+      .topbar .nav .nav-item.active {
+        border-bottom: none;
+        background:
+          linear-gradient(
+            135deg,
+            rgba(255, 45, 138, 0.23),
+            rgba(200, 80, 192, 0.15)
+          );
+        box-shadow:
+          inset 3px 0 0 var(--pink),
+          0 0 20px rgba(255, 45, 138, 0.1);
+      }
+
+      .alert-summary {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 12px;
+      }
+
+      .brand-text {
+        font-size: 13px;
+      }
+
+      .brand-sub {
+        margin-left: 1px;
+        font-size: 10px;
+      }
+
+      .btn-refresh,
+      .avatar,
+      .mobile-nav-toggle {
+        width: 34px;
+        height: 34px;
+      }
+
+      .page-title h2 {
+        font-size: 21px;
+      }
+
+      .page-title p {
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      .alert-header {
+        gap: 12px;
+      }
+
+      .alert-card {
+        padding: 16px;
+      }
+
+      .alert-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .brand-sub {
+        display: none;
+      }
+    }
+  </style>
+
+  <style id="vhyrox-page-profile-style">
+    .page-profile-link {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(var(--accent-rgb, 255, 45, 138), 0.30);
+      color: #fff;
+      text-decoration: none !important;
+      cursor: pointer;
+      box-shadow: 0 0 0 0 rgba(var(--accent-rgb, 255, 45, 138), 0);
+      transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease,
+        filter .2s ease;
+    }
+
+    .page-profile-link:hover,
+    .page-profile-link:focus-visible {
+      color: #fff;
+      border-color: rgba(var(--accent-rgb, 255, 45, 138), 0.60);
+      box-shadow: 0 0 0 4px rgba(var(--accent-rgb, 255, 45, 138), 0.10);
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+      outline: none;
+    }
+
+    .page-profile-link img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      object-fit: cover;
+    }
+
+    .page-profile-link span {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="dashboard">
+
+    <!-- ==================================================
+         TOPBAR
+    =================================================== -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">
+          VX
+        </div>
+
+        <a
+          href="/"
+          class="brand-link"
+        >
+          <span class="brand-text">
+            VHYROX
+          </span>
+
+          <span class="brand-sub">
+            Money
+          </span>
+        </a>
+      </div>
+
+      <nav class="nav" id="peringatanNav">
+        <a
+          href="/"
+          class="nav-item"
+        >
+          Dashboard
+        </a>
+
+        <a
+          href="/transaksi.html"
+          class="nav-item"
+        >
+          Transaksi
+        </a>
+
+        <a
+          href="/budget.html"
+          class="nav-item"
+        >
+          Budget
+        </a>
+        <a href="/kategori.html" class="nav-item">Kategori</a>
+        <a
+          href="/analitik.html"
+          class="nav-item"
+        >
+          Analitik
+        </a>
+
+        <span class="nav-item active">
+          Peringatan
+        </span>
+
+        <a
+          href="/bot.html"
+          class="nav-item"
+        >
+          Money Bot
+        </a>
+      </nav>
+
+      <div class="top-actions">
+        <button
+          type="button"
+          class="btn-refresh"
+          id="refreshButton"
+          onclick="loadPeringatan()"
+          title="Muat ulang peringatan"
+          aria-label="Muat ulang peringatan"
+        >
+          ↻
+        </button>
+
+        <a
+          href="/profile.html"
+          class="avatar page-profile-link"
+          id="pageProfileLink"
+          title="Buka profil"
+          aria-label="Buka profil pengguna"
+        >
+          <img
+            id="pageProfileAvatarImage"
+            alt=""
+            hidden
+          >
+          <span id="pageProfileInitials">RD</span>
+        </a>
+      </div>
+
+      <button
+        type="button"
+        class="mobile-nav-toggle"
+        id="mobileNavToggle"
+        aria-label="Buka menu navigasi"
+        aria-expanded="false"
+        aria-controls="peringatanNav"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <!-- ==================================================
+         PAGE HEADER
+    =================================================== -->
+    <div class="page-header">
+      <div class="page-title">
+        <h2>
+          Pusat Peringatan
+        </h2>
+
+        <p id="pageSubtitle">
+          AI memantau kondisi keuanganmu
+        </p>
+      </div>
+    </div>
+
+    <!-- ==================================================
+         RINGKASAN
+    =================================================== -->
+    <div
+      class="alert-summary"
+      id="alertSummary"
+      style="display: none;"
+    >
+      <div class="summary-card kritis">
+        <span>
+          Kritis
+        </span>
+
+        <strong id="criticalCount">
+          0
+        </strong>
+      </div>
+
+      <div class="summary-card perhatian">
+        <span>
+          Peringatan
+        </span>
+
+        <strong id="warningCount">
+          0
+        </strong>
+      </div>
+
+      <div class="summary-card info">
+        <span>
+          Informasi Positif
+        </span>
+
+        <strong id="infoCount">
+          0
+        </strong>
+      </div>
+    </div>
+
+    <!-- ==================================================
+         ALERT LIST
+    =================================================== -->
+    <div
+      id="alertList"
+      aria-live="polite"
+    >
+      <div class="empty-state">
+        Memuat peringatan...
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =====================================================
+    // FORMATTER DAN KEAMANAN
+    // =====================================================
+    const formatNum = (value) =>
+      Number(value || 0)
+        .toLocaleString('id-ID');
+
+    const escapeHTML = (value) =>
+      String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    const alertList =
+      document.getElementById(
+        'alertList'
+      );
+
+    const alertSummary =
+      document.getElementById(
+        'alertSummary'
+      );
+
+    const refreshButton =
+      document.getElementById(
+        'refreshButton'
+      );
+
+    let redirectingToLogin = false;
+
+    function redirectToLogin() {
+      if (redirectingToLogin) {
+        return;
+      }
+
+      redirectingToLogin = true;
+
+      const returnTo =
+        `${window.location.pathname}${window.location.search}`;
+
+      window.location.replace(
+        `/login.html?returnTo=${encodeURIComponent(returnTo)}`
+      );
+    }
+
+    // =====================================================
+    // HELPER
+    // =====================================================
+    async function parseResponse(response) {
+      const rawText =
+        await response.text();
+
+      if (!rawText) {
+        return {};
+      }
+
+      try {
+        return JSON.parse(
+          rawText
+        );
+      } catch (error) {
+        return {
+          error:
+            'Respons server tidak valid'
+        };
+      }
+    }
+
+    function normalizeAlertType(type) {
+      if (type === 'kritis') {
+        return 'kritis';
+      }
+
+      if (type === 'perhatian') {
+        return 'perhatian';
+      }
+
+      return 'info';
+    }
+
+    function updateSummary(alerts) {
+      const criticalCount =
+        alerts.filter(
+          (alert) =>
+            alert.type === 'kritis'
+        ).length;
+
+      const warningCount =
+        alerts.filter(
+          (alert) =>
+            alert.type === 'perhatian'
+        ).length;
+
+      const infoCount =
+        alerts.filter(
+          (alert) =>
+            alert.type === 'info'
+        ).length;
+
+      document.getElementById(
+        'criticalCount'
+      ).textContent =
+        criticalCount;
+
+      document.getElementById(
+        'warningCount'
+      ).textContent =
+        warningCount;
+
+      document.getElementById(
+        'infoCount'
+      ).textContent =
+        infoCount;
+
+      alertSummary.style.display =
+        alerts.length > 0
+          ? 'grid'
+          : 'none';
+    }
+
+    function renderAlerts(alerts) {
+      updateSummary(
+        alerts
+      );
+
+      if (
+        !Array.isArray(alerts) ||
+        alerts.length === 0
+      ) {
+        alertList.innerHTML = `
+          <div class="empty-state">
+            <strong>
+              🎉 Tidak ada peringatan
+            </strong>
+
+            Kondisi keuanganmu saat ini terlihat aman.
+          </div>
+        `;
+
+        return;
+      }
+
+      alertList.innerHTML =
+        alerts
+          .map(
+            (alert) => {
+              const type =
+                normalizeAlertType(
+                  alert.type
+                );
+
+              const icon =
+                escapeHTML(
+                  alert.icon || 'ℹ️'
+                );
+
+              const badge =
+                escapeHTML(
+                  alert.badge || 'INFO'
+                );
+
+              const time =
+                escapeHTML(
+                  alert.time || ''
+                );
+
+              const title =
+                escapeHTML(
+                  alert.title || ''
+                );
+
+              const description =
+                escapeHTML(
+                  alert.desc || ''
+                );
+
+              return `
+                <div class="alert-card ${type}">
+                  <div class="alert-header">
+                    <div class="alert-icon">
+                      ${icon}
+                    </div>
+
+                    <div class="alert-content">
+                      <div class="alert-meta">
+                        <span class="alert-badge ${type}">
+                          ${badge}
+                        </span>
+
+                        <span class="alert-time">
+                          ${time}
+                        </span>
+                      </div>
+
+                      <h4>
+                        ${title}
+                      </h4>
+
+                      ${
+                        description
+                          ? `
+                            <p>
+                              ${description}
+                            </p>
+                          `
+                          : ''
+                      }
+                    </div>
+                  </div>
+                </div>
+              `;
+            }
+          )
+          .join('');
+    }
+
+    // =====================================================
+    // BUAT DATA PERINGATAN
+    // =====================================================
+    function buildAlerts(data) {
+      const alerts = [];
+
+      const warnings =
+        Array.isArray(
+          data.warnings
+        )
+          ? data.warnings
+          : [];
+
+      const kewajiban =
+        Array.isArray(
+          data.wajib
+        )
+          ? data.wajib
+          : [];
+
+      const kategoriData =
+        Array.isArray(
+          data.kategoriData
+        )
+          ? data.kategoriData
+          : [];
+
+      // 1. Peringatan budget
+      warnings.forEach(
+        (warningValue) => {
+          const warning =
+            String(
+              warningValue || ''
+            );
+
+          const upperWarning =
+            warning.toUpperCase();
+
+          const isKritis =
+            upperWarning.includes(
+              'HABIS'
+            ) ||
+            upperWarning.includes(
+              'PARAH'
+            ) ||
+            upperWarning.includes(
+              'KRITIS'
+            ) ||
+            upperWarning.includes(
+              'LEWAT'
+            );
+
+          alerts.push({
+            type:
+              isKritis
+                ? 'kritis'
+                : 'perhatian',
+
+            badge:
+              isKritis
+                ? 'KRITIS'
+                : 'PERINGATAN',
+
+            icon:
+              isKritis
+                ? '🚨'
+                : '⚠️',
+
+            title:
+              warning
+                .replace(
+                  /🚨|⚠️/g,
+                  ''
+                )
+                .trim(),
+
+            desc:
+              isKritis
+                ? 'Segera periksa pengeluaran dan kurangi transaksi yang tidak mendesak.'
+                : 'Periksa kembali pemakaian budget agar tidak melewati batas.',
+
+            time:
+              'Baru saja'
+          });
+        }
+      );
+
+      // 2. Tagihan yang jatuh tempo maksimal 7 hari
+      kewajiban.forEach(
+        (item) => {
+          const sisaHari =
+            Number(
+              item.sisa_hari
+            );
+
+          if (
+            !Number.isFinite(
+              sisaHari
+            ) ||
+            sisaHari < 0 ||
+            sisaHari > 7
+          ) {
+            return;
+          }
+
+          const nama =
+            String(
+              item.nama ||
+              'Kewajiban'
+            );
+
+          const jumlah =
+            Number(
+              item.jumlah || 0
+            );
+
+          const tanggal =
+            String(
+              item
+                .tanggal_jatuh_tempo_display ||
+              '-'
+            );
+
+          alerts.push({
+            type:
+              sisaHari <= 2
+                ? 'kritis'
+                : 'perhatian',
+
+            badge:
+              sisaHari <= 2
+                ? 'MENDESAK'
+                : 'PERINGATAN',
+
+            icon:
+              sisaHari <= 2
+                ? '🚨'
+                : '📅',
+
+            title:
+              sisaHari === 0
+                ? `Tagihan ${nama} jatuh tempo hari ini`
+                : `Tagihan ${nama} dalam ${sisaHari} hari`,
+
+            desc:
+              `Rp${formatNum(jumlah)} jatuh tempo ${tanggal}. Pastikan saldo mencukupi.`,
+
+            time:
+              sisaHari === 0
+                ? 'Hari ini'
+                : `${sisaHari} hari lagi`
+          });
+        }
+      );
+
+      // 3. Insight transport
+      const transportData =
+        kategoriData.find(
+          (item) =>
+            String(
+              item.kategori || ''
+            )
+              .toLowerCase()
+              .includes(
+                'transport'
+              )
+        );
+
+      if (
+        transportData &&
+        Number(
+          transportData.total || 0
+        ) < 100000
+      ) {
+        alerts.push({
+          type:
+            'info',
+
+          badge:
+            'INFO',
+
+          icon:
+            '✅',
+
+          title:
+            'Kebiasaan Finansial Baik',
+
+          desc:
+            'Pengeluaran transportasi bulan ini masih di bawah Rp100.000. Kerja bagus!',
+
+          time:
+            'Bulan ini'
+        });
+      }
+
+      // 4. Insight sisa saldo
+      const sisa =
+        Number(
+          data.sisa || 0
+        );
+
+      const saldo =
+        Number(
+          data.saldo || 0
+        );
+
+      if (
+        sisa > 0 &&
+        saldo > 0 &&
+        (
+          sisa /
+          saldo
+        ) > 0.2
+      ) {
+        alerts.push({
+          type:
+            'info',
+
+          badge:
+            'INFO',
+
+          icon:
+            '💰',
+
+          title:
+            'Sisa Saldo Masih Sehat',
+
+          desc:
+            `Kamu masih memiliki Rp${formatNum(sisa)} dari total pemasukan. Pertahankan pengeluaranmu.`,
+
+          time:
+            'Baru saja'
+        });
+      }
+
+      // Kritis ditampilkan paling atas
+      const priority = {
+        kritis: 1,
+        perhatian: 2,
+        info: 3
+      };
+
+      alerts.sort(
+        (a, b) =>
+          priority[a.type] -
+          priority[b.type]
+      );
+
+      return alerts;
+    }
+
+    // =====================================================
+    // LOAD PERINGATAN
+    // =====================================================
+    async function loadPeringatan() {
+      refreshButton.disabled =
+        true;
+
+      refreshButton.textContent =
+        '…';
+
+      alertList.innerHTML = `
+        <div class="empty-state">
+          Memuat peringatan...
+        </div>
+      `;
+
+      alertSummary.style.display =
+        'none';
+
+      try {
+        const response =
+          await fetch(
+            '/api/dashboard',
+            {
+              credentials:
+                'include',
+
+              headers: {
+                Accept:
+                  'application/json'
+              }
+            }
+          );
+
+        if (
+          response.status === 401
+        ) {
+          redirectToLogin();
+          return;
+        }
+
+        const data =
+          await parseResponse(
+            response
+          );
+
+        if (
+          !response.ok ||
+          data.error
+        ) {
+          throw new Error(
+            data.error ||
+            'Gagal memuat data peringatan'
+          );
+        }
+
+        const alerts =
+          buildAlerts(
+            data
+          );
+
+        renderAlerts(
+          alerts
+        );
+
+        document.getElementById(
+          'pageSubtitle'
+        ).textContent =
+          alerts.length > 0
+            ? `${alerts.length} informasi keuangan ditemukan`
+            : 'Tidak ada peringatan aktif';
+      } catch (error) {
+        console.error(
+          'Load peringatan error:',
+          error
+        );
+
+        alertSummary.style.display =
+          'none';
+
+        alertList.innerHTML = `
+          <div class="empty-state error">
+            <strong>
+              Gagal memuat peringatan
+            </strong>
+
+            ${escapeHTML(
+              error.message ||
+              'Terjadi kesalahan saat mengambil data.'
+            )}
+          </div>
+        `;
+
+        document.getElementById(
+          'pageSubtitle'
+        ).textContent =
+          'Data peringatan gagal dimuat';
+      } finally {
+        refreshButton.disabled =
+          false;
+
+        refreshButton.textContent =
+          '↻';
+      }
+    }
+
+    // =====================================================
+    // RESPONSIVE NAVIGATION
+    // =====================================================
+    function initializeMobileNavigation() {
+      const topbar =
+        document.querySelector(
+          '.topbar'
+        );
+
+      const nav =
+        document.getElementById(
+          'peringatanNav'
+        );
+
+      const toggle =
+        document.getElementById(
+          'mobileNavToggle'
+        );
+
+      if (
+        !topbar ||
+        !nav ||
+        !toggle
+      ) {
+        return;
+      }
+
+      const closeNavigation = () => {
+        nav.classList.remove(
+          'is-open'
+        );
+
+        toggle.classList.remove(
+          'is-open'
+        );
+
+        toggle.setAttribute(
+          'aria-expanded',
+          'false'
+        );
+
+        toggle.setAttribute(
+          'aria-label',
+          'Buka menu navigasi'
+        );
+      };
+
+      toggle.addEventListener(
+        'click',
+        function () {
+          const isOpen =
+            nav.classList.toggle(
+              'is-open'
+            );
+
+          toggle.classList.toggle(
+            'is-open',
+            isOpen
+          );
+
+          toggle.setAttribute(
+            'aria-expanded',
+            String(isOpen)
+          );
+
+          toggle.setAttribute(
+            'aria-label',
+            isOpen
+              ? 'Tutup menu navigasi'
+              : 'Buka menu navigasi'
+          );
+        }
+      );
+
+      nav
+        .querySelectorAll('a')
+        .forEach(
+          function (link) {
+            link.addEventListener(
+              'click',
+              closeNavigation
+            );
+          }
+        );
+
+      document.addEventListener(
+        'click',
+        function (event) {
+          if (
+            window.innerWidth <= 860 &&
+            !topbar.contains(
+              event.target
+            )
+          ) {
+            closeNavigation();
+          }
+        }
+      );
+
+      document.addEventListener(
+        'keydown',
+        function (event) {
+          if (
+            event.key === 'Escape'
+          ) {
+            closeNavigation();
+          }
+        }
+      );
+
+      window.addEventListener(
+        'resize',
+        function () {
+          if (
+            window.innerWidth > 860
+          ) {
+            closeNavigation();
+          }
+        }
+      );
+    }
+
+    // =====================================================
+    // INITIAL LOAD
+    // =====================================================
+    initializeMobileNavigation();
+  </script>
+
+  <script id="vhyrox-page-profile-script">
+    (() => {
+      let activeUserId = 0;
+
+      const initialsFromName = (name) => {
+        const parts = String(name || 'User')
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean)
+          .slice(0, 2);
+
+        return parts
+          .map((part) => part.charAt(0).toUpperCase())
+          .join('') || 'U';
+      };
+
+      const readDraft = (userId) => {
+        const normalizedUserId = Number(userId);
+
+        if (!Number.isInteger(normalizedUserId) || normalizedUserId <= 0) {
+          return {};
+        }
+
+        try {
+          return JSON.parse(
+            localStorage.getItem(
+              `vhyroxProfileDraft:${normalizedUserId}`
+            ) || '{}'
+          ) || {};
+        } catch {
+          return {};
+        }
+      };
+
+      const setThemeVariable = (name, value) => {
+        const normalizedValue = String(value || '').trim();
+
+        if (normalizedValue) {
+          document.documentElement.style.setProperty(name, normalizedValue);
+        }
+      };
+
+      const applyUserTheme = (source, draft) => {
+        const preference = source.preferences || {};
+        const serverTheme = source.theme || {};
+        const draftTheme = draft.theme || {};
+        const usesCustomTheme = preference.theme_source === 'custom';
+
+        const accent =
+          draftTheme.accent_color ||
+          (usesCustomTheme ? preference.custom_accent_color : serverTheme.accent_color) ||
+          '#FF2D8A';
+
+        const accentDark =
+          draftTheme.accent_dark_color ||
+          (usesCustomTheme ? preference.custom_accent_dark_color : serverTheme.accent_dark_color) ||
+          '#C850C0';
+
+        const secondary =
+          draftTheme.secondary_color ||
+          (usesCustomTheme ? preference.custom_secondary_color : serverTheme.secondary_color) ||
+          '#7B5CF0';
+
+        const background =
+          draftTheme.background_color ||
+          (usesCustomTheme ? preference.custom_background_color : serverTheme.background_color) ||
+          '#08071A';
+
+        const text =
+          draftTheme.text_color ||
+          (usesCustomTheme ? preference.custom_text_color : serverTheme.text_color) ||
+          '#F0EEF8';
+
+        setThemeVariable('--pink', accent);
+        setThemeVariable('--pink-dark', accentDark);
+        setThemeVariable('--purple', secondary);
+        setThemeVariable('--bg', background);
+        setThemeVariable('--text', text);
+
+        document.documentElement.dataset.theme =
+          draftTheme.theme_code ||
+          preference.theme_code ||
+          'vhyrox-pink';
+      };
+
+      const applyProfileShortcut = (payload = {}) => {
+        const source = payload?.data || payload || {};
+        const user = source.user || {};
+        const profile = source.profile || source.user_profile || {};
+        const userId = Number(user.id);
+
+        if (!Number.isInteger(userId) || userId <= 0) {
+          throw new Error('Identitas pengguna tidak valid.');
+        }
+
+        activeUserId = userId;
+
+        const draft = readDraft(userId);
+
+        applyUserTheme(source, draft);
+
+        const displayName =
+          draft.display_name ||
+          profile.display_name ||
+          draft.nama ||
+          user.nama ||
+          'User';
+
+        const avatarUrl = String(
+          draft.avatar_url ||
+          user.avatar_url ||
+          ''
+        ).trim();
+
+        const link = document.getElementById('pageProfileLink');
+        const image = document.getElementById('pageProfileAvatarImage');
+        const initials = document.getElementById('pageProfileInitials');
+
+        if (!link || !image || !initials) return;
+
+        link.title = `Buka profil ${displayName}`;
+        link.setAttribute('aria-label', `Buka profil ${displayName}`);
+        initials.textContent = initialsFromName(displayName);
+
+        if (avatarUrl) {
+          image.src = avatarUrl;
+          image.alt = `Foto profil ${displayName}`;
+          image.hidden = false;
+          initials.hidden = true;
+
+          image.onerror = () => {
+            image.hidden = true;
+            image.removeAttribute('src');
+            initials.hidden = false;
+          };
+        } else {
+          image.hidden = true;
+          image.removeAttribute('src');
+          initials.hidden = false;
+        }
+      };
+
+      const loadProfileShortcut = async () => {
+        try {
+          const response = await fetch('/api/me/appearance', {
+            credentials: 'include',
+            headers: { Accept: 'application/json' }
+          });
+
+          if (response.status === 401) {
+            redirectToLogin();
+            return false;
+          }
+
+          const payload = await parseResponse(response);
+
+          if (!response.ok || payload.error) {
+            throw new Error(payload.error || 'Profil pengguna gagal dimuat.');
+          }
+
+          applyProfileShortcut(payload);
+          return true;
+        } catch (error) {
+          console.error('Profil peringatan gagal dimuat:', error);
+
+          alertSummary.style.display = 'none';
+          alertList.innerHTML = `
+            <div class="empty-state error">
+              <strong>Gagal memuat akun</strong>
+              ${escapeHTML(error.message || 'Silakan muat ulang halaman.')}
+            </div>
+          `;
+
+          document.getElementById('pageSubtitle').textContent =
+            'Data akun gagal dimuat';
+
+          return false;
+        }
+      };
+
+      const startPeringatan = async () => {
+        const isAuthenticated = await loadProfileShortcut();
+
+        if (!isAuthenticated || redirectingToLogin) {
+          return;
+        }
+
+        await loadPeringatan();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startPeringatan, { once: true });
+      } else {
+        startPeringatan();
+      }
+
+      window.addEventListener('storage', (event) => {
+        if (activeUserId > 0 && event.key === `vhyroxProfileDraft:${activeUserId}`) {
+          loadProfileShortcut();
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

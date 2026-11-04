@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VHYROX | Pengaturan Akun</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="/profile.css">
+  <link rel="stylesheet" href="/settings.css">
+</head>
+
+<body>
+  <div class="settings-shell">
+    <header class="settings-topbar">
+      <a href="/dashboard.html" class="brand" aria-label="Kembali ke dashboard">
+        <span class="brand-logo">VX</span>
+        <span class="brand-name">VHYROX</span>
+        <span class="brand-sub">Money</span>
+      </a>
+
+      <div class="settings-top-actions">
+        <a href="/profile.html" class="settings-top-button">
+          <span aria-hidden="true">👤</span>
+          Edit profil
+        </a>
+
+        <a href="/dashboard.html" class="settings-top-button primary">
+          <span aria-hidden="true">←</span>
+          Dashboard
+        </a>
+      </div>
+    </header>
+
+    <section class="settings-heading">
+      <div>
+        <span class="settings-eyebrow">ACCOUNT CENTER</span>
+        <h1>Pengaturan akun</h1>
+        <p>
+          Kelola sesi, keamanan, dan tindakan penting yang berkaitan dengan
+          akun VHYROX Money.
+        </p>
+      </div>
+
+      <div class="settings-account-chip">
+        <div class="settings-avatar" id="settingsAvatar">
+          <img id="settingsAvatarImage" alt="Foto profil" hidden>
+          <span id="settingsAvatarInitials">VX</span>
+        </div>
+
+        <div>
+          <strong id="settingsUserName">Memuat akun...</strong>
+          <span id="settingsUserEmail">-</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="settings-layout">
+      <aside class="settings-sidebar">
+        <a class="settings-nav-link active" href="#akun">
+          <span>👤</span>
+          Akun
+        </a>
+
+        <a class="settings-nav-link" href="#sesi">
+          <span>🔐</span>
+          Sesi login
+        </a>
+
+        <a class="settings-nav-link danger" href="#danger-zone">
+          <span>⚠️</span>
+          Zona berbahaya
+        </a>
+
+        <div class="settings-sidebar-note">
+          Profil dipakai untuk mengedit identitas. Tindakan akun yang sensitif
+          ditempatkan di halaman pengaturan agar tidak mudah terpencet.
+        </div>
+      </aside>
+
+      <main class="settings-content">
+        <section class="settings-card" id="akun">
+          <div class="settings-card-head">
+            <div>
+              <span class="settings-card-kicker">ACCOUNT</span>
+              <h2>Informasi akun</h2>
+              <p>
+                Informasi login hanya dapat dilihat di sini. Perubahan nama,
+                foto, bio, dan personalisasi dilakukan melalui halaman profil.
+              </p>
+            </div>
+
+            <span class="settings-card-icon">👤</span>
+          </div>
+
+          <div class="settings-information-grid">
+            <div class="settings-information-item">
+              <span>Nama akun</span>
+              <strong id="accountNameValue">-</strong>
+            </div>
+
+            <div class="settings-information-item">
+              <span>Email login</span>
+              <strong id="accountEmailValue">-</strong>
+            </div>
+
+            <div class="settings-information-item">
+              <span>Metode login</span>
+              <strong id="accountProviderValue">-</strong>
+            </div>
+
+            <div class="settings-information-item">
+              <span>Status Money Bot</span>
+              <strong id="accountTelegramValue">-</strong>
+            </div>
+          </div>
+
+          <div class="settings-card-actions">
+            <a class="settings-secondary-button" href="/profile.html">
+              Edit profil
+            </a>
+
+            <a class="settings-secondary-button" href="/bot.html">
+              Atur Money Bot
+            </a>
+          </div>
+        </section>
+
+        <section class="settings-card" id="sesi">
+          <div class="settings-card-head">
+            <div>
+              <span class="settings-card-kicker">SESSION</span>
+              <h2>Sesi login</h2>
+              <p>
+                Keluar dari sesi browser ini tanpa menghapus akun maupun data
+                keuangan.
+              </p>
+            </div>
+
+            <span class="settings-card-icon">🔐</span>
+          </div>
+
+          <div class="settings-action-row">
+            <div>
+              <strong>Keluar dari akun</strong>
+              <p>
+                Kamu perlu login kembali untuk membuka dashboard.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="settings-logout-button"
+              onclick="openLogoutDialog()"
+            >
+              Keluar
+            </button>
+          </div>
+        </section>
+
+        <section class="settings-card danger-zone-card" id="danger-zone">
+          <div class="settings-card-head">
+            <div>
+              <span class="settings-card-kicker danger">DANGER ZONE</span>
+              <h2>Hapus akun secara permanen</h2>
+              <p>
+                Seluruh transaksi, budget, kategori, pengingat, preferensi,
+                koneksi bot, dan data profil milik akun akan dihapus.
+              </p>
+            </div>
+
+            <span class="settings-card-icon danger">⚠️</span>
+          </div>
+
+          <div class="danger-zone-panel">
+            <div>
+              <strong>Hapus akun VHYROX</strong>
+              <p>
+                Tindakan ini tidak dapat dibatalkan. Kamu akan diminta
+                mengetik email akun dan kalimat konfirmasi sebelum tombol
+                penghapusan dapat digunakan.
+              </p>
+
+              <p
+                class="protected-account-note"
+                id="protectedAccountNote"
+                hidden
+              >
+                Akun ini dipakai sebagai akun utama/template kategori sehingga
+                tidak dapat dihapus melalui halaman ini.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="delete-account-trigger"
+              id="deleteAccountTrigger"
+              onclick="openDeleteAccountDialog()"
+            >
+              Hapus akun
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <dialog
+    id="logoutDialog"
+    class="settings-dialog"
+    aria-labelledby="logoutDialogTitle"
+  >
+    <div class="settings-dialog-card">
+      <button
+        type="button"
+        class="settings-dialog-close"
+        onclick="closeLogoutDialog()"
+        aria-label="Tutup"
+      >
+        ×
+      </button>
+
+      <div class="settings-dialog-icon">↪</div>
+
+      <h2 id="logoutDialogTitle">Keluar dari akun?</h2>
+
+      <p>
+        Kamu perlu login kembali untuk membuka dashboard dan mengakses data
+        keuanganmu.
+      </p>
+
+      <div class="settings-dialog-actions">
+        <button
+          type="button"
+          class="settings-dialog-cancel"
+          onclick="closeLogoutDialog()"
+        >
+          Batal
+        </button>
+
+        <button
+          type="button"
+          class="settings-dialog-confirm"
+          id="confirmLogoutButton"
+          onclick="confirmLogout()"
+        >
+          Keluar
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog
+    id="deleteAccountDialog"
+    class="settings-dialog delete-account-dialog"
+    aria-labelledby="deleteAccountDialogTitle"
+  >
+    <div class="settings-dialog-card">
+      <button
+        type="button"
+        class="settings-dialog-close"
+        onclick="closeDeleteAccountDialog()"
+        aria-label="Tutup"
+      >
+        ×
+      </button>
+
+      <div class="settings-dialog-icon danger">⚠️</div>
+
+      <span class="delete-dialog-label">PERMANENT ACTION</span>
+
+      <h2 id="deleteAccountDialogTitle">Hapus akun permanen?</h2>
+
+      <p>
+        Semua data akun akan dihapus dan tidak dapat dipulihkan. Untuk
+        melanjutkan, isi dua konfirmasi berikut.
+      </p>
+
+      <div class="delete-account-warning">
+        <strong>Data yang ikut terhapus</strong>
+        <span>
+          Profil, transaksi, kategori, budget, chat AI, pengingat, koneksi bot,
+          personalisasi, dan identitas login Firebase.
+        </span>
+      </div>
+
+      <div class="delete-confirmation-fields">
+        <label for="deleteEmailConfirmation">
+          Ketik email akun
+          <strong id="deleteExpectedEmail">-</strong>
+        </label>
+
+        <input
+          id="deleteEmailConfirmation"
+          type="email"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="email@contoh.com"
+        >
+
+        <label for="deletePhraseConfirmation">
+          Ketik
+          <strong>HAPUS AKUN</strong>
+        </label>
+
+        <input
+          id="deletePhraseConfirmation"
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="HAPUS AKUN"
+        >
+
+        <label class="delete-understanding-check">
+          <input id="deleteUnderstandingCheck" type="checkbox">
+          <span>
+            Saya memahami bahwa seluruh data akun akan hilang secara permanen.
+          </span>
+        </label>
+      </div>
+
+      <p class="delete-dialog-error" id="deleteDialogError" hidden></p>
+
+      <div class="settings-dialog-actions">
+        <button
+          type="button"
+          class="settings-dialog-cancel"
+          onclick="closeDeleteAccountDialog()"
+        >
+          Batalkan
+        </button>
+
+        <button
+          type="button"
+          class="settings-delete-confirm"
+          id="confirmDeleteAccountButton"
+          onclick="confirmDeleteAccount()"
+          disabled
+        >
+          Hapus akun permanen
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="settings-toast" id="settingsToast" hidden></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    let currentAccount = {
+      id: 0,
+      name: "",
+      email: "",
+      avatarUrl: "",
+      provider: "",
+      telegramConnected: false,
+    };
+
+    const PROTECTED_TEMPLATE_USER_ID = 1;
+
+    function initialsFromName(name) {
+      const parts = String(name || "VX")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2);
+
+      return (
+        parts.map((part) => part.charAt(0).toUpperCase()).join("") || "VX"
+      );
+    }
+
+    function providerLabel(value) {
+      const provider = String(value || "").toLowerCase();
+
+      if (provider === "google") return "Google";
+      if (provider === "email_google") return "Email + Google";
+      if (provider === "email") return "Email dan password";
+
+      return "Tidak diketahui";
+    }
+
+    function showToast(message, type = "success") {
+      const toast = $("settingsToast");
+
+      toast.textContent = message;
+      toast.classList.toggle("error", type === "error");
+      toast.hidden = false;
+
+      window.clearTimeout(showToast.timer);
+
+      showToast.timer = window.setTimeout(() => {
+        toast.hidden = true;
+      }, 3600);
+    }
+
+    function setAvatar(name, avatarUrl) {
+      const image = $("settingsAvatarImage");
+      const initials = $("settingsAvatarInitials");
+
+      initials.textContent = initialsFromName(name);
+
+      if (avatarUrl) {
+        image.src = avatarUrl;
+        image.hidden = false;
+        initials.hidden = true;
+
+        image.onerror = () => {
+          image.hidden = true;
+          initials.hidden = false;
+        };
+      } else {
+        image.hidden = true;
+        initials.hidden = false;
+      }
+    }
+
+    async function loadAccountSettings() {
+      try {
+        const response = await fetch("/api/me/appearance", {
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (response.status === 401) {
+          window.location.replace("/login.html");
+          return;
+        }
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || "Pengaturan akun gagal dimuat.",
+          );
+        }
+
+        const user = data.user || {};
+
+        currentAccount = {
+          id: Number(user.id || 0),
+          name: String(user.nama || "Pengguna VHYROX"),
+          email: String(user.email || "").trim().toLowerCase(),
+          avatarUrl: String(user.avatar_url || ""),
+          provider: String(user.auth_provider || ""),
+          telegramConnected: Boolean(data.telegram_connected),
+        };
+
+        $("settingsUserName").textContent = currentAccount.name;
+        $("settingsUserEmail").textContent = currentAccount.email || "-";
+
+        $("accountNameValue").textContent = currentAccount.name;
+        $("accountEmailValue").textContent = currentAccount.email || "-";
+        $("accountProviderValue").textContent =
+          providerLabel(currentAccount.provider);
+        $("accountTelegramValue").textContent =
+          currentAccount.telegramConnected
+            ? "Terhubung"
+            : "Belum terhubung";
+
+        $("deleteExpectedEmail").textContent =
+          currentAccount.email || "-";
+
+        setAvatar(
+          currentAccount.name,
+          currentAccount.avatarUrl,
+        );
+
+        const isProtected =
+          currentAccount.id === PROTECTED_TEMPLATE_USER_ID;
+
+        $("deleteAccountTrigger").disabled = isProtected;
+        $("protectedAccountNote").hidden = !isProtected;
+      } catch (error) {
+        showToast(
+          error.message || "Pengaturan akun gagal dimuat.",
+          "error",
+        );
+      }
+    }
+
+    function openLogoutDialog() {
+      const dialog = $("logoutDialog");
+
+      if (dialog && !dialog.open) {
+        dialog.showModal();
+      }
+    }
+
+    function closeLogoutDialog() {
+      const dialog = $("logoutDialog");
+
+      if (dialog?.open) {
+        dialog.close();
+      }
+    }
+
+    async function confirmLogout() {
+      const button = $("confirmLogoutButton");
+
+      button.disabled = true;
+      button.textContent = "Keluar...";
+
+      try {
+        const response = await fetch("/api/auth/logout", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok && response.status !== 404) {
+          const data = await response.json().catch(() => ({}));
+
+          throw new Error(
+            data.error || "Logout gagal.",
+          );
+        }
+
+        localStorage.removeItem("vhyroxAppearance");
+        sessionStorage.removeItem(
+          "vhyroxTelegramPromptDismissed",
+        );
+
+        window.location.replace("/login.html");
+      } catch (error) {
+        showToast(
+          error.message || "Logout gagal. Coba lagi.",
+          "error",
+        );
+
+        button.disabled = false;
+        button.textContent = "Keluar";
+      }
+    }
+
+    function resetDeleteForm() {
+      $("deleteEmailConfirmation").value = "";
+      $("deletePhraseConfirmation").value = "";
+      $("deleteUnderstandingCheck").checked = false;
+      $("deleteDialogError").hidden = true;
+      $("deleteDialogError").textContent = "";
+      updateDeleteButtonState();
+    }
+
+    function openDeleteAccountDialog() {
+      if (
+        currentAccount.id === PROTECTED_TEMPLATE_USER_ID
+      ) {
+        showToast(
+          "Akun utama/template tidak dapat dihapus.",
+          "error",
+        );
+        return;
+      }
+
+      resetDeleteForm();
+
+      const dialog = $("deleteAccountDialog");
+
+      if (dialog && !dialog.open) {
+        dialog.showModal();
+        window.setTimeout(() => {
+          $("deleteEmailConfirmation").focus();
+        }, 80);
+      }
+    }
+
+    function closeDeleteAccountDialog() {
+      const dialog = $("deleteAccountDialog");
+
+      if (dialog?.open) {
+        dialog.close();
+      }
+
+      resetDeleteForm();
+    }
+
+    function updateDeleteButtonState() {
+      const typedEmail = String(
+        $("deleteEmailConfirmation").value || "",
+      )
+        .trim()
+        .toLowerCase();
+
+      const typedPhrase = String(
+        $("deletePhraseConfirmation").value || "",
+      )
+        .trim()
+        .toUpperCase();
+
+      const understood =
+        $("deleteUnderstandingCheck").checked;
+
+      $("confirmDeleteAccountButton").disabled = !(
+        typedEmail === currentAccount.email &&
+        typedPhrase === "HAPUS AKUN" &&
+        understood
+      );
+    }
+
+    async function confirmDeleteAccount() {
+      const button = $("confirmDeleteAccountButton");
+      const errorBox = $("deleteDialogError");
+
+      const email = String(
+        $("deleteEmailConfirmation").value || "",
+      )
+        .trim()
+        .toLowerCase();
+
+      button.disabled = true;
+      button.textContent = "Menghapus akun...";
+      errorBox.hidden = true;
+
+      try {
+        const response = await fetch("/api/me/account", {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            confirmation: "HAPUS AKUN",
+          }),
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || "Akun gagal dihapus.",
+          );
+        }
+
+        localStorage.clear();
+        sessionStorage.clear();
+
+        window.location.replace(
+          "/login.html?accountDeleted=1",
+        );
+      } catch (error) {
+        errorBox.textContent =
+          error.message || "Akun gagal dihapus.";
+        errorBox.hidden = false;
+
+        button.textContent = "Hapus akun permanen";
+        updateDeleteButtonState();
+      }
+    }
+
+    [
+      "deleteEmailConfirmation",
+      "deletePhraseConfirmation",
+    ].forEach((id) => {
+      $(id).addEventListener(
+        "input",
+        updateDeleteButtonState,
+      );
+    });
+
+    $("deleteUnderstandingCheck").addEventListener(
+      "change",
+      updateDeleteButtonState,
+    );
+
+    $("logoutDialog").addEventListener("click", (event) => {
+      if (event.target === $("logoutDialog")) {
+        closeLogoutDialog();
+      }
+    });
+
+    $("deleteAccountDialog").addEventListener(
+      "click",
+      (event) => {
+        if (event.target === $("deleteAccountDialog")) {
+          closeDeleteAccountDialog();
+        }
+      },
+    );
+
+    $("deleteAccountDialog").addEventListener(
+      "cancel",
+      (event) => {
+        event.preventDefault();
+        closeDeleteAccountDialog();
+      },
+    );
+
+    loadAccountSettings();
+  </script>
+</body>
+</html>

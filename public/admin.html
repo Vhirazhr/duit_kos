@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Admin VHYROX</title>
+  <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">V</div>
+        <div>
+          <strong>VHYROX</strong>
+          <span>Control Center</span>
+        </div>
+      </div>
+
+      <nav class="nav-list" aria-label="Menu admin">
+        <button class="nav-item active" data-view="overview">
+          <span>▦</span> Ringkasan
+        </button>
+        <button class="nav-item" data-view="users">
+          <span>♟</span> Pengguna
+        </button>
+        <button class="nav-item" data-view="reviews">
+          <span>★</span> Ulasan Landing
+        </button>
+        <button class="nav-item" data-view="security">
+          <span>⌁</span> Keamanan
+        </button>
+        <button class="nav-item" data-view="categories">
+          <span>◫</span> Kategori Bawaan
+        </button>
+        <button class="nav-item" data-view="services">
+          <span>◉</span> Status Layanan
+        </button>
+        <button class="nav-item" data-view="settings">
+          <span>⚙</span> Pengaturan
+        </button>
+        <button class="nav-item" data-view="audit">
+          <span>☷</span> Audit Log
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a class="back-link" href="/dashboard">← Kembali ke Dashboard</a>
+        <div class="admin-identity">
+          <div class="avatar" id="adminAvatar">A</div>
+          <div>
+            <strong id="adminName">Admin</strong>
+            <span id="adminEmail">Memuat...</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-button" id="menuButton" aria-label="Buka menu">☰</button>
+        <div>
+          <p class="eyebrow">ADMINISTRATOR</p>
+          <h1 id="pageTitle">Ringkasan Sistem</h1>
+          <p id="pageSubtitle">Pantau platform tanpa membuka isi keuangan pribadi pengguna.</p>
+        </div>
+        <div class="topbar-actions">
+          <span class="status-pill"><i></i> Admin aktif</span>
+          <button class="secondary-button" id="refreshButton">Muat Ulang</button>
+        </div>
+      </header>
+
+      <section class="view active" id="view-overview">
+        <div class="stat-grid" id="summaryCards">
+          <article class="stat-card loading-card"></article>
+          <article class="stat-card loading-card"></article>
+          <article class="stat-card loading-card"></article>
+          <article class="stat-card loading-card"></article>
+        </div>
+
+        <div class="two-column">
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">PENGGUNA</p>
+                <h2>Pengguna terbaru</h2>
+              </div>
+              <button class="text-button" data-jump="users">Lihat semua →</button>
+            </div>
+            <div id="recentUsers" class="stack-list"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">KEAMANAN</p>
+                <h2>Kondisi saat ini</h2>
+              </div>
+              <button class="text-button" data-jump="security">Buka keamanan →</button>
+            </div>
+            <div id="securitySummary" class="security-summary"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-users">
+        <article class="panel">
+          <div class="toolbar">
+            <div class="search-box">
+              <span>⌕</span>
+              <input id="userSearch" type="search" placeholder="Cari nama, email, atau ID..." />
+            </div>
+            <select id="userRoleFilter" aria-label="Filter role">
+              <option value="">Semua role</option>
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+            </select>
+            <select id="userStatusFilter" aria-label="Filter status">
+              <option value="all">Semua status</option>
+              <option value="active">Aktif</option>
+              <option value="inactive">Nonaktif</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Pengguna</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Aktivitas</th>
+                  <th>Terakhir login</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="usersPagination"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-reviews">
+        <article class="panel">
+          <div class="toolbar">
+            <div class="search-box">
+              <span>⌕</span>
+              <input id="reviewSearch" type="search" placeholder="Cari komentar, nama, atau email..." />
+            </div>
+            <select id="reviewStatusFilter">
+              <option value="all">Semua komentar</option>
+              <option value="published">Tampil</option>
+              <option value="hidden">Disembunyikan</option>
+              <option value="deleted">Dihapus</option>
+            </select>
+          </div>
+          <div class="review-grid" id="reviewsGrid"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-security">
+        <div class="subtabs">
+          <button class="subtab active" data-security-tab="events">Peringatan Keamanan</button>
+          <button class="subtab" data-security-tab="logins">Riwayat Login</button>
+        </div>
+
+        <article class="panel security-pane active" id="security-events-pane">
+          <div class="toolbar">
+            <select id="securityResolvedFilter">
+              <option value="false">Belum selesai</option>
+              <option value="true">Sudah selesai</option>
+            </select>
+            <select id="securitySeverityFilter">
+              <option value="all">Semua tingkat</option>
+              <option value="critical">Kritis</option>
+              <option value="high">Tinggi</option>
+              <option value="medium">Sedang</option>
+              <option value="low">Rendah</option>
+            </select>
+          </div>
+          <div class="event-list" id="securityEventsList"></div>
+        </article>
+
+        <article class="panel security-pane" id="security-logins-pane">
+          <div class="toolbar">
+            <div class="search-box">
+              <span>⌕</span>
+              <input id="loginSearch" type="search" placeholder="Cari user, email, atau IP..." />
+            </div>
+            <select id="loginStatusFilter">
+              <option value="all">Semua aktivitas</option>
+              <option value="success">Berhasil</option>
+              <option value="failure">Gagal</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>Pengguna</th>
+                  <th>IP & lokasi perkiraan</th>
+                  <th>Perangkat</th>
+                  <th>Metode</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="loginTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="loginPagination"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-categories">
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">TEMPLATE AKUN BARU</p>
+              <h2>Kategori bawaan</h2>
+              <p>Kategori ini disalin ke akun baru. Kategori pengguna lama tidak diubah otomatis.</p>
+            </div>
+            <button class="primary-button" id="addCategoryButton">+ Tambah Kategori</button>
+          </div>
+          <div class="category-grid" id="categoriesGrid"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-services">
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">SYSTEM HEALTH</p>
+              <h2>Status layanan</h2>
+              <p id="serviceCheckedAt">Belum diperiksa.</p>
+            </div>
+            <button class="secondary-button" id="checkServicesButton">Periksa Sekarang</button>
+          </div>
+          <div class="service-grid" id="servicesGrid"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-settings">
+        <form class="panel settings-form" id="settingsForm">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">KONFIGURASI</p>
+              <h2>Pengaturan sistem</h2>
+              <p>Secret, token, password, dan private key tidak pernah ditampilkan di sini.</p>
+            </div>
+            <button class="primary-button" type="submit">Simpan Pengaturan</button>
+          </div>
+
+          <div class="settings-grid">
+            <label class="field wide">
+              <span>Nama aplikasi</span>
+              <input name="app_name" maxlength="100" required />
+            </label>
+
+            <label class="field wide">
+              <span>Pengumuman sistem</span>
+              <textarea name="announcement" rows="4" maxlength="1000" placeholder="Kosongkan jika tidak ada pengumuman."></textarea>
+            </label>
+
+            <label class="toggle-row wide">
+  <span>
+    <strong>Tampilkan pengumuman</strong>
+    <small>
+      Aktifkan agar pengumuman tampil sebagai pemberitahuan
+      pada dashboard pengguna.
+    </small>
+  </span>
+
+  <input
+    type="checkbox"
+    name="announcement_enabled"
+  />
+</label>
+
+<label class="field">
+  <span>Jenis pengumuman</span>
+  <small>
+    Menentukan warna dan tingkat perhatian pemberitahuan.
+  </small>
+
+  <select name="announcement_type">
+    <option value="info">
+      Informasi
+    </option>
+
+    <option value="warning">
+      Peringatan
+    </option>
+
+    <option value="critical">
+      Penting
+    </option>
+  </select>
+</label>
+
+<label class="field">
+  <span>Mulai ditampilkan</span>
+  <small>
+    Kosongkan agar langsung tampil setelah disimpan.
+  </small>
+
+  <input
+    type="datetime-local"
+    name="announcement_start_at"
+  />
+</label>
+
+<label class="field">
+  <span>Selesai ditampilkan</span>
+  <small>
+    Pengumuman otomatis hilang setelah waktu ini.
+  </small>
+
+  <input
+    type="datetime-local"
+    name="announcement_end_at"
+  />
+</label>
+            <label class="toggle-row">
+              <span><strong>Mode pemeliharaan</strong><small>Blokir sementara fitur pengguna saat backend atau database sedang diperbaiki. Admin tetap dapat masuk.</small></span>
+              <input type="checkbox" name="maintenance_mode" />
+            </label>
+            <label class="toggle-row">
+              <span><strong>Pendaftaran pengguna</strong><small>Aktifkan agar orang baru dapat membuat akun. Matikan saat aplikasi belum siap menerima pengguna baru.</small></span>
+              <input type="checkbox" name="registration_enabled" />
+            </label>
+            <label class="toggle-row">
+              <span><strong>AI Chat</strong><small>Izinkan pengguna meminta ringkasan, analisis, dan saran berdasarkan data keuangannya.</small></span>
+              <input type="checkbox" name="ai_chat_enabled" />
+            </label>
+            <label class="toggle-row">
+              <span><strong>Telegram Bot</strong><small>Aktifkan pencatatan transaksi, laporan, dan koneksi akun melalui Telegram.</small></span>
+              <input type="checkbox" name="telegram_enabled" />
+            </label>
+            <label class="toggle-row">
+              <span><strong>Reminder tagihan</strong><small>Kirim pengingat otomatis untuk tagihan atau cicilan yang mendekati jatuh tempo.</small></span>
+              <input type="checkbox" name="reminder_enabled" />
+            </label>
+
+           <label class="field">
+  <span>Waktu reminder setiap hari</span>
+
+  <small>
+    Reminder tagihan diperiksa setiap hari pada jam yang dipilih.
+  </small>
+
+  <select
+    name="reminder_hour"
+    id="reminderHourSelect"
+  ></select>
+</label>
+            <label class="field">
+              <span>Batas penggunaan AI per hari</span>
+              <small>Jumlah maksimal jawaban AI untuk setiap pengguna dalam satu hari. Rekomendasi awal: 20 sampai 50.</small>
+              <input type="number" name="ai_daily_limit" min="1" max="100000" />
+            </label>
+            <label class="field">
+              <span>Batas nominal transaksi</span>
+              <small>Transaksi baru di atas nominal ini akan ditolak untuk mencegah salah ketik angka.</small>
+              <input type="number" name="max_transaction_amount" min="1" max="999999999999" />
+            </label>
+          </div>
+        </form>
+      </section>
+
+      <section class="view" id="view-audit">
+        <article class="panel">
+          <div class="toolbar">
+            <div class="search-box">
+              <span>⌕</span>
+              <input id="auditSearch" type="search" placeholder="Cari tindakan, target, atau admin..." />
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>Admin</th>
+                  <th>Tindakan</th>
+                  <th>Target</th>
+                  <th>IP</th>
+                  <th>Perubahan</th>
+                </tr>
+              </thead>
+              <tbody id="auditTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="auditPagination"></div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="categoryModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
+      <div class="modal-heading">
+        <div>
+          <p class="section-label">KATEGORI TEMPLATE</p>
+          <h2 id="categoryModalTitle">Tambah Kategori</h2>
+        </div>
+        <button class="icon-button" id="closeCategoryModal" aria-label="Tutup">×</button>
+      </div>
+      <form id="categoryForm">
+        <input type="hidden" name="id" />
+        <div class="form-grid">
+          <label class="field wide">
+            <span>Nama kategori</span>
+            <input name="nama" maxlength="100" required />
+          </label>
+          <label class="field">
+            <span>Jenis</span>
+            <select name="jenis" required>
+              <option value="pengeluaran">Pengeluaran</option>
+              <option value="pemasukan">Pemasukan</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Prioritas</span>
+            <input type="number" name="prioritas" min="1" max="9999" value="100" required />
+          </label>
+          <label class="field wide">
+            <span>Alias, pisahkan dengan koma</span>
+            <textarea name="aliases" rows="4" placeholder="makan, nasi, bakso, warteg"></textarea>
+          </label>
+          <label class="toggle-row wide">
+            <span><strong>Kategori aktif</strong><small>Disalin ke akun baru.</small></span>
+            <input type="checkbox" name="is_active" checked />
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-button" type="button" id="cancelCategoryModal">Batal</button>
+          <button class="primary-button" type="submit">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

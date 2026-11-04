@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VHYROX | Profil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/profile.css">
+
+</head>
+<body>
+  <div class="profile-shell">
+    <header class="profile-topbar">
+      <a href="/dashboard.html" class="brand" aria-label="Kembali ke dashboard">
+        <span class="brand-logo">VX</span>
+        <span class="brand-name">VHYROX</span>
+        <span class="brand-sub">Money</span>
+      </a>
+
+      <div class="top-actions">
+        <a href="/dashboard.html" class="top-button"><span>←</span> Dashboard</a>
+        <button type="button" class="top-button primary" id="saveProfileTopButton" onclick="saveProfile()"><span>✓</span> Simpan</button>
+      </div>
+    </header>
+
+    <section class="profile-hero">
+      <div class="profile-cover" id="profileCoverPreview">
+        <img id="profileCoverImage" alt="Cover profil" hidden>
+      </div>
+
+      <div class="cover-actions">
+        <button type="button" class="upload-button" onclick="document.getElementById('profileCoverInput').click()">🖼 Ganti cover</button>
+        <button type="button" class="upload-button" onclick="removeCover()">Hapus</button>
+      </div>
+
+      <div class="profile-hero-content">
+        <div class="profile-identity">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="profileAvatarPreview" data-frame="none">
+              <img id="profileAvatarImage" alt="Foto profil" hidden>
+              <span id="profileAvatarInitials">BK</span>
+            </div>
+            <img
+              id="profileCustomFrameImage"
+              class="profile-custom-frame-image"
+              alt="Figura profil custom"
+              hidden
+            >
+            <label class="avatar-edit-button" for="profileAvatarInput" title="Ganti foto">✎</label>
+          </div>
+
+          <div class="profile-identity-copy">
+            <h1 id="profileHeroName">Bro Kosan</h1>
+            <p id="profileHeroEmail">vhyrox88@gmail.com</p>
+            <span class="profile-ai-pill">🤖 AI: <span id="profileHeroAi">VHYROX AI</span></span>
+          </div>
+        </div>
+
+        <div class="hero-status" id="profileTelegramStatus">● Money Bot belum terhubung</div>
+      </div>
+    </section>
+
+    <div class="profile-layout">
+      <aside class="profile-sidebar">
+        <a class="profile-nav-link active" href="#profil"><span>👤</span> Profil</a>
+        <a class="profile-nav-link" href="#ai-settings"><span>🤖</span> AI & Sapaan</a>
+        <a class="profile-nav-link" href="#personalisasi"><span>✨</span> Personalisasi</a>
+        <a class="profile-nav-link" href="#tampilan"><span>🎨</span> Tampilan</a>
+        <a class="profile-nav-link" href="#koneksi"><span>🔗</span> Money Bot</a>
+        <a class="profile-nav-link" href="/settings.html"><span>⚙️</span> Pengaturan akun</a>
+        <p class="sidebar-note">Setiap pilihan disimpan berdasarkan akun pengguna. Saat backend session aktif, data ini akan tersinkron otomatis ke database.</p>
+
+        <div class="profile-sidebar-account">
+          <button type="button" class="profile-logout-button" onclick="openLogoutDialog()">
+            <span aria-hidden="true">↪</span>
+            <span class="profile-logout-copy">
+              <strong>Keluar dari akun</strong>
+              <small>Kembali ke halaman login</small>
+            </span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="profile-content">
+        <section class="profile-card" id="profil">
+          <div class="profile-card-head">
+            <div>
+              <h2 class="profile-card-title">Informasi profil</h2>
+              <p class="profile-card-subtitle">Atur identitas yang akan tampil pada dashboard dan aplikasi.</p>
+            </div>
+            <span class="section-icon">👤</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="fullName">Nama akun</label>
+              <input id="fullName" type="text" maxlength="100" autocomplete="name" placeholder="Nama lengkap">
+            </div>
+
+            <div class="field">
+              <label for="displayName">Nama panggilan dashboard</label>
+              <input id="displayName" type="text" maxlength="80" placeholder="Contoh: Bro, Nanda, Kak Rara">
+              <p class="field-help">Nama ini muncul pada tulisan “Halo, ...”.</p>
+            </div>
+
+            <div class="field">
+              <label for="profileEmail">Email</label>
+              <input id="profileEmail" type="email" readonly>
+              <p class="field-help">Email login belum dapat diubah dari halaman profil.</p>
+            </div>
+
+            <div class="field">
+              <label for="profileWhatsapp">Nomor WhatsApp</label>
+              <input id="profileWhatsapp" type="tel" maxlength="25" placeholder="08xxxxxxxxxx">
+            </div>
+
+            <div class="field full">
+              <label for="profileBio">Bio <span class="counter" id="bioCounter">0/300</span></label>
+              <textarea id="profileBio" maxlength="300" placeholder="Ceritakan sedikit tentang dirimu atau tujuan keuanganmu..."></textarea>
+            </div>
+          </div>
+
+          <div class="profile-avatar-actions">
+            <label class="upload-button" for="profileAvatarInput">📷 Upload foto profil</label>
+            <button type="button" class="danger-button" onclick="removeAvatar()">Hapus foto</button>
+          </div>
+        </section>
+
+        <section class="profile-card profile-ai-settings-card" id="ai-settings">
+          <div class="profile-card-head">
+            <div>
+              <h2 class="profile-card-title">AI &amp; gaya sapaan</h2>
+              <p class="profile-card-subtitle">
+                Atur nama panggilan AI dan cara VHYROX menyapamu di dashboard serta chat.
+              </p>
+            </div>
+            <span class="section-icon">🤖</span>
+          </div>
+
+          <div class="form-grid ai-settings-grid">
+            <div class="field">
+              <label for="aiDisplayName">Nama panggilan AI</label>
+              <input
+                id="aiDisplayName"
+                type="text"
+                maxlength="50"
+                placeholder="Contoh: Vira"
+                autocomplete="off"
+              >
+              <p class="field-help">
+                Nama ini akan digunakan pada dashboard dan percakapan AI.
+              </p>
+            </div>
+
+            <div class="field">
+              <label id="greetingStyleLabel">Gaya sapaan</label>
+              <input id="greetingStyle" type="hidden" value="casual">
+
+              <div
+                class="choice-button-group"
+                id="greetingStyleChoices"
+                role="group"
+                aria-labelledby="greetingStyleLabel"
+              >
+                <button
+                  type="button"
+                  class="choice-button"
+                  data-greeting-style="friendly"
+                >
+                  Ramah
+                </button>
+
+                <button
+                  type="button"
+                  class="choice-button"
+                  data-greeting-style="casual"
+                >
+                  Santai
+                </button>
+
+                <button
+                  type="button"
+                  class="choice-button"
+                  data-greeting-style="professional"
+                >
+                  Profesional
+                </button>
+              </div>
+
+              <p class="field-help">
+                Pilihan ini mengatur nada sapaan VHYROX kepada pengguna.
+              </p>
+            </div>
+          </div>
+
+          <div class="ai-settings-preview">
+            <span class="ai-settings-preview-icon">✦</span>
+            <div>
+              <strong>Pratinjau nama AI</strong>
+              <p>
+                AI akan tampil sebagai
+                <span id="aiSettingsPreviewName">VHYROX AI</span>
+                pada dashboard dan chat.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="profile-card" id="personalisasi">
+          <div class="profile-card-head">
+            <div>
+              <h2 class="profile-card-title">Kepribadian VHYROX</h2>
+              <p class="profile-card-subtitle">Beri nama AI dan pilih gaya sapaan yang kamu suka.</p>
+            </div>
+            <span class="section-icon">🤖</span>
+          </div>
+
+          <div class="personalization-workspace">
+            <div class="personalization-controls">
+          <h3 class="profile-subsection-title profile-subsection-title-first">Figura foto profil</h3>
+          <div class="frame-options" id="frameOptions">
+            <button type="button" class="option-card is-selected" data-frame-code="none"><span class="frame-visual" data-frame="none">BK</span><strong>Tanpa frame</strong><small>Minimal</small></button>
+            <button type="button" class="option-card" data-frame-code="neon-pink"><span class="frame-visual" data-frame="neon-pink">BK</span><strong>Neon Pink</strong><small>VHYROX</small></button>
+            <button type="button" class="option-card" data-frame-code="ocean"><span class="frame-visual" data-frame="ocean">BK</span><strong>Ocean</strong><small>Biru</small></button>
+            <button type="button" class="option-card" data-frame-code="gold"><span class="frame-visual" data-frame="gold">BK</span><strong>Gold</strong><small>Premium</small></button>
+            <button type="button" class="option-card" data-frame-code="custom"><span class="frame-visual custom-frame-visual" data-frame="custom">✦</span><strong>Custom</strong><small>Upload / Link</small></button>
+          </div>
+
+          <div class="custom-frame-panel" id="customFramePanel" hidden>
+            <div class="custom-frame-panel-head">
+              <div>
+                <strong>Dekorasi avatar custom</strong>
+                <p>Gunakan PNG, WebP, GIF, atau APNG transparan. Animasi asli tetap bergerak.</p>
+              </div>
+              <span class="custom-frame-status" id="customFrameStatus">Belum dipasang</span>
+            </div>
+
+            <div class="custom-frame-actions">
+              <label class="upload-button" for="profileFrameInput">✨ Upload figura</label>
+              <button type="button" class="custom-frame-remove" onclick="removeCustomFrame()">Hapus figura</button>
+            </div>
+
+            <div class="custom-frame-link-row">
+              <input
+                id="customFrameUrl"
+                type="url"
+                placeholder="https://cdn.example.com/frame.gif"
+                autocomplete="off"
+              >
+              <button type="button" class="custom-frame-apply" onclick="applyCustomFrameUrl()">Pakai link</button>
+            </div>
+
+            <div class="custom-frame-controls">
+              <div class="custom-frame-adjustments">
+                <div class="custom-frame-control">
+                  <label for="customFrameScale">Ukuran figura <span id="customFrameScaleValue">132%</span></label>
+                  <input id="customFrameScale" type="range" min="1.05" max="1.70" step="0.01" value="1.32">
+                </div>
+
+                <div class="custom-frame-control">
+                  <label for="customFrameOffsetX">Geser kiri / kanan <span id="customFrameOffsetXValue">Tengah</span></label>
+                  <input id="customFrameOffsetX" type="range" min="-80" max="80" step="1" value="0">
+                </div>
+
+                <div class="custom-frame-control">
+                  <label for="customFrameOffsetY">Geser atas / bawah <span id="customFrameOffsetYValue">Tengah</span></label>
+                  <input id="customFrameOffsetY" type="range" min="-80" max="80" step="1" value="0">
+                </div>
+
+                <button
+                  type="button"
+                  class="custom-frame-position-reset"
+                  onclick="resetCustomFramePosition()"
+                >
+                  Reset posisi
+                </button>
+              </div>
+
+              <div class="custom-frame-motion-panel">
+                <div class="custom-frame-control">
+                  <label id="customFrameMotionLabel">Gerakan tambahan</label>
+                  <input id="customFrameMotion" type="hidden" value="none">
+                  <div class="choice-button-group motion-choices" id="customFrameMotionChoices" role="group" aria-labelledby="customFrameMotionLabel">
+                    <button type="button" class="choice-button" data-frame-motion="none">Animasi asli</button>
+                    <button type="button" class="choice-button" data-frame-motion="float">Melayang</button>
+                    <button type="button" class="choice-button" data-frame-motion="pulse">Berdenyut</button>
+                    <button type="button" class="choice-button" data-frame-motion="spin">Berputar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+            </div>
+
+            <aside class="profile-live-preview" aria-label="Pratinjau profil langsung">
+              <div class="profile-live-preview-head">
+                <div>
+                  <strong>Pratinjau langsung</strong>
+                </div>
+                <span class="live-indicator">LIVE</span>
+              </div>
+
+              <div class="profile-avatar-wrap profile-live-avatar-wrap" id="stickyProfileAvatarWrap">
+                <div class="profile-avatar" id="stickyProfileAvatarPreview" data-frame="none">
+                  <img id="stickyProfileAvatarImage" alt="Pratinjau foto profil" hidden>
+                  <span id="stickyProfileAvatarInitials">BK</span>
+                </div>
+                <img
+                  id="stickyProfileCustomFrameImage"
+                  class="profile-custom-frame-image"
+                  alt="Pratinjau figura profil custom"
+                  hidden
+                >
+              </div>
+
+              <h3 id="stickyProfileName">Bro Kosan</h3>
+              <p class="profile-live-email" id="stickyProfileEmail">vhyrox88@gmail.com</p>
+              <span class="profile-live-ai-pill">🤖 AI: <span id="stickyProfileAi">VHYROX AI</span></span>
+
+              <div class="profile-fit-insight">
+                <strong id="profileFitInsightTitle">Ukuran seimbang</strong>
+                <span id="profileFitInsightText">Figura terlihat pas untuk kebanyakan dekorasi avatar.</span>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="profile-card" id="tampilan">
+          <div class="profile-card-head">
+            <div>
+              <h2 class="profile-card-title">Tema dashboard</h2>
+              <p class="profile-card-subtitle">Tema dipilih khusus untuk akunmu dan tidak mengubah dashboard pengguna lain.</p>
+            </div>
+            <span class="section-icon">🎨</span>
+          </div>
+
+          <div class="theme-grid" id="themeGrid"></div>
+
+          <div class="custom-color-row" id="customColorFields" hidden>
+            <div class="color-field"><label>Warna utama</label><input id="customAccent" type="color" value="#06B6D4"></div>
+            <div class="color-field"><label>Warna gelap</label><input id="customAccentDark" type="color" value="#0891B2"></div>
+            <div class="color-field"><label>Background</label><input id="customBackground" type="color" value="#06151A"></div>
+            <div class="color-field"><label>Panel</label><input id="customBackgroundSoft" type="color" value="#0B242B"></div>
+          </div>
+
+          <h3 class="profile-subsection-title profile-subsection-title-spacious">Background dashboard</h3>
+          <div class="background-options" id="backgroundOptions">
+            <button type="button" class="option-card is-selected" data-background-type="default" data-background-value=""><span class="option-visual">◼</span><strong>Ikuti tema</strong><small>Default</small></button>
+            <button type="button" class="option-card" data-background-type="gradient" data-background-value="pink-night"><span class="option-visual">🌌</span><strong>Pink Night</strong><small>Gradient</small></button>
+            <button type="button" class="option-card" data-background-type="gradient" data-background-value="ocean-night"><span class="option-visual">🌊</span><strong>Ocean Night</strong><small>Gradient</small></button>
+            <label class="option-card" for="dashboardBackgroundInput" data-background-upload><span class="option-visual">🖼</span><strong>Upload gambar</strong><small>JPG/PNG/WebP</small></label>
+          </div>
+
+          <div class="field profile-overlay-field">
+            <label for="backgroundOverlay">Lapisan gelap: <span id="overlayValue">82%</span></label>
+            <input id="backgroundOverlay" type="range" min="0.35" max="0.95" step="0.01" value="0.82">
+            <p class="field-help">Membantu teks tetap terbaca ketika memakai gambar background.</p>
+          </div>
+        </section>
+
+        <section class="profile-card" id="koneksi">
+          <div class="profile-card-head">
+            <div>
+              <h2 class="profile-card-title">Koneksi Money Bot</h2>
+              <p class="profile-card-subtitle">Hubungkan akun VHYROX dengan Bot Telegram untuk mencatat transaksi lewat chat.</p>
+            </div>
+            <span class="section-icon">🔗</span>
+          </div>
+
+          <div class="connection-card">
+            <div class="connection-main">
+              <span class="connection-icon">✈</span>
+              <div class="connection-copy">
+                <strong>VHYROX Money Bot</strong>
+                <span id="telegramConnectionText">Belum terhubung ke bot</span>
+              </div>
+            </div>
+            <a href="/bot.html" class="save-button">Hubungkan Bot</a>
+          </div>
+        </section>
+
+        <div class="save-bar">
+          <p class="save-status" id="saveStatus">Perubahan belum disimpan.</p>
+          <div class="save-actions">
+            <a href="/dashboard.html" class="ghost-button">Batal</a>
+            <button type="button" class="save-button" id="saveProfileButton" onclick="saveProfile()">Simpan perubahan</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+
+  <dialog id="logoutDialog" class="logout-dialog" aria-labelledby="logoutDialogTitle">
+    <div class="logout-dialog-card">
+      <div class="logout-dialog-icon" aria-hidden="true">↪</div>
+      <h2 id="logoutDialogTitle">Keluar dari akun?</h2>
+      <p>Kamu perlu login kembali untuk membuka dashboard dan mengakses data keuanganmu.</p>
+      <div class="logout-dialog-actions">
+        <button type="button" class="logout-cancel-button" onclick="closeLogoutDialog()">Batal</button>
+        <button type="button" class="logout-confirm-button" id="confirmLogoutButton" onclick="confirmLogout()">Keluar</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="avatarCropDialog" class="avatar-crop-dialog" aria-labelledby="avatarCropTitle">
+    <div class="avatar-crop-card">
+      <div class="avatar-crop-head">
+        <div>
+          <h2 id="avatarCropTitle">Pangkas foto profil</h2>
+          <p>Geser foto sampai bagian yang kamu mau pas di dalam lingkaran.</p>
+        </div>
+        <button type="button" class="avatar-crop-close" onclick="cancelAvatarCrop()" aria-label="Tutup">×</button>
+      </div>
+
+      <div class="avatar-crop-stage" id="avatarCropStage">
+        <canvas id="avatarCropCanvas" width="600" height="600" aria-label="Pratinjau pangkasan foto"></canvas>
+        <span class="avatar-crop-guide" aria-hidden="true"></span>
+      </div>
+
+      <div class="avatar-crop-controls">
+        <div class="avatar-crop-zoom-row">
+          <label for="avatarCropZoom">Zoom</label>
+          <input id="avatarCropZoom" type="range" min="1" max="3" step="0.01" value="1">
+          <span class="avatar-crop-zoom-value" id="avatarCropZoomValue">100%</span>
+        </div>
+        <p class="avatar-crop-help">Tarik foto untuk mengatur posisi. Hasil disimpan sebagai gambar persegi 600 × 600 piksel.</p>
+      </div>
+
+      <div class="avatar-crop-actions">
+        <button type="button" class="avatar-crop-reset" onclick="resetAvatarCrop()">Atur ulang</button>
+        <div class="avatar-crop-actions-right">
+          <button type="button" class="avatar-crop-cancel" onclick="cancelAvatarCrop()">Batal</button>
+          <button type="button" class="avatar-crop-apply" id="avatarCropApply" onclick="applyAvatarCrop()">Gunakan foto</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <input id="profileAvatarInput" type="file" accept="image/jpeg,image/png,image/webp">
+  <input id="profileFrameInput" type="file" accept="image/png,image/webp,image/gif,.apng">
+  <input id="profileCoverInput" type="file" accept="image/jpeg,image/png,image/webp">
+  <input id="dashboardBackgroundInput" type="file" accept="image/jpeg,image/png,image/webp">
+  <div class="toast" id="profileToast" hidden></div>
+
+  <script>
+    const THEME_PRESETS = {
+      'vhyrox-pink': { name:'VHYROX Pink', accent:'#FF2D8A', accentDark:'#C850C0', secondary:'#7B5CF0', background:'#08071A', backgroundSoft:'#0D0B21', text:'#F2F0F9' },
+      'ocean-blue': { name:'Ocean Blue', accent:'#3B82F6', accentDark:'#2563EB', secondary:'#06B6D4', background:'#07111F', backgroundSoft:'#0B1B31', text:'#EFF6FF' },
+      'royal-purple': { name:'Royal Purple', accent:'#8B5CF6', accentDark:'#6D28D9', secondary:'#EC4899', background:'#0C071A', backgroundSoft:'#160D2D', text:'#F5F3FF' },
+      'emerald-night': { name:'Emerald Night', accent:'#10B981', accentDark:'#047857', secondary:'#22D3EE', background:'#061411', backgroundSoft:'#0A211B', text:'#ECFDF5' },
+      'sunset-orange': { name:'Sunset Orange', accent:'#F97316', accentDark:'#EA580C', secondary:'#F43F5E', background:'#160B06', backgroundSoft:'#251109', text:'#FFF7ED' },
+      'custom': { name:'Warna Custom', accent:'#06B6D4', accentDark:'#0891B2', secondary:'#3B82F6', background:'#06151A', backgroundSoft:'#0B242B', text:'#ECFEFF' }
+    };
+
+    const FALLBACK = {
+      user: { id:1, nama:'Bro Kosan', email:'vhyrox88@gmail.com', nomor_wa:'', avatar_url:'', telegram_chat_id:null },
+      profile: { display_name:'Bro Kosan', bio:'', profile_cover_url:'', profile_frame_code:'none', profile_frame_source:'', profile_frame_value:'', profile_frame_scale:1.32, profile_frame_motion:'none', profile_frame_offset_x:0, profile_frame_offset_y:0 },
+      preferences: { ai_display_name:'VHYROX AI', theme_code:'vhyrox-pink', theme_source:'preset', dashboard_background_type:'default', dashboard_background_value:'', dashboard_background_overlay:.82, greeting_style:'casual' }
+    };
+
+    let currentUserId = 1;
+    let currentData = structuredClone(FALLBACK);
+    let selectedThemeCode = 'vhyrox-pink';
+    let selectedFrameCode = 'none';
+    let customFrameSource = '';
+    let customFrameValue = '';
+    let customFrameScale = 1.32;
+    let customFrameMotion = 'none';
+    let customFrameOffsetX = 0;
+    let customFrameOffsetY = 0;
+    let selectedBackgroundType = 'default';
+    let selectedBackgroundValue = '';
+    let avatarDataUrl = '';
+    let coverDataUrl = '';
+    let dashboardBackgroundDataUrl = '';
+    let dirty = false;
+    let avatarCropSource = null;
+    let avatarCropZoom = 1;
+    let avatarCropOffsetX = 0;
+    let avatarCropOffsetY = 0;
+    let avatarCropDragging = false;
+    let avatarCropPointerId = null;
+    let avatarCropDragStartX = 0;
+    let avatarCropDragStartY = 0;
+    let avatarCropStartOffsetX = 0;
+    let avatarCropStartOffsetY = 0;
+
+    const $ = (id) => document.getElementById(id);
+    const initials = (name) => String(name || 'User').trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('') || 'U';
+    const storageKey = (id) => `vhyroxProfileDraft:${Number(id) > 0 ? Number(id) : 1}`;
+
+    function showToast(message, type='success') {
+      const toast = $('profileToast');
+      toast.textContent = message;
+      toast.classList.toggle('error', type === 'error');
+      toast.hidden = false;
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => { toast.hidden = true; }, 3200);
+    }
+
+    function markDirty() {
+      dirty = true;
+      $('saveStatus').textContent = 'Ada perubahan yang belum disimpan.';
+    }
+
+    function readDraft(id) {
+      try { return JSON.parse(localStorage.getItem(storageKey(id)) || '{}') || {}; }
+      catch { return {}; }
+    }
+
+    function setCssTheme(theme) {
+      const root = document.documentElement;
+      root.style.setProperty('--accent', theme.accent);
+      root.style.setProperty('--accent-rgb', hexToRgb(theme.accent));
+      root.style.setProperty('--accent-dark', theme.accentDark);
+      root.style.setProperty('--secondary', theme.secondary);
+      root.style.setProperty('--bg', theme.background);
+      root.style.setProperty('--bg-soft', theme.backgroundSoft);
+      root.style.setProperty('--text', theme.text);
+    }
+
+    function hexToRgb(hex) {
+      const clean = String(hex).replace('#','');
+      return [0,2,4].map(i => parseInt(clean.slice(i,i+2),16)).join(', ');
+    }
+
+    function activeTheme() {
+      if (selectedThemeCode !== 'custom') return THEME_PRESETS[selectedThemeCode] || THEME_PRESETS['vhyrox-pink'];
+      return {
+        ...THEME_PRESETS.custom,
+        accent: $('customAccent').value,
+        accentDark: $('customAccentDark').value,
+        background: $('customBackground').value,
+        backgroundSoft: $('customBackgroundSoft').value
+      };
+    }
+
+    function buildThemeGrid() {
+      const grid = $('themeGrid');
+      grid.innerHTML = '';
+      Object.entries(THEME_PRESETS).forEach(([code, theme]) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'theme-card';
+        button.dataset.themeCode = code;
+        button.innerHTML = `<span class="theme-check">✓</span><span class="theme-preview"></span><strong>${theme.name}</strong>`;
+
+        const preview = button.querySelector('.theme-preview');
+        preview.style.setProperty('--preview-a', theme.accent);
+        preview.style.setProperty('--preview-b', theme.backgroundSoft);
+
+        button.addEventListener('click', () => selectTheme(code));
+        grid.appendChild(button);
+      });
+    }
+
+    function selectTheme(code, shouldDirty=true) {
+      selectedThemeCode = THEME_PRESETS[code] ? code : 'vhyrox-pink';
+      document.querySelectorAll('[data-theme-code]').forEach(el => el.classList.toggle('is-selected', el.dataset.themeCode === selectedThemeCode));
+      $('customColorFields').hidden = selectedThemeCode !== 'custom';
+      setCssTheme(activeTheme());
+      if (shouldDirty) markDirty();
+    }
+
+    function setGreetingStyle(value, shouldDirty=true) {
+      const allowed = ['friendly', 'casual', 'professional'];
+      const selected = allowed.includes(value) ? value : 'friendly';
+      $('greetingStyle').value = selected;
+
+      document.querySelectorAll('[data-greeting-style]').forEach((button) => {
+        const active = button.dataset.greetingStyle === selected;
+        button.classList.toggle('is-selected', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+
+      if (shouldDirty) markDirty();
+    }
+
+    function setCustomFrameMotion(value, shouldDirty=true) {
+      const allowed = ['none', 'float', 'pulse', 'spin'];
+      customFrameMotion = allowed.includes(value) ? value : 'none';
+      $('customFrameMotion').value = customFrameMotion;
+
+      document.querySelectorAll('[data-frame-motion]').forEach((button) => {
+        const active = button.dataset.frameMotion === customFrameMotion;
+        button.classList.toggle('is-selected', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+
+      updateCustomFramePreviewVisibility();
+      if (shouldDirty) markDirty();
+    }
+
+    function selectFrame(code, shouldDirty=true) {
+      const allowed = ['none','neon-pink','ocean','gold','custom'];
+      selectedFrameCode = allowed.includes(code) ? code : 'none';
+
+      document.querySelectorAll('[data-frame-code]').forEach((element) => {
+        element.classList.toggle(
+          'is-selected',
+          element.dataset.frameCode === selectedFrameCode
+        );
+      });
+
+      $('profileAvatarPreview').dataset.frame = selectedFrameCode;
+      $('stickyProfileAvatarPreview').dataset.frame = selectedFrameCode;
+      $('customFramePanel').hidden = selectedFrameCode !== 'custom';
+      updateCustomFramePreviewVisibility();
+
+      if (shouldDirty) markDirty();
+    }
+
+    function formatFrameOffset(value, negativeLabel, positiveLabel) {
+      const rounded = Math.round(Number(value) || 0);
+      if (rounded === 0) return 'Tengah';
+      return `${Math.abs(rounded)}px ${rounded < 0 ? negativeLabel : positiveLabel}`;
+    }
+
+    function resetCustomFramePosition(shouldDirty=true) {
+      customFrameOffsetX = 0;
+      customFrameOffsetY = 0;
+      $('customFrameOffsetX').value = '0';
+      $('customFrameOffsetY').value = '0';
+      updateCustomFramePreviewVisibility();
+      if (shouldDirty) markDirty();
+    }
+
+    function updateCustomFramePreviewVisibility() {
+      const hasFrame = Boolean(customFrameValue);
+      const shouldShow = selectedFrameCode === 'custom' && hasFrame;
+      const sizePercent = Math.round(customFrameScale * 100);
+
+      document.querySelectorAll('.profile-avatar-wrap').forEach((wrapper) => {
+        wrapper.style.setProperty('--custom-frame-size', `${sizePercent}%`);
+        wrapper.style.setProperty('--custom-frame-x', `${customFrameOffsetX}px`);
+        wrapper.style.setProperty('--custom-frame-y', `${customFrameOffsetY}px`);
+        wrapper.dataset.customMotion = customFrameMotion || 'none';
+      });
+
+      ['profileCustomFrameImage', 'stickyProfileCustomFrameImage'].forEach((id) => {
+        const image = $(id);
+        if (image) image.hidden = !shouldShow;
+      });
+
+      $('customFrameScaleValue').textContent = `${sizePercent}%`;
+      $('customFrameOffsetXValue').textContent =
+        formatFrameOffset(customFrameOffsetX, 'kiri', 'kanan');
+      $('customFrameOffsetYValue').textContent =
+        formatFrameOffset(customFrameOffsetY, 'atas', 'bawah');
+      $('customFrameStatus').textContent = hasFrame
+        ? customFrameSource === 'url'
+          ? 'Link aktif'
+          : 'Upload aktif'
+        : 'Belum dipasang';
+
+      let title = 'Ukuran seimbang';
+      let text = 'Figura terlihat pas untuk kebanyakan dekorasi avatar.';
+
+      if (sizePercent <= 118) {
+        title = 'Figura rapat';
+        text = 'Cocok untuk ring tipis. Naikkan ukuran bila ornamen menutupi foto.';
+      } else if (sizePercent >= 150) {
+        title = 'Figura lebar';
+        text = 'Cocok untuk dekorasi besar. Pastikan tidak memotong area di luar kartu.';
+      }
+
+      if (!hasFrame && selectedFrameCode === 'custom') {
+        title = 'Belum ada figura';
+        text = 'Upload file transparan atau masukkan link langsung untuk melihat hasilnya.';
+      } else if (selectedFrameCode !== 'custom') {
+        title = 'Figura bawaan';
+        text = 'Pratinjau di samping mengikuti pilihan Neon Pink, Ocean, Gold, atau tanpa frame.';
+      }
+
+      $('profileFitInsightTitle').textContent = title;
+      $('profileFitInsightText').textContent = text;
+    }
+
+    function setCustomFramePreview(value, source='') {
+      const normalized = String(value || '').trim();
+      const images = [
+        $('profileCustomFrameImage'),
+        $('stickyProfileCustomFrameImage')
+      ].filter(Boolean);
+
+      customFrameValue = normalized;
+      customFrameSource = normalized
+        ? source || (normalized.startsWith('data:') ? 'upload' : 'url')
+        : '';
+
+      images.forEach((image, index) => {
+        image.onload = () => {
+          updateCustomFramePreviewVisibility();
+        };
+
+        image.onerror = () => {
+          image.hidden = true;
+          if (index === 0) {
+            showToast(
+              'Figura gagal dimuat. Pastikan link mengarah langsung ke gambar.',
+              'error'
+            );
+          }
+        };
+
+        if (normalized) {
+          image.src = normalized;
+        } else {
+          image.hidden = true;
+          image.removeAttribute('src');
+        }
+      });
+
+      updateCustomFramePreviewVisibility();
+    }
+
+    function normalizeFrameUrl(value) {
+      const raw = String(value || '').trim();
+      if (!raw) throw new Error('Masukkan link figura terlebih dahulu.');
+
+      let parsed;
+      try {
+        parsed = new URL(raw, window.location.href);
+      } catch {
+        throw new Error('Format link figura tidak valid.');
+      }
+
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        throw new Error('Link figura harus memakai HTTP atau HTTPS.');
+      }
+
+      return parsed.href;
+    }
+
+    function applyCustomFrameUrl() {
+      try {
+        const url = normalizeFrameUrl($('customFrameUrl').value);
+        setCustomFramePreview(url, 'url');
+        selectFrame('custom', false);
+        markDirty();
+        showToast('Link figura diterapkan ✨');
+      } catch (error) {
+        showToast(error.message || 'Link figura tidak valid.', 'error');
+      }
+    }
+
+    function removeCustomFrame() {
+      customFrameSource = '';
+      customFrameValue = '';
+      $('customFrameUrl').value = '';
+      setCustomFramePreview('', '');
+      markDirty();
+      showToast('Figura custom dihapus.');
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ''));
+        reader.onerror = () => reject(new Error('File figura gagal dibaca.'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleCustomFrameInput(event) {
+      const file = event.target.files?.[0];
+      event.target.value = '';
+      if (!file) return;
+
+      const allowedTypes = ['image/png','image/webp','image/gif'];
+      const isApng = /\.apng$/i.test(file.name);
+
+      if (!allowedTypes.includes(file.type) && !isApng) {
+        showToast('Gunakan PNG, WebP, GIF, atau APNG.', 'error');
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) {
+        showToast(
+          'Figura upload maksimal 2 MB. Gunakan link untuk animasi yang lebih besar.',
+          'error'
+        );
+        return;
+      }
+
+      try {
+        const dataUrl = await fileToDataUrl(file);
+        setCustomFramePreview(dataUrl, 'upload');
+        $('customFrameUrl').value = '';
+        selectFrame('custom', false);
+        markDirty();
+        showToast('Figura custom berhasil dipasang ✨');
+      } catch (error) {
+        showToast(error.message || 'Figura gagal diproses.', 'error');
+      }
+    }
+
+    function selectBackground(type, value='', shouldDirty=true) {
+      selectedBackgroundType = type;
+      selectedBackgroundValue = value;
+      document.querySelectorAll('[data-background-type]').forEach(el => {
+        el.classList.toggle('is-selected', el.dataset.backgroundType === type && (el.dataset.backgroundValue || '') === value);
+      });
+      document.querySelector('[data-background-upload]')?.classList.toggle('is-selected', type === 'image');
+      if (shouldDirty) markDirty();
+    }
+
+    function updateIdentityPreview() {
+      const displayName = $('displayName').value.trim() || $('fullName').value.trim() || 'User';
+      const aiName = $('aiDisplayName').value.trim() || 'VHYROX AI';
+      const email = $('profileEmail').value.trim() || 'Akun VHYROX';
+      const nameInitials = initials(displayName);
+
+      $('profileHeroName').textContent = displayName;
+      $('profileHeroAi').textContent = aiName;
+
+      const aiSettingsPreviewName = $('aiSettingsPreviewName');
+      if (aiSettingsPreviewName) {
+        aiSettingsPreviewName.textContent = aiName;
+      }
+
+      $('profileAvatarInitials').textContent = nameInitials;
+
+      $('stickyProfileName').textContent = displayName;
+      $('stickyProfileEmail').textContent = email;
+      $('stickyProfileAi').textContent = aiName;
+      $('stickyProfileAvatarInitials').textContent = nameInitials;
+
+      document.querySelectorAll('.frame-visual:not(.custom-frame-visual)').forEach((element) => {
+        element.textContent = nameInitials;
+      });
+    }
+
+    function setAvatarPreview(url) {
+      avatarDataUrl = url || '';
+      const previews = [
+        ['profileAvatarImage', 'profileAvatarInitials'],
+        ['stickyProfileAvatarImage', 'stickyProfileAvatarInitials']
+      ];
+
+      previews.forEach(([imageId, initialsId]) => {
+        const image = $(imageId);
+        const initialsElement = $(initialsId);
+        if (!image || !initialsElement) return;
+
+        if (avatarDataUrl) {
+          image.src = avatarDataUrl;
+          image.hidden = false;
+          initialsElement.hidden = true;
+        } else {
+          image.hidden = true;
+          image.removeAttribute('src');
+          initialsElement.hidden = false;
+        }
+      });
+    }
+
+    function setCoverPreview(url) {
+      coverDataUrl = url || '';
+      const image = $('profileCoverImage');
+      if (coverDataUrl) { image.src = coverDataUrl; image.hidden = false; }
+      else { image.hidden = true; image.removeAttribute('src'); }
+    }
+
+    async function compressImage(file, maxWidth, maxHeight, quality=.86) {
+      if (!file || !/^image\/(jpeg|png|webp)$/i.test(file.type)) throw new Error('Gunakan file JPG, PNG, atau WebP.');
+      if (file.size > 8 * 1024 * 1024) throw new Error('Ukuran gambar maksimal 8 MB.');
+      const bitmap = await createImageBitmap(file);
+      const ratio = Math.min(maxWidth / bitmap.width, maxHeight / bitmap.height, 1);
+      const width = Math.max(1, Math.round(bitmap.width * ratio));
+      const height = Math.max(1, Math.round(bitmap.height * ratio));
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(bitmap, 0, 0, width, height);
+      bitmap.close?.();
+      return canvas.toDataURL('image/webp', quality);
+    }
+
+    function validateAvatarFile(file) {
+      if (!file || !/^image\/(jpeg|png|webp)$/i.test(file.type)) {
+        throw new Error('Gunakan file JPG, PNG, atau WebP.');
+      }
+
+      if (file.size > 8 * 1024 * 1024) {
+        throw new Error('Ukuran gambar maksimal 8 MB.');
+      }
+    }
+
+    async function decodeAvatarCropSource(file) {
+      if (typeof createImageBitmap === 'function') {
+        try {
+          return await createImageBitmap(file, { imageOrientation: 'from-image' });
+        } catch {
+          try {
+            return await createImageBitmap(file);
+          } catch {
+            // Gunakan fallback HTMLImageElement di bawah.
+          }
+        }
+      }
+
+      return new Promise((resolve, reject) => {
+        const objectUrl = URL.createObjectURL(file);
+        const image = new Image();
+
+        image.onload = () => {
+          URL.revokeObjectURL(objectUrl);
+          resolve(image);
+        };
+
+        image.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          reject(new Error('Foto tidak dapat dibaca.'));
+        };
+
+        image.src = objectUrl;
+      });
+    }
+
+    function releaseAvatarCropSource() {
+      avatarCropSource?.close?.();
+      avatarCropSource = null;
+    }
+
+    function avatarCropSourceSize() {
+      return {
+        width: Number(avatarCropSource?.naturalWidth || avatarCropSource?.width || 0),
+        height: Number(avatarCropSource?.naturalHeight || avatarCropSource?.height || 0)
+      };
+    }
+
+    function clampAvatarCrop(value, minimum, maximum) {
+      return Math.min(Math.max(Number(value) || 0, minimum), maximum);
+    }
+
+    function avatarCropMetrics() {
+      const canvas = $('avatarCropCanvas');
+      const sourceSize = avatarCropSourceSize();
+
+      if (!canvas || !sourceSize.width || !sourceSize.height) return null;
+
+      const baseScale = Math.max(
+        canvas.width / sourceSize.width,
+        canvas.height / sourceSize.height
+      );
+
+      const scale = baseScale * avatarCropZoom;
+      const drawWidth = sourceSize.width * scale;
+      const drawHeight = sourceSize.height * scale;
+      const maxOffsetX = Math.max(0, (drawWidth - canvas.width) / 2);
+      const maxOffsetY = Math.max(0, (drawHeight - canvas.height) / 2);
+
+      avatarCropOffsetX = clampAvatarCrop(
+        avatarCropOffsetX,
+        -maxOffsetX,
+        maxOffsetX
+      );
+
+      avatarCropOffsetY = clampAvatarCrop(
+        avatarCropOffsetY,
+        -maxOffsetY,
+        maxOffsetY
+      );
+
+      return {
+        drawWidth,
+        drawHeight,
+        drawX: (canvas.width - drawWidth) / 2 + avatarCropOffsetX,
+        drawY: (canvas.height - drawHeight) / 2 + avatarCropOffsetY
+      };
+    }
+
+    function renderAvatarCrop() {
+      const canvas = $('avatarCropCanvas');
+      const context = canvas?.getContext('2d');
+      const metrics = avatarCropMetrics();
+      if (!canvas || !context || !metrics || !avatarCropSource) return;
+
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = 'high';
+      context.drawImage(
+        avatarCropSource,
+        metrics.drawX,
+        metrics.drawY,
+        metrics.drawWidth,
+        metrics.drawHeight
+      );
+
+      $('avatarCropZoomValue').textContent = `${Math.round(avatarCropZoom * 100)}%`;
+    }
+
+    function resetAvatarCrop() {
+      avatarCropZoom = 1;
+      avatarCropOffsetX = 0;
+      avatarCropOffsetY = 0;
+      $('avatarCropZoom').value = '1';
+      renderAvatarCrop();
+    }
+
+    async function openAvatarCrop(file) {
+      validateAvatarFile(file);
+      releaseAvatarCropSource();
+      avatarCropSource = await decodeAvatarCropSource(file);
+      resetAvatarCrop();
+
+      const dialog = $('avatarCropDialog');
+      if (dialog && !dialog.open) dialog.showModal();
+    }
+
+    function cancelAvatarCrop() {
+      const dialog = $('avatarCropDialog');
+      if (dialog?.open) dialog.close();
+      avatarCropDragging = false;
+      avatarCropPointerId = null;
+      $('avatarCropStage')?.classList.remove('is-dragging');
+      releaseAvatarCropSource();
+    }
+
+    function applyAvatarCrop() {
+      if (!avatarCropSource) {
+        showToast('Pilih foto terlebih dahulu.', 'error');
+        return;
+      }
+
+      const button = $('avatarCropApply');
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Memproses...';
+      }
+
+      try {
+        renderAvatarCrop();
+        const result = $('avatarCropCanvas').toDataURL('image/webp', .88);
+        setAvatarPreview(result);
+        markDirty();
+
+        const dialog = $('avatarCropDialog');
+        if (dialog?.open) dialog.close();
+        releaseAvatarCropSource();
+        showToast('Foto sudah dipangkas. Tekan Simpan perubahan.');
+      } catch (error) {
+        showToast(error.message || 'Foto gagal dipangkas.', 'error');
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = 'Gunakan foto';
+        }
+      }
+    }
+
+    async function handleImageInput(event, kind) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      try {
+        if (kind === 'avatar') {
+          await openAvatarCrop(file);
+        } else if (kind === 'cover') {
+          setCoverPreview(await compressImage(file, 1800, 700, .84));
+          markDirty();
+        } else if (kind === 'dashboard') {
+          dashboardBackgroundDataUrl = await compressImage(file, 1920, 1080, .80);
+          selectBackground('image', dashboardBackgroundDataUrl, false);
+          markDirty();
+        }
+      } catch (error) { showToast(error.message || 'Gambar gagal diproses.', 'error'); }
+      event.target.value = '';
+    }
+
+    function removeAvatar() { setAvatarPreview(''); markDirty(); }
+    function removeCover() { setCoverPreview(''); markDirty(); }
+
+    function mergeData(payload) {
+      const source = payload?.data || payload || FALLBACK;
+      const baseUser = source.user || FALLBACK.user;
+      const baseProfile =
+        source.profile ||
+        source.user_profile ||
+        {};
+      const basePreferences =
+        source.preferences ||
+        source.user_preferences ||
+        {};
+
+      currentUserId = Number(baseUser.id || 1);
+
+      /*
+       * Database adalah sumber data utama.
+       * Draft localStorage lama tidak digunakan lagi karena dapat
+       * membuat foto pada Profil, Dashboard, dan Admin berbeda.
+       */
+      currentData = {
+        user: {
+          ...FALLBACK.user,
+          ...baseUser
+        },
+
+        profile: {
+          ...FALLBACK.profile,
+          ...baseProfile,
+
+          display_name:
+            baseProfile.display_name ||
+            baseUser.nama ||
+            FALLBACK.profile.display_name,
+
+          profile_frame_code:
+            baseProfile.profile_frame_code ||
+            'none',
+
+          profile_frame_source:
+            baseProfile.profile_frame_source ||
+            '',
+
+          profile_frame_value:
+            baseProfile.profile_frame_value ||
+            baseProfile.profile_frame_url ||
+            '',
+
+          profile_frame_scale:
+            Number(
+              baseProfile.profile_frame_scale ??
+              1.32
+            ),
+
+          profile_frame_motion:
+            baseProfile.profile_frame_motion ||
+            'none',
+
+          profile_frame_offset_x:
+            Number(
+              baseProfile.profile_frame_offset_x ??
+              0
+            ),
+
+          profile_frame_offset_y:
+            Number(
+              baseProfile.profile_frame_offset_y ??
+              0
+            )
+        },
+
+        preferences: {
+          ...FALLBACK.preferences,
+          ...basePreferences
+        },
+
+        theme:
+          source.theme ||
+          source.app_theme ||
+          null
+      };
+
+      return currentData;
+    }
+
+    function fillForm(data) {
+      const user = data.user; const profile = data.profile; const pref = data.preferences;
+      $('fullName').value = user.nama || '';
+      $('displayName').value = profile.display_name || user.nama || '';
+      $('profileEmail').value = user.email || '';
+      $('profileWhatsapp').value = user.nomor_wa || '';
+      $('profileBio').value = profile.bio || '';
+      $('bioCounter').textContent = `${$('profileBio').value.length}/300`;
+      $('aiDisplayName').value = pref.ai_display_name || 'VHYROX AI';
+      setGreetingStyle(pref.greeting_style || 'friendly', false);
+      $('profileHeroEmail').textContent = user.email || 'Akun VHYROX';
+      setAvatarPreview(user.avatar_url || '');
+      setCoverPreview(profile.profile_cover_url || '');
+      customFrameSource = profile.profile_frame_source || '';
+      customFrameValue = profile.profile_frame_value || '';
+      customFrameScale = Math.min(1.70, Math.max(1.05, Number(profile.profile_frame_scale || 1.32)));
+      customFrameMotion = ['none','float','pulse','spin'].includes(profile.profile_frame_motion)
+        ? profile.profile_frame_motion
+        : 'none';
+      customFrameOffsetX = Math.min(80, Math.max(-80, Number(profile.profile_frame_offset_x || 0)));
+      customFrameOffsetY = Math.min(80, Math.max(-80, Number(profile.profile_frame_offset_y || 0)));
+      $('customFrameScale').value = String(customFrameScale);
+      $('customFrameMotion').value = customFrameMotion;
+      $('customFrameOffsetX').value = String(customFrameOffsetX);
+      $('customFrameOffsetY').value = String(customFrameOffsetY);
+      $('customFrameUrl').value = customFrameSource === 'url' ? customFrameValue : '';
+      setCustomFramePreview(customFrameValue, customFrameSource);
+      setCustomFrameMotion(customFrameMotion, false);
+      selectFrame(profile.profile_frame_code || 'none', false);
+
+      selectedThemeCode = pref.theme_source === 'custom' ? 'custom' : (pref.theme_code || 'vhyrox-pink');
+      if (data.theme && selectedThemeCode !== 'custom') {
+        THEME_PRESETS[selectedThemeCode] = {
+          name:data.theme.theme_name || THEME_PRESETS[selectedThemeCode]?.name || selectedThemeCode,
+          accent:data.theme.accent_color || '#FF2D8A', accentDark:data.theme.accent_dark_color || '#C850C0',
+          secondary:data.theme.secondary_color || '#7B5CF0', background:data.theme.background_color || '#08071A',
+          backgroundSoft:data.theme.background_soft_color || '#0D0B21', text:data.theme.text_color || '#F2F0F9'
+        };
+      }
+      $('customAccent').value = pref.custom_accent_color || '#06B6D4';
+      $('customAccentDark').value = pref.custom_accent_dark_color || '#0891B2';
+      $('customBackground').value = pref.custom_background_color || '#06151A';
+      $('customBackgroundSoft').value = pref.custom_background_soft_color || '#0B242B';
+      buildThemeGrid();
+      selectTheme(selectedThemeCode, false);
+
+      selectedBackgroundType = pref.dashboard_background_type || 'default';
+      selectedBackgroundValue = pref.dashboard_background_value || '';
+      dashboardBackgroundDataUrl = selectedBackgroundType === 'image' ? selectedBackgroundValue : '';
+      selectBackground(selectedBackgroundType, selectedBackgroundValue, false);
+      $('backgroundOverlay').value = Number(pref.dashboard_background_overlay ?? .82);
+      $('overlayValue').textContent = `${Math.round(Number($('backgroundOverlay').value) * 100)}%`;
+
+      const connected = Boolean(String(user.telegram_chat_id || '').trim()) || user.telegram_connected === true;
+      $('profileTelegramStatus').textContent = connected ? '● Money Bot terhubung' : '● Money Bot belum terhubung';
+      $('profileTelegramStatus').style.color = connected ? 'var(--green)' : 'var(--yellow)';
+      $('telegramConnectionText').textContent = connected ? 'Bot terhubung dan siap mencatat transaksi' : 'Belum terhubung ke bot';
+      updateIdentityPreview();
+      dirty = false;
+      $('saveStatus').textContent = 'Profil sudah dimuat.';
+    }
+
+    async function loadProfile() {
+      try {
+        const response = await fetch(
+          '/api/me/appearance',
+          {
+            credentials: 'include',
+            headers: {
+              Accept: 'application/json'
+            }
+          }
+        );
+
+        const raw = await response.text();
+        let payload = {};
+
+        if (raw) {
+          try {
+            payload = JSON.parse(raw);
+          } catch {
+            payload = {
+              error: raw
+            };
+          }
+        }
+
+        if (response.status === 401) {
+          window.location.href =
+            `/login.html?returnTo=${encodeURIComponent('/profile.html')}`;
+          return;
+        }
+
+        if (!response.ok || payload.error) {
+          throw new Error(
+            payload.error ||
+            `Gagal mengambil data profil: ${response.status}`
+          );
+        }
+
+        if (!payload.user || !payload.user.id) {
+          throw new Error(
+            'Identitas pengguna pada session tidak ditemukan.'
+          );
+        }
+
+        currentUserId = Number(payload.user.id);
+
+        /*
+         * Bersihkan cache profil lama agar Dashboard tidak membaca
+         * avatar yang sudah kedaluwarsa.
+         */
+        localStorage.removeItem(
+          storageKey(currentUserId)
+        );
+
+        fillForm(
+          mergeData(payload)
+        );
+      } catch (error) {
+        console.error(
+          'Load profile error:',
+          error
+        );
+
+        showToast(
+          error.message ||
+          'Profil gagal dimuat.',
+          'error'
+        );
+      }
+    }
+
+    function profilePayload() {
+      const theme = activeTheme();
+      const isCustom = selectedThemeCode === 'custom';
+      return {
+        user_id: currentUserId,
+        nama: $('fullName').value.trim() || 'User',
+        display_name: $('displayName').value.trim() || $('fullName').value.trim() || 'User',
+        nomor_wa: $('profileWhatsapp').value.trim(),
+        bio: $('profileBio').value.trim(),
+        avatar_url: avatarDataUrl,
+        profile_cover_url: coverDataUrl,
+        profile_frame_code: selectedFrameCode,
+        profile_frame_source: selectedFrameCode === 'custom' ? customFrameSource : '',
+        profile_frame_value: selectedFrameCode === 'custom' ? customFrameValue : '',
+        profile_frame_url: selectedFrameCode === 'custom' ? customFrameValue : '',
+        profile_frame_scale: customFrameScale,
+        profile_frame_motion: customFrameMotion,
+        profile_frame_offset_x: customFrameOffsetX,
+        profile_frame_offset_y: customFrameOffsetY,
+        ai_display_name: $('aiDisplayName').value.trim() || 'VHYROX AI',
+        greeting_style: $('greetingStyle').value,
+        theme_code: isCustom ? 'vhyrox-pink' : selectedThemeCode,
+        theme_source: isCustom ? 'custom' : 'preset',
+        custom_accent_color: isCustom ? theme.accent : null,
+        custom_accent_dark_color: isCustom ? theme.accentDark : null,
+        custom_secondary_color: isCustom ? theme.secondary : null,
+        custom_background_color: isCustom ? theme.background : null,
+        custom_background_soft_color: isCustom ? theme.backgroundSoft : null,
+        custom_text_color: isCustom ? theme.text : null,
+        theme: {
+          theme_code: isCustom ? 'custom' : selectedThemeCode,
+          theme_name: theme.name,
+          accent_color: theme.accent,
+          accent_dark_color: theme.accentDark,
+          secondary_color: theme.secondary,
+          background_color: theme.background,
+          background_soft_color: theme.backgroundSoft,
+          text_color: theme.text
+        },
+        dashboard_background_type: selectedBackgroundType,
+        dashboard_background_value: selectedBackgroundType === 'image' ? dashboardBackgroundDataUrl : selectedBackgroundValue,
+        dashboard_background_overlay: Number($('backgroundOverlay').value)
+      };
+    }
+
+    async function saveProfile() {
+      const buttons = [
+        $('saveProfileButton'),
+        $('saveProfileTopButton')
+      ].filter(Boolean);
+
+      const originalLabels = buttons.map(
+        (button) => button.textContent
+      );
+
+      buttons.forEach((button) => {
+        button.disabled = true;
+        button.textContent = 'Menyimpan...';
+      });
+
+      try {
+        const payload = profilePayload();
+
+        const response = await fetch(
+          '/api/me/appearance',
+          {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          }
+        );
+
+        const raw = await response.text();
+        let result = {};
+
+        if (raw) {
+          try {
+            result = JSON.parse(raw);
+          } catch {
+            result = {
+              error: raw
+            };
+          }
+        }
+
+        if (response.status === 401) {
+          window.location.href =
+            `/login.html?returnTo=${encodeURIComponent('/profile.html')}`;
+          return;
+        }
+
+        if (!response.ok || result.error) {
+          throw new Error(
+            result.error ||
+            'Profil gagal disimpan ke database.'
+          );
+        }
+
+        /*
+         * Profil tidak lagi disimpan sebagai draft browser.
+         * Draft lama dapat menimpa avatar terbaru dari database.
+         */
+        localStorage.removeItem(
+          storageKey(currentUserId)
+        );
+
+        const theme = payload.theme;
+
+        /*
+         * Cache lokal hanya untuk warna tema supaya halaman tidak
+         * berkedip. Identitas dan avatar tetap dibaca dari backend.
+         */
+        localStorage.setItem(
+          'vhyroxAppearance',
+          JSON.stringify({
+            themeCode:
+              theme.theme_code,
+
+            cssVariables: {
+              '--accent':
+                theme.accent_color,
+
+              '--accent-rgb':
+                hexToRgb(
+                  theme.accent_color
+                ),
+
+              '--accent-dark':
+                theme.accent_dark_color,
+
+              '--accent-dark-rgb':
+                hexToRgb(
+                  theme.accent_dark_color
+                ),
+
+              '--secondary':
+                theme.secondary_color,
+
+              '--secondary-rgb':
+                hexToRgb(
+                  theme.secondary_color
+                ),
+
+              '--bg':
+                theme.background_color,
+
+              '--bg-rgb':
+                hexToRgb(
+                  theme.background_color
+                ),
+
+              '--bg-soft':
+                theme.background_soft_color,
+
+              '--text':
+                theme.text_color
+            }
+          })
+        );
+
+        if (result.user) {
+          avatarDataUrl =
+            result.user.avatar_url ||
+            '';
+        }
+
+        dirty = false;
+
+        $('saveStatus').textContent =
+          'Profil tersimpan dan tersinkron ke Dashboard serta Admin.';
+
+        updateIdentityPreview();
+
+        showToast(
+          result.message ||
+          'Profil berhasil disimpan ✨'
+        );
+      } catch (error) {
+        console.error(
+          'Save profile error:',
+          error
+        );
+
+        $('saveStatus').textContent =
+          error.message ||
+          'Profil gagal disimpan.';
+
+        showToast(
+          error.message ||
+          'Profil gagal disimpan.',
+          'error'
+        );
+      } finally {
+        buttons.forEach((button, index) => {
+          button.disabled = false;
+          button.textContent =
+            originalLabels[index] ||
+            'Simpan';
+        });
+      }
+    }
+
+
+    function openLogoutDialog() {
+      const dialog = $('logoutDialog');
+      if (dialog && !dialog.open) dialog.showModal();
+    }
+
+    function closeLogoutDialog() {
+      const dialog = $('logoutDialog');
+      if (dialog?.open) dialog.close();
+    }
+
+    async function confirmLogout() {
+      const button = $('confirmLogoutButton');
+      if (button) { button.disabled = true; button.textContent = 'Keluar...'; }
+      try {
+        const response = await fetch('/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { Accept: 'application/json' }
+        });
+        if (!response.ok && response.status !== 404) {
+          let message = 'Logout gagal.';
+          try {
+            const data = await response.json();
+            message = data.error || data.message || message;
+          } catch {}
+          throw new Error(message);
+        }
+        localStorage.removeItem('vhyroxAppearance');
+        localStorage.removeItem(storageKey(currentUserId));
+        sessionStorage.removeItem('vhyroxTelegramPromptDismissed');
+        window.location.replace('/login.html');
+      } catch (error) {
+        showToast(error.message || 'Logout gagal. Coba lagi.', 'error');
+        if (button) { button.disabled = false; button.textContent = 'Keluar'; }
+      }
+    }
+
+    $('profileAvatarInput').addEventListener('change', e => handleImageInput(e,'avatar'));
+    $('profileFrameInput').addEventListener('change', handleCustomFrameInput);
+    $('profileCoverInput').addEventListener('change', e => handleImageInput(e,'cover'));
+    $('dashboardBackgroundInput').addEventListener('change', e => handleImageInput(e,'dashboard'));
+
+    $('avatarCropZoom').addEventListener('input', (event) => {
+      avatarCropZoom = clampAvatarCrop(event.target.value, 1, 3);
+      renderAvatarCrop();
+    });
+
+    $('avatarCropStage').addEventListener('pointerdown', (event) => {
+      if (!avatarCropSource) return;
+      avatarCropDragging = true;
+      avatarCropPointerId = event.pointerId;
+      avatarCropDragStartX = event.clientX;
+      avatarCropDragStartY = event.clientY;
+      avatarCropStartOffsetX = avatarCropOffsetX;
+      avatarCropStartOffsetY = avatarCropOffsetY;
+      event.currentTarget.setPointerCapture(event.pointerId);
+      event.currentTarget.classList.add('is-dragging');
+    });
+
+    $('avatarCropStage').addEventListener('pointermove', (event) => {
+      if (!avatarCropDragging || event.pointerId !== avatarCropPointerId) return;
+      const stage = event.currentTarget;
+      const rect = stage.getBoundingClientRect();
+      const canvasScale = $('avatarCropCanvas').width / Math.max(rect.width, 1);
+      avatarCropOffsetX = avatarCropStartOffsetX + (event.clientX - avatarCropDragStartX) * canvasScale;
+      avatarCropOffsetY = avatarCropStartOffsetY + (event.clientY - avatarCropDragStartY) * canvasScale;
+      renderAvatarCrop();
+    });
+
+    function finishAvatarCropDrag(event) {
+      if (!avatarCropDragging || event.pointerId !== avatarCropPointerId) return;
+      avatarCropDragging = false;
+      avatarCropPointerId = null;
+      event.currentTarget.classList.remove('is-dragging');
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    }
+
+    $('avatarCropStage').addEventListener('pointerup', finishAvatarCropDrag);
+    $('avatarCropStage').addEventListener('pointercancel', finishAvatarCropDrag);
+
+    $('avatarCropStage').addEventListener('wheel', (event) => {
+      if (!avatarCropSource) return;
+      event.preventDefault();
+      avatarCropZoom = clampAvatarCrop(
+        avatarCropZoom + (event.deltaY < 0 ? .08 : -.08),
+        1,
+        3
+      );
+      $('avatarCropZoom').value = String(avatarCropZoom);
+      renderAvatarCrop();
+    }, { passive:false });
+
+    $('avatarCropDialog').addEventListener('cancel', (event) => {
+      event.preventDefault();
+      cancelAvatarCrop();
+    });
+
+    $('avatarCropDialog').addEventListener('click', (event) => {
+      if (event.target === $('avatarCropDialog')) cancelAvatarCrop();
+    });
+
+    $('profileBio').addEventListener('input', () => { $('bioCounter').textContent = `${$('profileBio').value.length}/300`; markDirty(); });
+    ['fullName','displayName','aiDisplayName'].forEach(id => $(id).addEventListener('input', () => { updateIdentityPreview(); markDirty(); }));
+    $('profileWhatsapp').addEventListener('input', markDirty);
+    document.querySelectorAll('[data-greeting-style]').forEach((button) => {
+      button.addEventListener('click', () => setGreetingStyle(button.dataset.greetingStyle));
+    });
+    document.querySelectorAll('[data-frame-code]').forEach(el => el.addEventListener('click', () => selectFrame(el.dataset.frameCode)));
+    $('customFrameUrl').addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        applyCustomFrameUrl();
+      }
+    });
+    $('customFrameScale').addEventListener('input', () => {
+      customFrameScale = Number($('customFrameScale').value || 1.32);
+      updateCustomFramePreviewVisibility();
+      markDirty();
+    });
+    document.querySelectorAll('[data-frame-motion]').forEach((button) => {
+      button.addEventListener('click', () => setCustomFrameMotion(button.dataset.frameMotion));
+    });
+    $('customFrameOffsetX').addEventListener('input', () => {
+      customFrameOffsetX = Number($('customFrameOffsetX').value || 0);
+      updateCustomFramePreviewVisibility();
+      markDirty();
+    });
+    $('customFrameOffsetY').addEventListener('input', () => {
+      customFrameOffsetY = Number($('customFrameOffsetY').value || 0);
+      updateCustomFramePreviewVisibility();
+      markDirty();
+    });
+    document.querySelectorAll('[data-background-type]').forEach(el => el.addEventListener('click', () => selectBackground(el.dataset.backgroundType, el.dataset.backgroundValue || '')));
+    ['customAccent','customAccentDark','customBackground','customBackgroundSoft'].forEach(id => $(id).addEventListener('input', () => { if (selectedThemeCode === 'custom') setCssTheme(activeTheme()); markDirty(); }));
+    $('backgroundOverlay').addEventListener('input', () => { $('overlayValue').textContent = `${Math.round(Number($('backgroundOverlay').value) * 100)}%`; markDirty(); });
+    window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue=''; } });
+    $('logoutDialog')?.addEventListener('click', (event) => {
+      if (event.target === $('logoutDialog')) closeLogoutDialog();
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>

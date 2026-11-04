@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VHYROX | Analitik Keuangan</title>
+  <script>
+  (() => {
+    try {
+      const savedAppearance =
+        JSON.parse(
+          localStorage.getItem(
+            'vhyroxAppearance'
+          ) || 'null'
+        );
+
+      if (
+        !savedAppearance ||
+        typeof savedAppearance !== 'object'
+      ) {
+        return;
+      }
+
+      const root =
+        document.documentElement;
+
+      const variables =
+        savedAppearance.cssVariables || {};
+
+      Object.entries(variables).forEach(
+        ([name, value]) => {
+          if (
+            name.startsWith('--') &&
+            typeof value === 'string'
+          ) {
+            root.style.setProperty(
+              name,
+              value
+            );
+          }
+        }
+      );
+
+      if (variables['--accent']) {
+        root.style.setProperty(
+          '--pink',
+          variables['--accent']
+        );
+      }
+
+      if (variables['--accent-dark']) {
+        root.style.setProperty(
+          '--pink-dark',
+          variables['--accent-dark']
+        );
+      }
+
+      if (variables['--secondary']) {
+        root.style.setProperty(
+          '--purple',
+          variables['--secondary']
+        );
+      }
+
+      if (savedAppearance.themeCode) {
+        root.dataset.theme =
+          savedAppearance.themeCode;
+      }
+
+      console.log(
+        '✅ Tema analitik diterapkan:',
+        savedAppearance.themeCode
+      );
+    } catch (error) {
+      console.error(
+        '❌ Tema analitik gagal:',
+        error
+      );
+    }
+  })();
+</script>
+
+  <style id="vhyrox-theme-compat">
+    :root {
+      --accent: #FF2D8A;
+      --accent-rgb: 255, 45, 138;
+      --accent-dark: #C850C0;
+      --accent-dark-rgb: 200, 80, 192;
+      --secondary: #7B5CF0;
+      --secondary-rgb: 123, 92, 240;
+      --bg-rgb: 8, 7, 26;
+    }
+  </style>
+
+  <link rel="stylesheet" href="/dashboard.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #08071a;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border: rgba(255, 255, 255, 0.07);
+      --text: #f0eef8;
+      --text-soft: #8b85b0;
+      --pink: #ff2d8a;
+      --pink-dark: #c850c0;
+      --green: #00e5a0;
+      --red: #ff3b5c;
+      --yellow: #ffb547;
+      --purple: #7b5cf0;
+      --radius: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      color-scheme: dark;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 24px;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Plus Jakarta Sans", sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .nav-item,
+    .nav-item:link,
+    .nav-item:visited,
+    .nav-item:hover,
+    .nav-item:active {
+      text-decoration: none;
+    }
+
+    /* =====================================================
+       PAGE HEADER
+    ===================================================== */
+
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-title h2 {
+      color: var(--text);
+      font-family: "Outfit", sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .page-title p {
+      margin-top: 4px;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    /* =====================================================
+       ANALYTICS
+    ===================================================== */
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    .chart-card {
+      min-width: 0;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+    }
+
+    .chart-title {
+      margin-bottom: 4px;
+      color: var(--text);
+      font-family: "Outfit", sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .chart-sub {
+      margin-bottom: 16px;
+      color: var(--text-soft);
+      font-size: 12px;
+    }
+
+    .chart-box {
+      position: relative;
+      width: 100%;
+      height: 250px;
+    }
+
+    .chart-box canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .prediction-highlight {
+      margin-bottom: 16px;
+      padding: 20px;
+      border: 1px solid rgba(255, 45, 138, 0.2);
+      border-radius: 20px;
+      background: rgba(255, 45, 138, 0.08);
+    }
+
+    .prediction-label {
+      color: var(--text-soft);
+      font-size: 12px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .prediction-amount {
+      margin: 4px 0;
+      color: var(--yellow);
+      font-family: "Outfit", sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .prediction-note {
+      color: var(--text-soft);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .insight-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .insight-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .insight-item::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-top: 6px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--pink);
+      box-shadow: 0 0 10px rgba(255, 45, 138, 0.45);
+    }
+
+    /* =====================================================
+       TABLET
+    ===================================================== */
+
+    @media (max-width: 1020px) {
+    }
+
+    /* =====================================================
+       MOBILE
+    ===================================================== */
+
+    @media (max-width: 760px) {
+      .analytics-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .chart-card {
+        padding: 18px;
+      }
+
+      .chart-box {
+        height: 220px;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .page-title h2 {
+        font-size: 22px;
+      }
+
+      .prediction-amount {
+        font-size: 26px;
+      }
+    }
+
+    @keyframes open-menu {
+      from {
+        opacity: 0;
+        transform: translateY(-7px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* =====================================================
+   USER THEME — ANALITIK
+===================================================== */
+
+:root {
+  --bg-rgb: 8, 7, 26;
+
+  --accent: #ff2d8a;
+  --accent-rgb: 255, 45, 138;
+
+  --accent-dark: #c850c0;
+  --accent-dark-rgb: 200, 80, 192;
+
+  --secondary: #7b5cf0;
+  --secondary-rgb: 123, 92, 240;
+
+  --pink: var(--accent);
+  --pink-dark: var(--accent-dark);
+  --purple: var(--secondary);
+}
+
+.prediction-highlight {
+  border-color:
+    rgba(
+      var(--accent-rgb),
+      0.2
+    );
+
+  background:
+    rgba(
+      var(--accent-rgb),
+      0.08
+    );
+}
+
+.insight-item::before {
+  background:
+    var(--accent);
+
+  box-shadow:
+    0 0 10px
+    rgba(
+      var(--accent-rgb),
+      0.45
+    );
+}
+
+  </style>
+
+  <style id="vhyrox-page-profile-style">
+    .page-profile-link {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(var(--accent-rgb, 255, 45, 138), 0.30);
+      color: #fff;
+      text-decoration: none !important;
+      cursor: pointer;
+      box-shadow: 0 0 0 0 rgba(var(--accent-rgb, 255, 45, 138), 0);
+      transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease,
+        filter .2s ease;
+    }
+
+    .page-profile-link:hover,
+    .page-profile-link:focus-visible {
+      color: #fff;
+      border-color: rgba(var(--accent-rgb, 255, 45, 138), 0.60);
+      box-shadow: 0 0 0 4px rgba(var(--accent-rgb, 255, 45, 138), 0.10);
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+      outline: none;
+    }
+
+    .page-profile-link img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      object-fit: cover;
+    }
+
+    .page-profile-link span {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="dashboard">
+
+    <!-- TOPBAR -->
+    <header class="topbar" id="topbar">
+      <div class="brand">
+        <div class="brand-logo">VX</div>
+
+        <a href="/" class="brand-link">
+          <span class="brand-text">VHYROX</span>
+          <span class="brand-sub">Money</span>
+        </a>
+      </div>
+
+      <nav class="nav" id="mainNav" aria-label="Navigasi utama">
+        <a href="/" class="nav-item">Dashboard</a>
+        <a href="/transaksi.html" class="nav-item">Transaksi</a>
+        <a href="/budget.html" class="nav-item">Budget</a>
+        <a href="/kategori.html" class="nav-item">Kategori</a>
+        <span class="nav-item active" aria-current="page">Analitik</span>
+        <a href="/peringatan.html" class="nav-item">Peringatan</a>
+        <a href="/bot.html" class="nav-item">Money Bot</a>
+      </nav>
+
+      <div class="top-actions">
+        <button
+          type="button"
+          class="btn-refresh"
+          onclick="loadAnalytics()"
+          title="Muat ulang analitik"
+          aria-label="Muat ulang analitik"
+        >
+          ↻
+        </button>
+
+        <a
+          href="/profile.html"
+          class="avatar page-profile-link"
+          id="pageProfileLink"
+          title="Buka profil"
+          aria-label="Buka profil pengguna"
+        >
+          <img
+            id="pageProfileAvatarImage"
+            alt=""
+            hidden
+          >
+          <span id="pageProfileInitials">RD</span>
+        </a>
+      </div>
+
+      <button
+        type="button"
+        class="mobile-nav-toggle"
+        id="mobileNavToggle"
+        aria-label="Buka menu navigasi"
+        aria-controls="mainNav"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-title">
+        <h2>Analitik Keuangan</h2>
+        <p>Insight dari pola belanjamu</p>
+      </div>
+    </div>
+
+    <!-- ANALYTICS CONTENT -->
+    <div class="analytics-grid">
+      <section class="chart-card">
+        <div class="chart-title">Pola Pengeluaran Harian</div>
+        <div class="chart-sub">7 hari terakhir</div>
+
+        <div class="chart-box">
+          <canvas id="dailyChart"></canvas>
+        </div>
+      </section>
+
+      <section class="chart-card">
+        <div class="chart-title">Prediksi AI</div>
+        <div class="chart-sub">Berdasarkan pola belanjamu</div>
+
+        <div class="prediction-highlight">
+          <div class="prediction-label">Estimasi Saldo Akhir Bulan</div>
+          <div class="prediction-amount" id="prediksiSaldo">Rp0</div>
+          <div class="prediction-note" id="prediksiNote">
+            Jika pola belanja tidak berubah
+          </div>
+        </div>
+
+        <div class="insight-list" id="insightList">
+          <div class="insight-item">Menganalisis data...</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    /* =====================================================
+       MOBILE NAVIGATION
+    ===================================================== */
+
+    const topbar = document.getElementById("topbar");
+    const mainNav = document.getElementById("mainNav");
+    const navToggle = document.getElementById("mobileNavToggle");
+
+    function closeMobileNav() {
+      mainNav.classList.remove("is-open");
+      navToggle.classList.remove("is-open");
+      navToggle.setAttribute("aria-expanded", "false");
+      navToggle.setAttribute("aria-label", "Buka menu navigasi");
+    }
+
+    navToggle.addEventListener("click", () => {
+      const isOpen = mainNav.classList.toggle("is-open");
+
+      navToggle.classList.toggle("is-open", isOpen);
+      navToggle.setAttribute("aria-expanded", String(isOpen));
+      navToggle.setAttribute(
+        "aria-label",
+        isOpen ? "Tutup menu navigasi" : "Buka menu navigasi"
+      );
+    });
+
+    mainNav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", closeMobileNav);
+    });
+
+    document.addEventListener("click", (event) => {
+      if (
+        window.innerWidth <= 860 &&
+        !topbar.contains(event.target)
+      ) {
+        closeMobileNav();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeMobileNav();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 860) {
+        closeMobileNav();
+      }
+    });
+
+    /* =====================================================
+       ANALYTICS
+    ===================================================== */
+
+    const rupiah = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      maximumFractionDigits: 0
+    });
+
+    const formatRp = (value) =>
+      rupiah.format(Number(value || 0));
+
+    let dailyChart;
+
+    function redirectToLogin() {
+      const returnTo = encodeURIComponent(
+        window.location.pathname + window.location.search
+      );
+
+      window.location.replace(
+        `/login.html?returnTo=${returnTo}`
+      );
+    }
+
+    async function parseJsonResponse(response) {
+      const raw = await response.text();
+
+      if (!raw) return {};
+
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return { error: raw };
+      }
+    }
+
+    function cssValue(
+      variableName,
+      fallback
+    ) {
+      return (
+        getComputedStyle(
+          document.documentElement
+        )
+          .getPropertyValue(
+            variableName
+          )
+          .trim() ||
+        fallback
+      );
+    }
+
+
+    async function loadAnalytics() {
+      try {
+        const [analitikRes, dashRes] = await Promise.all([
+          fetch("/api/analitik", {
+            credentials: "include",
+            headers: { Accept: "application/json" }
+          }),
+          fetch("/api/dashboard", {
+            credentials: "include",
+            headers: { Accept: "application/json" }
+          })
+        ]);
+
+        if (
+          analitikRes.status === 401 ||
+          dashRes.status === 401
+        ) {
+          redirectToLogin();
+          return;
+        }
+
+        const analitik = await parseJsonResponse(analitikRes);
+        const dashData = await parseJsonResponse(dashRes);
+
+        if (!analitikRes.ok || analitik.error) {
+          throw new Error(
+            analitik.error || "Data analitik gagal dimuat."
+          );
+        }
+
+        if (!dashRes.ok || dashData.error) {
+          throw new Error(
+            dashData.error || "Ringkasan keuangan gagal dimuat."
+          );
+        }
+
+        renderDailyChart(analitik.mingguan || []);
+        renderPrediction(dashData, analitik);
+      } catch (error) {
+        console.error("Gagal memuat analitik:", error);
+
+        document.getElementById("prediksiNote").textContent =
+          "Data analitik gagal dimuat. Coba muat ulang halaman.";
+
+        document.getElementById("insightList").innerHTML =
+          '<div class="insight-item">Tidak dapat mengambil data dari server.</div>';
+      }
+    }
+
+    function renderDailyChart(mingguan) {
+      const canvas = document.getElementById("dailyChart");
+      const context = canvas.getContext("2d");
+
+      if (dailyChart) {
+        dailyChart.destroy();
+      }
+
+      const labels = [];
+      const values = [];
+      const today = new Date();
+
+      for (let index = 6; index >= 0; index -= 1) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - index);
+
+        const dayName = date.toLocaleDateString("id-ID", {
+          weekday: "short"
+        });
+
+        labels.push(dayName);
+
+        const found = mingguan.find((item) => {
+          const start = new Date(item.start_date);
+          const end = new Date(start);
+          end.setDate(end.getDate() + 6);
+
+          return date >= start && date <= end;
+        });
+
+        values.push(
+          found
+            ? Math.round(Number(found.total || 0) / 7)
+            : 0
+        );
+      }
+
+      dailyChart = new Chart(context, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Pengeluaran",
+              data: values,
+              backgroundColor:
+                cssValue(
+                  "--accent-dark",
+                  "#c850c0"
+                ),
+              borderRadius: 8
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color:
+                  cssValue(
+                    "--text-soft",
+                    "#8b85b0"
+                  )
+              }
+            },
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: "rgba(255,255,255,0.06)"
+              },
+              ticks: {
+                color:
+                  cssValue(
+                    "--text-soft",
+                    "#8b85b0"
+                  ),
+                callback: (value) => formatRp(value)
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderPrediction(dashData) {
+      const totalPemasukan = Number(
+        dashData.saldo || dashData.pemasukan || 0
+      );
+
+      const totalKeluar = Number(
+        dashData.totalKeluar || 0
+      );
+
+      const sisa = Number(
+        dashData.sisa ?? totalPemasukan - totalKeluar
+      );
+
+      const today = new Date();
+      const lastDate = new Date(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        0
+      ).getDate();
+
+      const remainingDays = Math.max(
+        lastDate - today.getDate(),
+        0
+      );
+
+      const dailyAverage =
+        totalKeluar / Math.max(today.getDate(), 1);
+
+      const prediction =
+        sisa - dailyAverage * remainingDays;
+
+      document.getElementById("prediksiSaldo").textContent =
+        formatRp(prediction);
+
+      document.getElementById("prediksiNote").textContent =
+        prediction >= 0
+          ? `Dengan pola ini, kamu masih punya sisa ${formatRp(prediction)} di akhir bulan.`
+          : `Uangmu diprediksi kurang ${formatRp(Math.abs(prediction))}. Kurangi pengeluaran harian.`;
+
+      const categoryData = Array.isArray(dashData.kategoriData)
+        ? dashData.kategoriData
+        : [];
+
+      const sortedCategories = [...categoryData].sort(
+        (first, second) =>
+          Number(second.total || 0) -
+          Number(first.total || 0)
+      );
+
+      const insights = [];
+
+      if (sortedCategories.length > 0) {
+        const topCategory = sortedCategories[0];
+        const topTotal = Number(topCategory.total || 0);
+
+        const percentage = totalKeluar > 0
+          ? ((topTotal / totalKeluar) * 100).toFixed(0)
+          : 0;
+
+        insights.push(
+          `Kategori <strong>${escapeHTML(topCategory.kategori)}</strong> paling besar: ${formatRp(topTotal)} (${percentage}% dari pengeluaran).`
+        );
+      } else {
+        insights.push(
+          "Belum ada transaksi yang cukup untuk menentukan kategori pengeluaran terbesar."
+        );
+      }
+
+      const transport = categoryData.find((item) =>
+        String(item.kategori || "")
+          .toLowerCase()
+          .includes("transport")
+      );
+
+      if (transport) {
+        insights.push(
+          "Coba tetapkan batas khusus untuk transportasi agar pengeluaran lebih terkendali."
+        );
+      }
+
+      insights.push(
+        "Pisahkan anggaran kebutuhan utama dan pengeluaran fleksibel sebelum mulai berbelanja."
+      );
+
+      document.getElementById("insightList").innerHTML =
+        insights
+          .map(
+            (insight) =>
+              `<div class="insight-item">${insight}</div>`
+          )
+          .join("");
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    loadAnalytics();
+  </script>
+
+  <script id="vhyrox-page-profile-script">
+    (() => {
+      const initialsFromName = (name) => {
+        const parts = String(name || 'User')
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean)
+          .slice(0, 2);
+
+        return parts
+          .map((part) => part.charAt(0).toUpperCase())
+          .join('') || 'U';
+      };
+
+      const readDraft = (userId) => {
+        try {
+          if (Number(userId) <= 0) return {};
+
+          return JSON.parse(
+            localStorage.getItem(
+              `vhyroxProfileDraft:${Number(userId)}`
+            ) || '{}'
+          ) || {};
+        } catch {
+          return {};
+        }
+      };
+
+      const applyProfileShortcut = (payload = {}) => {
+        const source = payload?.data || payload || {};
+        const user = source.user || {};
+        const profile = source.profile || source.user_profile || {};
+        const userId = Number(user.id || 0);
+        const draft = readDraft(userId);
+
+        const displayName =
+          draft.display_name ||
+          profile.display_name ||
+          draft.nama ||
+          user.nama ||
+          'User';
+
+        const avatarUrl = String(
+          draft.avatar_url ||
+          user.avatar_url ||
+          ''
+        ).trim();
+
+        const link = document.getElementById('pageProfileLink');
+        const image = document.getElementById('pageProfileAvatarImage');
+        const initials = document.getElementById('pageProfileInitials');
+
+        if (!link || !image || !initials) return;
+
+        link.title = `Buka profil ${displayName}`;
+        link.setAttribute('aria-label', `Buka profil ${displayName}`);
+        initials.textContent = initialsFromName(displayName);
+
+        if (avatarUrl) {
+          image.src = avatarUrl;
+          image.alt = `Foto profil ${displayName}`;
+          image.hidden = false;
+          initials.hidden = true;
+
+          image.onerror = () => {
+            image.hidden = true;
+            image.removeAttribute('src');
+            initials.hidden = false;
+          };
+        } else {
+          image.hidden = true;
+          image.removeAttribute('src');
+          initials.hidden = false;
+        }
+      };
+
+      const loadProfileShortcut = async () => {
+        let payload = {};
+
+        try {
+          const response = await fetch('/api/me/appearance', {
+            credentials: 'include',
+            headers: { Accept: 'application/json' }
+          });
+
+          if (response.ok) {
+            payload = await response.json();
+          } else if (response.status === 401) {
+            redirectToLogin();
+            return;
+          }
+        } catch {}
+
+        applyProfileShortcut(payload);
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadProfileShortcut, { once: true });
+      } else {
+        loadProfileShortcut();
+      }
+
+      window.addEventListener('storage', (event) => {
+        if (
+          event.key === 'vhyroxAppearance' ||
+          String(event.key || '').startsWith('vhyroxProfileDraft:')
+        ) {
+          loadProfileShortcut();
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+# Dependency
+node_modules/
+
+# Environment
+.env
+.env.*
+
+# Firebase secret
+secrets/*.json
+*-firebase-admin.json
+
+# Private key
+*.pem
+*.key
+
+# Database dump
+*.sql
+
+# Log
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

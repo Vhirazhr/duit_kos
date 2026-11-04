@@ -1,0 +1,2157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VHYROX Money — Catat Keuangan Langsung dari Telegram</title>
+    <meta name="description" content="Catat pemasukan dan pengeluaran lewat Telegram, atur budget, lalu pantau semuanya dari satu dashboard pribadi.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #08071A;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.07);
+            --text: #F0EEF8;
+            --text-soft: #8B85B0;
+            --pink: #FF2D8A;
+            --pink-dark: #C850C0;
+            --green: #00E5A0;
+            --red: #FF3B5C;
+            --yellow: #FFB547;
+            --purple: #7B5CF0;
+            --blue: #3B82F6;
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ---------- ANIMATIONS ---------- */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes softGlow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ---------- LAYOUT ---------- */
+        .container {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 90px 0;
+            position: relative;
+        }
+
+        .bg-soft {
+            background: rgba(255,255,255,0.02);
+        }
+
+        /* ---------- BACKGROUND GLOW ---------- */
+        .glow-bg {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+        .glow-bg::before, .glow-bg::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+        }
+        .glow-bg::before {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,45,138,0.07), transparent);
+            top: -100px; left: 5%;
+            animation: softGlow 7s ease-in-out infinite;
+        }
+        .glow-bg::after {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(123,92,240,0.06), transparent);
+            bottom: 20%; right: 5%;
+            animation: softGlow 10s ease-in-out infinite reverse;
+        }
+
+        /* ---------- NAVBAR ---------- */
+        .navbar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(8,7,26,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .navbar-inner {
+            display: flex; align-items: center; justify-content: space-between;
+            height: 64px; max-width: 1150px; margin: 0 auto; padding: 0 24px;
+        }
+        .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .brand-logo {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+            border-radius: 10px;
+            display: grid; place-items: center;
+            font-size: 0.75rem; font-weight: 900; color: white;
+        }
+        .brand-name {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 900; font-size: 14px; letter-spacing: 0.7px;
+            color: white;
+        }
+        .brand-sub {
+            font-size: 11px; font-weight: 300; color: var(--pink);
+        }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-link {
+            color: var(--text-soft); font-size: 13px; font-weight: 500;
+            text-decoration: none; transition: color 0.2s;
+        }
+        .nav-link:hover { color: white; }
+        .nav-actions { display: flex; align-items: center; gap: 12px; }
+        .btn-ghost {
+            color: var(--text-soft); font-size: 13px; font-weight: 500;
+            text-decoration: none; padding: 8px 16px; border-radius: 20px; transition: 0.2s;
+        }
+        .btn-ghost:hover { color: white; background: rgba(255,255,255,0.05); }
+        .btn-primary {
+            padding: 10px 22px;
+            background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+            border: none; border-radius: 20px;
+            color: white; font-weight: 700; font-size: 13px;
+            cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(255,45,138,0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(255,45,138,0.5);
+        }
+        .btn-lg {
+            padding: 16px 38px;
+            font-size: 16px; font-weight: 800;
+            border-radius: 16px;
+            box-shadow: 0 16px 45px rgba(255,45,138,0.4);
+        }
+
+        /* ---------- HERO ---------- */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 50px;
+            align-items: center;
+        }
+        .hero-content { position: relative; z-index: 1; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 14px;
+            background: rgba(255,45,138,0.08);
+            border: 1px solid rgba(255,45,138,0.2);
+            border-radius: 999px;
+            font-size: 11px; font-weight: 600; color: #FF85C2;
+            margin-bottom: 22px;
+        }
+        .hero-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(38px, 6vw, 58px);
+            font-weight: 900; line-height: 1.2;
+            color: white; margin-bottom: 14px;
+        }
+        .hero-title span { color: var(--pink); }
+        .hero-desc {
+            font-size: 15px; color: var(--text-soft);
+            max-width: 480px; margin-bottom: 30px;
+            line-height: 1.7;
+        }
+        .hero-desc strong { color: white; font-weight: 600; }
+        .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+        .hero-trust {
+            display: flex; gap: 28px; font-size: 11px;
+            color: var(--text-soft); font-weight: 500;
+        }
+        .hero-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: float 5s ease-in-out infinite;
+        }
+        .hero-maskot {
+            width: 280px;
+            height: auto;
+            filter: drop-shadow(0 20px 60px rgba(255,45,138,0.4));
+            /* fallback jika gambar gagal */
+            background: rgba(255,45,138,0.1);
+            border-radius: 50%;
+            aspect-ratio: 1/1;
+            object-fit: contain;
+        }
+        /* fallback jika gambar error */
+        .hero-maskot-fallback {
+            display: none;
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(135deg, rgba(255,45,138,0.2), rgba(200,80,192,0.1));
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            filter: drop-shadow(0 20px 60px rgba(255,45,138,0.4));
+        }
+        img.hero-maskot.error + .hero-maskot-fallback {
+            display: flex;
+        }
+        .hero-mini-cards {
+            display: flex; gap: 12px; margin-top: 20px;
+        }
+        .mini-badge {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .mini-badge.green { color: var(--green); }
+        .mini-badge.yellow { color: var(--yellow); }
+
+        /* ---------- STATS BAR ---------- */
+        .stats-hero {
+            padding: 28px 0;
+            background: rgba(255,255,255,0.02);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-top: 30px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            text-align: center;
+        }
+        .stat-value {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 22px; font-weight: 900; color: white;
+        }
+        .stat-label {
+            font-size: 11px; color: var(--text-soft); margin-top: 4px;
+        }
+
+        /* ---------- SECTION HEADERS ---------- */
+        .section-label {
+            font-size: 11px; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 2.5px;
+            color: var(--pink); margin-bottom: 10px;
+        }
+        .section-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 32px; font-weight: 900;
+            line-height: 1.4; color: white; margin-bottom: 12px;
+        }
+        .section-subtitle {
+            font-size: 15px; color: var(--text-soft);
+            max-width: 520px; line-height: 1.7;
+        }
+
+        /* ---------- PAIN POINTS ---------- */
+        .pain-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px; align-items: start;
+        }
+        .pain-item {
+            display: flex; align-items: center; gap: 16px;
+            padding: 16px; background: var(--card-bg);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            margin-bottom: 10px; transition: 0.2s;
+        }
+        .pain-item:hover { border-color: rgba(255,255,255,0.15); }
+        .pain-emoji { font-size: 24px; }
+
+        /* ---------- FEATURES ---------- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 50px;
+        }
+        .feature-card {
+            padding: 26px; background: var(--card-bg);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            transition: 0.2s;
+        }
+        .feature-card:hover {
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-4px);
+        }
+        .feature-icon {
+            width: 42px; height: 42px; border-radius: 18px;
+            display: grid; place-items: center; margin-bottom: 16px;
+            font-size: 20px;
+        }
+        .feature-icon.pink { background: rgba(255,45,138,0.08); border: 1px solid rgba(255,45,138,0.2); }
+        .feature-icon.purple { background: rgba(200,80,192,0.08); border: 1px solid rgba(200,80,192,0.2); }
+        .feature-icon.violet { background: rgba(123,92,240,0.08); border: 1px solid rgba(123,92,240,0.2); }
+        .feature-icon.yellow { background: rgba(255,181,71,0.08); border: 1px solid rgba(255,181,71,0.2); }
+        .feature-icon.green { background: rgba(0,229,160,0.08); border: 1px solid rgba(0,229,160,0.2); }
+        .feature-icon.blue { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); }
+        .feature-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px; font-weight: 700; color: white; margin-bottom: 6px;
+        }
+        .feature-desc {
+            font-size: 13px; color: var(--text-soft); line-height: 1.7;
+        }
+
+        /* ---------- STEPS ---------- */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 28px;
+            margin-top: 50px;
+            text-align: center;
+        }
+        .step-icon-wrap {
+            width: 64px; height: 64px; border-radius: 16px;
+            display: grid; place-items: center; margin: 0 auto 14px;
+            font-size: 24px;
+        }
+        .step-icon-wrap.pink { background: rgba(255,45,138,0.08); border: 1px solid rgba(255,45,138,0.2); }
+        .step-icon-wrap.purple { background: rgba(200,80,192,0.08); border: 1px solid rgba(200,80,192,0.2); }
+        .step-icon-wrap.violet { background: rgba(123,92,240,0.08); border: 1px solid rgba(123,92,240,0.2); }
+        .step-icon-wrap.green { background: rgba(0,229,160,0.08); border: 1px solid rgba(0,229,160,0.2); }
+        .step-label { font-size: 11px; font-weight: 900; letter-spacing: 1px; margin-bottom: 6px; }
+        .step-label.pink { color: var(--pink); }
+        .step-label.purple { color: var(--pink-dark); }
+        .step-label.violet { color: var(--purple); }
+        .step-label.green { color: var(--green); }
+        .step-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px; font-weight: 700; color: white; margin-bottom: 4px;
+        }
+        .step-desc { font-size: 12px; color: var(--text-soft); line-height: 1.6; }
+
+        /* ---------- DASHBOARD PREVIEW ---------- */
+        .preview-box {
+            max-width: 720px; margin: 50px auto 0;
+            padding: 28px; background: var(--card-bg);
+            border: 1px solid rgba(255,45,138,0.15);
+            border-radius: 24px;
+            box-shadow: 0 30px 80px rgba(255,45,138,0.08);
+        }
+        .preview-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px;
+        }
+        .preview-badge {
+            padding: 5px 12px; background: rgba(0,229,160,0.1);
+            border: 1px solid rgba(0,229,160,0.25);
+            border-radius: 999px; font-size: 11px; font-weight: 700; color: var(--green);
+            display: flex; align-items: center; gap: 5px;
+        }
+        .preview-metrics {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 14px; margin-bottom: 24px;
+        }
+        .metric-card {
+            padding: 14px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 18px; text-align: center;
+        }
+        .metric-label { font-size: 11px; color: var(--text-soft); margin-bottom: 4px; }
+        .metric-value { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700; }
+        .metric-value.green { color: var(--green); }
+        .metric-value.pink { color: var(--pink); }
+        .metric-value.purple { color: var(--pink-dark); }
+        .warning-strip {
+            padding: 16px; background: rgba(255,59,92,0.06);
+            border: 1px solid rgba(255,59,92,0.2);
+            border-radius: 18px; display: flex; gap: 12px; align-items: center;
+        }
+
+        /* ---------- TESTIMONIALS ---------- */
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: 0.7fr 1fr;
+            gap: 30px; margin-top: 50px; align-items: start;
+        }
+        .rating-card {
+            padding: 28px; background: var(--card-bg);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            text-align: center;
+        }
+        .rating-big { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 56px; font-weight: 900; color: white; }
+        .stars { color: var(--yellow); font-size: 16px; margin: 6px 0; }
+        .rating-caption { font-size: 12px; color: var(--text-soft); }
+        .review-form-card {
+            margin-top: 18px; padding: 20px; text-align: left;
+            background: rgba(255,255,255,0.025); border: 1px solid var(--border);
+            border-radius: 18px;
+        }
+        .review-form-title { color: white; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+        .review-form-help { color: var(--text-soft); font-size: 12px; line-height: 1.55; margin-bottom: 14px; }
+        .review-login-link { color: var(--pink); font-weight: 700; text-decoration: none; }
+        .review-login-link:hover { color: white; }
+        .star-picker { display: flex; gap: 5px; margin: 2px 0 14px; }
+        .star-picker button {
+            border: 0; padding: 0; background: transparent; color: rgba(255,255,255,0.2);
+            font-size: 27px; line-height: 1; cursor: pointer; transition: 0.18s ease;
+        }
+        .star-picker button.active, .star-picker button:hover { color: var(--yellow); transform: translateY(-1px); }
+        .review-textarea {
+            width: 100%; min-height: 105px; resize: vertical; box-sizing: border-box;
+            border: 1px solid var(--border); border-radius: 13px; padding: 12px 13px;
+            background: rgba(5,4,20,0.7); color: white; font: inherit; font-size: 13px;
+            outline: none;
+        }
+        .review-textarea:focus { border-color: rgba(255,45,138,0.65); box-shadow: 0 0 0 3px rgba(255,45,138,0.08); }
+        .review-form-meta { display: flex; justify-content: space-between; gap: 12px; margin: 7px 0 13px; color: var(--text-soft); font-size: 11px; }
+        .review-submit { width: 100%; justify-content: center; border: 0; cursor: pointer; }
+        .review-submit:disabled { opacity: 0.55; cursor: wait; }
+        .review-status { min-height: 18px; margin-top: 10px; color: var(--text-soft); font-size: 12px; line-height: 1.5; }
+        .review-status.success { color: var(--green); }
+        .review-status.error { color: var(--red); }
+        .testimonial-card {
+            padding: 18px; background: var(--card-bg);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            margin-bottom: 14px;
+        }
+        .testimonial-user { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .avatar-circle {
+            width: 34px; height: 34px; border-radius: 50%;
+            display: grid; place-items: center;
+            font-size: 11px; font-weight: 900; color: white;
+            flex: 0 0 34px; overflow: hidden;
+        }
+        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-circle.pink { background: linear-gradient(135deg, var(--pink), rgba(255,45,138,0.6)); }
+        .avatar-circle.purple { background: linear-gradient(135deg, var(--pink-dark), rgba(200,80,192,0.6)); }
+        .avatar-circle.violet { background: linear-gradient(135deg, var(--purple), rgba(123,92,240,0.6)); }
+        .testimonial-name { font-size: 13px; font-weight: 700; color: white; }
+        .testimonial-date { font-size: 11px; color: var(--text-soft); }
+        .testimonial-text { font-size: 13px; color: #C8C4D8; line-height: 1.6; }
+        .testimonial-stars { color: var(--yellow); font-size: 12px; letter-spacing: 1px; margin-bottom: 8px; }
+        .review-empty {
+            padding: 28px; text-align: center; color: var(--text-soft); font-size: 13px;
+            border: 1px dashed var(--border); border-radius: var(--radius); line-height: 1.7;
+        }
+
+        /* ---------- FAQ ---------- */
+        .faq-list { max-width: 650px; margin: 50px auto 0; }
+        .faq-item {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius); margin-bottom: 10px; overflow: hidden;
+        }
+        .faq-question {
+            padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; font-size: 14px; font-weight: 600; color: white;
+        }
+        .faq-answer {
+            padding: 0 20px 18px; font-size: 13px; color: var(--text-soft);
+            line-height: 1.7; display: none;
+        }
+        .faq-item.open .faq-answer { display: block; }
+        .faq-chevron { font-size: 12px; color: var(--text-soft); transition: 0.3s; }
+        .faq-item.open .faq-chevron { transform: rotate(90deg); }
+
+        /* ---------- CTA ---------- */
+        .cta-box {
+            text-align: center; padding: 70px 30px;
+            background: linear-gradient(135deg, rgba(255,45,138,0.08), rgba(200,80,192,0.05), rgba(123,92,240,0.08));
+            border: 1px solid rgba(255,45,138,0.18); border-radius: 24px;
+            position: relative; overflow: hidden;
+        }
+        .cta-maskot {
+            width: 110px; height: auto;
+            margin: 0 auto 24px;
+            display: block;
+            filter: drop-shadow(0 8px 30px rgba(255,45,138,0.5));
+        }
+        .cta-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 40px; font-weight: 900; color: white; margin-bottom: 12px;
+        }
+        .cta-title span { color: var(--pink); }
+        .cta-desc { font-size: 15px; color: var(--text-soft); margin-bottom: 30px; }
+        .cta-trust { font-size: 11px; color: var(--text-soft); margin-top: 16px; }
+
+        /* ---------- FOOTER ---------- */
+        footer { padding: 40px 0; text-align: center; font-size: 13px; color: var(--text-soft); }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 10px;
+        }
+        .footer-links a {
+            color: var(--text-soft);
+            text-decoration: none;
+        }
+        .footer-links a:hover { color: white; }
+
+        @media (max-width: 768px) {
+            .hero-grid, .pain-grid, .testimonial-grid, .stats-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr 1fr; }
+            .steps-grid { grid-template-columns: 1fr 1fr; }
+            .hero-title { font-size: 36px; }
+            .section-title { font-size: 26px; }
+            .nav-links { display: none; }
+        }
+        @media (max-width: 480px) {
+            .features-grid, .steps-grid { grid-template-columns: 1fr; }
+        }
+
+        /* =====================================================
+           LANDING REDESIGN
+        ===================================================== */
+        :root {
+            --bg: #070612;
+            --surface: #100E1D;
+            --surface-2: #151225;
+            --card-bg: rgba(255, 255, 255, 0.035);
+            --border: rgba(255, 255, 255, 0.095);
+            --text: #F7F5FB;
+            --text-soft: #AAA5BA;
+            --pink: #FF3D96;
+            --pink-dark: #C85BC7;
+            --radius: 22px;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 78% 8%, rgba(255, 61, 150, 0.11), transparent 28rem),
+                radial-gradient(circle at 10% 34%, rgba(123, 92, 240, 0.08), transparent 30rem),
+                var(--bg);
+            font-size: 16px;
+        }
+
+        .glow-bg { display: none; }
+
+        .container {
+            width: min(1180px, calc(100% - 40px));
+            max-width: none;
+            padding: 0;
+        }
+
+        section { padding: 112px 0; }
+
+        .bg-soft {
+            background: rgba(255, 255, 255, 0.018);
+            border-block: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .navbar {
+            position: sticky;
+            top: 14px;
+            width: min(1180px, calc(100% - 32px));
+            margin: 14px auto 0;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 20px;
+            background: rgba(10, 8, 22, 0.8);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.26);
+        }
+
+        .navbar-inner {
+            max-width: none;
+            height: 68px;
+            padding: 0 14px 0 18px;
+        }
+
+        .brand { gap: 9px; }
+        .brand-logo { width: 36px; height: 36px; border-radius: 12px; }
+        .brand-name { font-size: 15px; }
+        .brand-sub { font-size: 12px; }
+        .nav-links { gap: 8px; }
+        .nav-link { padding: 9px 13px; border-radius: 12px; }
+        .nav-link:hover { background: rgba(255, 255, 255, 0.05); }
+        .nav-actions { gap: 6px; }
+
+        .btn-primary {
+            min-height: 42px;
+            justify-content: center;
+            border-radius: 13px;
+            background: var(--pink);
+            box-shadow: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            background: #FF55A2;
+            box-shadow: 0 12px 30px rgba(255, 61, 150, 0.24);
+        }
+
+        .btn-ghost { border-radius: 12px; }
+        .btn-lg { min-height: 54px; padding: 14px 24px; font-size: 14px; }
+
+        .hero-section {
+            min-height: calc(100vh - 96px);
+            display: grid;
+            align-items: center;
+            padding: 72px 0 92px;
+        }
+
+        .hero-grid {
+            grid-template-columns: minmax(0, 0.92fr) minmax(480px, 1.08fr);
+            gap: clamp(48px, 7vw, 92px);
+        }
+
+        .hero-badge {
+            margin-bottom: 26px;
+            padding: 8px 12px;
+            border-color: rgba(255, 61, 150, 0.28);
+            background: rgba(255, 61, 150, 0.08);
+            color: #FF9BC9;
+            font-size: 12px;
+            letter-spacing: 0.15px;
+        }
+
+        .hero-title {
+            max-width: 650px;
+            margin-bottom: 22px;
+            font-size: clamp(46px, 5.8vw, 72px);
+            line-height: 1.02;
+            letter-spacing: -2.7px;
+        }
+
+        .hero-title span {
+            color: inherit;
+            background: linear-gradient(105deg, #FF65AC, #D679E2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            max-width: 570px;
+            margin-bottom: 30px;
+            color: #B7B2C4;
+            font-size: 17px;
+            line-height: 1.75;
+        }
+
+        .hero-actions { margin-bottom: 28px; }
+
+        .hero-secondary {
+            min-height: 54px;
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 18px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            color: #D6D2DE;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .hero-secondary:hover { border-color: rgba(255, 255, 255, 0.2); background: rgba(255,255,255,.035); }
+
+        .hero-trust {
+            flex-wrap: wrap;
+            gap: 10px 22px;
+            color: #8E899D;
+            font-size: 12px;
+        }
+
+        .hero-visual {
+            position: relative;
+            display: block;
+            animation: none;
+        }
+
+        .product-window {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            background: linear-gradient(145deg, rgba(24, 20, 40, 0.97), rgba(11, 9, 24, 0.98));
+            box-shadow: 0 38px 100px rgba(0, 0, 0, 0.45), 0 0 80px rgba(255, 61, 150, 0.08);
+        }
+
+        .product-window::before {
+            content: '';
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            top: -150px;
+            right: -90px;
+            border-radius: 50%;
+            background: rgba(255, 61, 150, 0.16);
+            filter: blur(55px);
+        }
+
+        .window-bar {
+            min-height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.075);
+        }
+
+        .window-brand { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; }
+        .window-avatar { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 10px; background: linear-gradient(135deg, var(--pink), var(--pink-dark)); font-size: 10px; }
+        .window-online { color: var(--green); font-size: 11px; }
+        .chat-demo { padding: 26px 24px 20px; }
+        .chat-row { display: flex; margin-bottom: 16px; }
+        .chat-row.user { justify-content: flex-end; }
+        .chat-bubble { max-width: 82%; padding: 13px 15px; border-radius: 17px; font-size: 13px; line-height: 1.55; }
+        .chat-row.user .chat-bubble { border-bottom-right-radius: 5px; background: var(--pink); color: white; }
+        .chat-row.bot .chat-bubble { border: 1px solid rgba(255,255,255,.09); border-bottom-left-radius: 5px; background: rgba(255,255,255,.05); color: #D9D5E2; }
+        .chat-bubble strong { color: white; }
+
+        .demo-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 0 24px 24px;
+        }
+
+        .demo-summary-card {
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 17px;
+            background: rgba(255,255,255,.03);
+        }
+
+        .demo-summary-card small { display: block; margin-bottom: 5px; color: var(--text-soft); font-size: 10px; }
+        .demo-summary-card strong { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; }
+        .demo-summary-card.accent strong { color: #FF7DB8; }
+        .demo-summary-card.safe strong { color: var(--green); }
+
+        .floating-note {
+            position: absolute;
+            right: -26px;
+            bottom: 54px;
+            width: 210px;
+            padding: 14px;
+            border: 1px solid rgba(255, 181, 71, 0.22);
+            border-radius: 16px;
+            background: rgba(20, 17, 34, 0.96);
+            box-shadow: 0 20px 45px rgba(0,0,0,.34);
+            color: #DCD7E4;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .floating-note b { display: block; margin-bottom: 3px; color: var(--yellow); font-size: 12px; }
+
+        .stats-hero {
+            margin-top: 0;
+            padding: 22px 0;
+            background: rgba(255,255,255,.018);
+        }
+
+        .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 0; text-align: left; }
+        .stats-grid > div { padding: 4px 24px; border-right: 1px solid rgba(255,255,255,.07); }
+        .stats-grid > div:first-child { padding-left: 0; }
+        .stats-grid > div:last-child { border-right: 0; }
+        .stat-value { font-size: 14px; font-weight: 800; }
+        .stat-label { max-width: 190px; color: #888394; font-size: 11px; line-height: 1.45; }
+
+        .section-label { margin-bottom: 14px; font-size: 10px; letter-spacing: 2.1px; }
+        .section-title { max-width: 710px; margin-bottom: 16px; font-size: clamp(34px, 4vw, 50px); line-height: 1.08; letter-spacing: -1.4px; }
+        .section-subtitle { max-width: 650px; color: #A8A3B4; font-size: 16px; }
+
+        .pain-grid { grid-template-columns: .86fr 1.14fr; gap: 86px; align-items: center; }
+        .pain-list { display: grid; gap: 12px; }
+        .pain-item { margin: 0; padding: 20px; border-radius: 18px; background: rgba(255,255,255,.025); }
+        .pain-emoji { width: 34px; height: 34px; display: grid; place-items: center; flex: 0 0 34px; border-radius: 11px; background: rgba(255,61,150,.09); color: #FF83BA; font-size: 13px; font-weight: 800; }
+
+        .features-grid { grid-template-columns: repeat(12, 1fr); gap: 16px; }
+        .feature-card { grid-column: span 4; min-height: 225px; padding: 26px; border-radius: 22px; background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.018)); }
+        .feature-card:nth-child(1), .feature-card:nth-child(2) { grid-column: span 6; min-height: 250px; }
+        .feature-card:hover { transform: translateY(-2px); border-color: rgba(255,61,150,.24); }
+        .feature-icon { width: 44px; height: 44px; border-radius: 14px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 800; }
+        .feature-title { margin-bottom: 9px; font-size: 18px; }
+        .feature-desc { max-width: 470px; color: #A7A2B2; font-size: 13px; }
+
+        .steps-grid { position: relative; grid-template-columns: repeat(4, 1fr); gap: 14px; text-align: left; }
+        .steps-grid > div { padding: 22px; border: 1px solid var(--border); border-radius: 20px; background: rgba(255,255,255,.025); }
+        .step-icon-wrap { width: 42px; height: 42px; margin: 0 0 24px; border-radius: 13px; font-size: 14px; font-weight: 900; }
+        .step-label { font-size: 9px; }
+        .step-title { margin-bottom: 8px; font-size: 16px; }
+        .step-desc { font-size: 12px; }
+
+        .preview-box { max-width: none; margin-top: 46px; padding: 30px; border-radius: 26px; background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.018)); box-shadow: 0 35px 90px rgba(0,0,0,.26); }
+        .preview-metrics { gap: 12px; }
+        .metric-card { padding: 20px; text-align: left; }
+        .metric-value { font-size: 18px; }
+
+        .testimonial-grid { grid-template-columns: 380px minmax(0, 1fr); gap: 18px; }
+        .rating-card { position: sticky; top: 100px; padding: 26px; border-radius: 22px; }
+        .testimonial-card { padding: 22px; border-radius: 19px; }
+
+        .faq-layout { display: grid; grid-template-columns: .75fr 1.25fr; gap: 80px; align-items: start; }
+        .faq-list { max-width: none; margin: 0; }
+        .faq-item { border-radius: 17px; }
+        .faq-question { padding: 20px; }
+
+        .cta-box { padding: 76px 30px; border-radius: 30px; background: radial-gradient(circle at 50% -10%, rgba(255,61,150,.19), transparent 55%), #100D20; }
+        .cta-maskot { width: 76px; margin-bottom: 20px; }
+        .cta-title { font-size: clamp(36px, 5vw, 56px); line-height: 1.06; letter-spacing: -1.7px; }
+        .cta-desc { max-width: 600px; margin: 0 auto 28px; }
+        footer .container { display: flex; justify-content: space-between; align-items: center; text-align: left; }
+        .footer-links { margin: 0; }
+
+        @media (max-width: 980px) {
+            .hero-section { min-height: auto; }
+            .hero-grid { grid-template-columns: 1fr; }
+            .hero-content { max-width: 720px; }
+            .hero-visual { max-width: 650px; }
+            .floating-note { right: 16px; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .feature-card, .feature-card:nth-child(1), .feature-card:nth-child(2) { grid-column: auto; min-height: 220px; }
+            .pain-grid { gap: 48px; }
+            .faq-layout { gap: 46px; }
+        }
+
+        @media (max-width: 760px) {
+            .container { width: min(100% - 28px, 1180px); }
+            section { padding: 78px 0; }
+            .navbar { top: 8px; width: calc(100% - 16px); margin-top: 8px; }
+            .navbar-inner { height: 60px; padding-inline: 10px; }
+            .brand-sub { display: none; }
+            .nav-actions .btn-ghost { display: none; }
+            .nav-actions .btn-primary { min-height: 38px; padding: 8px 13px; font-size: 11px; }
+            .hero-section { padding: 60px 0 74px; }
+            .hero-title { font-size: clamp(42px, 12vw, 58px); letter-spacing: -1.9px; }
+            .hero-desc { font-size: 15px; }
+            .hero-grid { gap: 50px; }
+            .floating-note { position: static; width: auto; margin-top: 12px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 18px 0; }
+            .stats-grid > div { padding: 0 14px; }
+            .stats-grid > div:nth-child(2) { border-right: 0; }
+            .pain-grid, .faq-layout, .testimonial-grid { grid-template-columns: 1fr; gap: 34px; }
+            .pain-list { margin-top: 10px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .steps-grid { grid-template-columns: 1fr 1fr; }
+            .rating-card { position: static; }
+            .preview-metrics { grid-template-columns: 1fr; }
+            footer .container { flex-direction: column; gap: 16px; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-actions { display: grid; grid-template-columns: 1fr; }
+            .hero-actions > * { width: 100%; }
+            .hero-trust { display: grid; gap: 7px; }
+            .chat-demo { padding: 20px 15px 14px; }
+            .demo-summary { padding: 0 15px 15px; grid-template-columns: 1fr; }
+            .steps-grid { grid-template-columns: 1fr; }
+            .preview-box { padding: 18px; }
+            .preview-header { align-items: flex-start; gap: 14px; }
+            .cta-box { padding: 58px 18px; }
+            .footer-links { flex-wrap: wrap; }
+        }
+
+
+        /* =====================================================
+           HERO LIVE CHAT + SUBTLE 3D DEPTH
+        ===================================================== */
+        body,
+        button,
+        input,
+        textarea,
+        select {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .hero-title,
+        .section-title,
+        .feature-title,
+        .step-title,
+        .cta-title,
+        .stat-value,
+        .metric-value,
+        .rating-big,
+        .brand-name {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .hero-title {
+            max-width: 640px;
+            font-size: clamp(44px, 5.2vw, 66px);
+            font-weight: 800;
+            line-height: 1.07;
+            letter-spacing: -2.6px;
+        }
+
+        .hero-title span {
+            font-weight: 800;
+        }
+
+        .conversation-scene {
+            --scene-rx: 0deg;
+            --scene-ry: 0deg;
+            position: relative;
+            perspective: 1200px;
+            transform-style: preserve-3d;
+            padding: 34px 20px 38px;
+            isolation: isolate;
+        }
+
+        .conversation-scene::before {
+            content: '';
+            position: absolute;
+            inset: 12% 4% 4%;
+            z-index: -3;
+            border-radius: 40px;
+            background: radial-gradient(circle at 70% 34%, rgba(255, 61, 150, .17), transparent 45%),
+                        radial-gradient(circle at 18% 80%, rgba(123, 92, 240, .13), transparent 42%);
+            filter: blur(22px);
+            opacity: .9;
+        }
+
+        .scene-orb {
+            position: absolute;
+            z-index: -1;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(2px);
+        }
+
+        .scene-orb-one {
+            width: 96px;
+            height: 96px;
+            top: 4px;
+            right: 18px;
+            background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.5), rgba(255,61,150,.22) 18%, rgba(255,61,150,.04) 66%, transparent 70%);
+            animation: sceneOrb 7s ease-in-out infinite;
+        }
+
+        .scene-orb-two {
+            width: 58px;
+            height: 58px;
+            left: 0;
+            bottom: 92px;
+            background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.3), rgba(123,92,240,.22) 24%, rgba(123,92,240,.02) 70%);
+            animation: sceneOrb 8.5s ease-in-out infinite reverse;
+        }
+
+        @keyframes sceneOrb {
+            0%, 100% { transform: translate3d(0, 0, 18px) scale(1); }
+            50% { transform: translate3d(0, -12px, 42px) scale(1.05); }
+        }
+
+        .product-window {
+            min-height: 540px;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transform: rotateX(var(--scene-rx)) rotateY(var(--scene-ry)) translateZ(0);
+            transform-origin: center center;
+            transition: transform .18s ease-out, border-color .25s ease, box-shadow .25s ease;
+            border-color: rgba(255,255,255,.13);
+            background:
+                linear-gradient(145deg, rgba(25,21,42,.97), rgba(10,8,23,.99)),
+                #100d20;
+            box-shadow:
+                0 42px 100px rgba(0,0,0,.48),
+                0 12px 35px rgba(255,61,150,.07),
+                inset 0 1px 0 rgba(255,255,255,.04);
+            will-change: transform;
+        }
+
+        .product-window:hover {
+            border-color: rgba(255, 110, 177, .22);
+            box-shadow:
+                0 48px 115px rgba(0,0,0,.52),
+                0 16px 48px rgba(255,61,150,.10),
+                inset 0 1px 0 rgba(255,255,255,.05);
+        }
+
+        .product-window::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(112deg, rgba(255,255,255,.055), transparent 23%, transparent 70%, rgba(255,61,150,.03));
+            mix-blend-mode: screen;
+        }
+
+        .window-bar {
+            position: relative;
+            z-index: 2;
+            min-height: 66px;
+            padding: 0 21px;
+            background: rgba(255,255,255,.012);
+            transform: translateZ(18px);
+        }
+
+        .window-brand > span:last-child {
+            display: grid;
+            gap: 1px;
+        }
+
+        .window-brand strong {
+            color: #fff;
+            font-size: 13px;
+            line-height: 1.2;
+        }
+
+        .window-brand small {
+            color: #858095;
+            font-size: 9px;
+            font-weight: 500;
+        }
+
+        .window-avatar {
+            position: relative;
+            overflow: hidden;
+            width: 34px;
+            height: 34px;
+            border-radius: 11px;
+            box-shadow: 0 8px 24px rgba(255,61,150,.23);
+        }
+
+        .window-avatar::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            border: 1px solid rgba(255,255,255,.16);
+            border-radius: 10px;
+        }
+
+        .window-online {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #8FECB9;
+            font-weight: 700;
+        }
+
+        .window-online i {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 0 4px rgba(0,229,160,.08), 0 0 16px rgba(0,229,160,.5);
+            animation: onlinePulse 2.2s ease-in-out infinite;
+        }
+
+        @keyframes onlinePulse {
+            0%, 100% { opacity: .75; transform: scale(.92); }
+            50% { opacity: 1; transform: scale(1.08); }
+        }
+
+        .chat-demo {
+            position: relative;
+            z-index: 2;
+            min-height: 335px;
+            padding: 25px 24px 16px;
+            transform: translateZ(28px);
+        }
+
+        .chat-row {
+            position: relative;
+            max-height: 0;
+            margin-bottom: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translate3d(0, 16px, 0) scale(.97);
+            filter: blur(5px);
+            pointer-events: none;
+            transition: max-height .38s ease, margin-bottom .38s ease;
+        }
+
+        .chat-row.user {
+            padding-left: 22%;
+        }
+
+        .chat-row.bot {
+            align-items: flex-end;
+            gap: 8px;
+            padding-right: 12%;
+        }
+
+        .chat-row.is-visible {
+            max-height: 170px;
+            margin-bottom: 13px;
+            overflow: visible;
+            opacity: 1;
+            transform: translate3d(0, 0, 0) scale(1);
+            filter: blur(0);
+            pointer-events: auto;
+            transition: max-height .42s ease, margin-bottom .42s ease, opacity .45s ease, transform .48s cubic-bezier(.2,.8,.2,1), filter .4s ease;
+        }
+
+        .typing-step.is-visible {
+            max-height: 54px;
+        }
+
+        .chat-row.is-leaving {
+            opacity: 0;
+            transform: translate3d(0, -8px, 0) scale(.985);
+            transition: opacity .25s ease, transform .25s ease;
+        }
+
+        .chat-bubble {
+            position: relative;
+            max-width: 100%;
+            padding: 13px 15px;
+            border-radius: 17px;
+            font-size: 12.5px;
+            line-height: 1.58;
+            box-shadow: 0 12px 24px rgba(0,0,0,.12);
+        }
+
+        .chat-row.user .chat-bubble {
+            background: linear-gradient(135deg, #FF3D96, #E63E9B);
+            box-shadow: 0 14px 28px rgba(255,61,150,.18);
+        }
+
+        .chat-row.bot .chat-bubble {
+            background: rgba(255,255,255,.055);
+            border-color: rgba(255,255,255,.10);
+            backdrop-filter: blur(12px);
+        }
+
+        .chat-time {
+            position: absolute;
+            right: 8px;
+            bottom: -15px;
+            color: #6F6A7D;
+            font-size: 8px;
+        }
+
+        .bot-mini-avatar {
+            width: 23px;
+            height: 23px;
+            flex: 0 0 23px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+            color: #fff;
+            font-size: 7px;
+            font-weight: 800;
+            box-shadow: 0 7px 18px rgba(255,61,150,.18);
+        }
+
+        .bubble-detail {
+            display: block;
+            margin-top: 4px;
+            color: #B8B3C5;
+        }
+
+        .typing-step {
+            margin-bottom: 10px;
+        }
+
+        .typing-bubble {
+            width: 56px;
+            min-height: 37px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 10px 13px;
+        }
+
+        .typing-bubble span {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #A7A2B4;
+            animation: typingDot 1.05s infinite ease-in-out;
+        }
+
+        .typing-bubble span:nth-child(2) { animation-delay: .13s; }
+        .typing-bubble span:nth-child(3) { animation-delay: .26s; }
+
+        @keyframes typingDot {
+            0%, 60%, 100% { opacity: .32; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-3px); }
+        }
+
+        .demo-summary {
+            position: relative;
+            z-index: 2;
+            transform: translateZ(22px);
+        }
+
+        .demo-summary-card {
+            opacity: 0;
+            transform: translateY(14px) scale(.97);
+            filter: blur(4px);
+            background: linear-gradient(145deg, rgba(255,255,255,.047), rgba(255,255,255,.025));
+        }
+
+        .demo-summary-card.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+            transition: opacity .45s ease, transform .5s cubic-bezier(.2,.8,.2,1), filter .4s ease;
+        }
+
+        .demo-summary-card strong {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -.3px;
+        }
+
+        .summary-caption {
+            display: block;
+            margin-top: 2px;
+            color: #777183;
+            font-size: 9px;
+        }
+
+        .floating-note {
+            z-index: 4;
+            right: -20px;
+            bottom: 76px;
+            width: 224px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            opacity: 0;
+            transform: translate3d(14px, 12px, 58px) scale(.94);
+            filter: blur(5px);
+            border-color: rgba(255,181,71,.25);
+            background: rgba(19,16,33,.94);
+            backdrop-filter: blur(18px);
+        }
+
+        .floating-note.is-visible {
+            opacity: 1;
+            transform: translate3d(0, 0, 58px) scale(1);
+            filter: blur(0);
+            transition: opacity .5s ease, transform .55s cubic-bezier(.2,.8,.2,1), filter .4s ease;
+        }
+
+        .note-icon {
+            width: 24px;
+            height: 24px;
+            flex: 0 0 24px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: rgba(255,181,71,.12);
+            color: var(--yellow);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .floating-note b {
+            margin-bottom: 4px;
+        }
+
+        .telegram-chip {
+            position: absolute;
+            z-index: 5;
+            top: 5px;
+            left: -5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            border: 1px solid rgba(255,255,255,.11);
+            border-radius: 13px;
+            background: rgba(16,13,31,.86);
+            color: #CFCBD8;
+            box-shadow: 0 18px 45px rgba(0,0,0,.28);
+            backdrop-filter: blur(16px);
+            font-size: 10px;
+            font-weight: 700;
+            transform: translateZ(70px) rotate(-2deg);
+            animation: chipFloat 5.5s ease-in-out infinite;
+        }
+
+        .telegram-chip-icon {
+            width: 22px;
+            height: 22px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: #2AABEE;
+            box-shadow: 0 8px 18px rgba(42,171,238,.22);
+        }
+
+        .telegram-chip-icon svg {
+            width: 13px;
+            fill: #fff;
+        }
+
+        @keyframes chipFloat {
+            0%, 100% { transform: translate3d(0,0,70px) rotate(-2deg); }
+            50% { transform: translate3d(0,-8px,76px) rotate(1deg); }
+        }
+
+        .demo-status {
+            position: absolute;
+            right: 38px;
+            bottom: 9px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #767081;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: .15px;
+        }
+
+        .demo-status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #FF61AA;
+            box-shadow: 0 0 12px rgba(255,61,150,.65);
+            animation: demoDot 1.8s ease-in-out infinite;
+        }
+
+        @keyframes demoDot {
+            0%, 100% { opacity: .4; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 980px) {
+            .conversation-scene { max-width: 680px; }
+            .product-window { min-height: 520px; }
+        }
+
+        @media (max-width: 760px) {
+            .hero-title {
+                font-size: clamp(39px, 11vw, 54px);
+                letter-spacing: -1.9px;
+            }
+
+            .conversation-scene {
+                padding: 26px 0 36px;
+            }
+
+            .telegram-chip {
+                left: 8px;
+                top: -2px;
+            }
+
+            .floating-note {
+                position: relative;
+                right: auto;
+                bottom: auto;
+                width: calc(100% - 28px);
+                margin: -20px auto 0;
+                transform: translate3d(0, 12px, 28px) scale(.96);
+            }
+
+            .floating-note.is-visible {
+                transform: translate3d(0, 0, 28px) scale(1);
+            }
+
+            .demo-status {
+                right: 15px;
+                bottom: 7px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-window { min-height: 545px; border-radius: 22px; }
+            .window-bar { padding: 0 15px; }
+            .chat-demo { min-height: 365px; padding: 22px 14px 14px; }
+            .chat-row.user { padding-left: 13%; }
+            .chat-row.bot { padding-right: 3%; }
+            .chat-bubble { font-size: 11.5px; }
+            .demo-summary { grid-template-columns: 1fr 1fr; padding: 0 14px 16px; }
+            .demo-summary-card { padding: 13px; }
+            .demo-summary-card strong { font-size: 12px; }
+            .telegram-chip { font-size: 9px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .scene-orb,
+            .telegram-chip,
+            .window-online i,
+            .typing-bubble span,
+            .demo-status-dot {
+                animation: none !important;
+            }
+
+            .product-window {
+                transform: none !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="glow-bg"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="/" class="brand">
+            <div class="brand-logo">VX</div>
+            <span class="brand-name">VHYROX</span>
+            <span class="brand-sub">Money</span>
+        </a>
+        <div class="nav-links">
+            <a href="#fitur" class="nav-link">Fitur</a>
+            <a href="#cara" class="nav-link">Cara kerja</a>
+            <a href="#testimoni" class="nav-link">Ulasan</a>
+            <a href="#faq" class="nav-link">Bantuan</a>
+        </div>
+        <div class="nav-actions">
+            <a href="/login.html" class="btn-ghost js-login-link">Masuk</a>
+            <a href="/register.html" class="btn-primary js-primary-cta">Buat Akun</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="hero-content reveal">
+                <div class="hero-badge">
+                    <span style="width:6px;height:6px;background:#FB64B6;border-radius:50%;display:inline-block;"></span>
+                    PLATFORM PENCATATAN KEUANGAN PRIBADI
+                </div>
+                <h1 class="hero-title">Catat dan pantau keuangan pribadi <span>melalui Telegram.</span></h1>
+                <p class="hero-desc">
+                    VHYROX membantu kamu mencatat pemasukan dan pengeluaran melalui chat Telegram.
+                    Setiap transaksi tersimpan otomatis dan dapat dipantau melalui dashboard keuangan pribadi.
+                </p>
+                <div class="hero-actions">
+                    <a href="/register.html" class="btn-primary btn-lg js-primary-cta">Buat akun dan mulai mencatat</a>
+                    <a href="#cara" class="hero-secondary">Pelajari cara kerja</a>
+                </div>
+                <div class="hero-trust">
+                    <span>✓ Catat melalui Telegram</span>
+                    <span>✓ Pantau melalui dashboard</span>
+                    <span>✓ Data terpisah untuk setiap akun</span>
+                </div>
+            </div>
+            <div class="hero-visual reveal" aria-label="Demo percakapan pencatatan keuangan">
+                <div class="conversation-scene" id="conversationScene">
+                    <div class="scene-orb scene-orb-one" aria-hidden="true"></div>
+                    <div class="scene-orb scene-orb-two" aria-hidden="true"></div>
+
+                    <div class="telegram-chip" aria-hidden="true">
+                        <span class="telegram-chip-icon">
+                            <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                                <path d="M21.7 3.4 18.5 19c-.2 1.1-.8 1.4-1.7.9l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 12.8l-4.8-1.5c-1-.3-1.1-1 .2-1.5L20.4 2.6c.9-.3 1.6.2 1.3.8Z"/>
+                            </svg>
+                        </span>
+                        Telegram terhubung
+                    </div>
+
+                    <div class="product-window hero-conversation" id="heroConversation">
+                        <div class="window-bar">
+                            <div class="window-brand">
+                                <span class="window-avatar">VX</span>
+                                <span>
+                                    <strong>VHYROX Money Bot</strong>
+                                    <small>Asisten pencatatan pribadi</small>
+                                </span>
+                            </div>
+                            <span class="window-online"><i></i> aktif</span>
+                        </div>
+
+                        <div class="chat-demo" id="animatedChat" aria-live="polite">
+                            <div class="chat-row user chat-step" data-step="message">
+                                <div class="chat-bubble">Pengeluaran makan siang 25 ribu</div>
+                                <span class="chat-time">13.42</span>
+                            </div>
+
+                            <div class="chat-row bot typing-step" data-step="typing" aria-hidden="true">
+                                <div class="chat-bubble typing-bubble" aria-label="Bot sedang mengetik">
+                                    <span></span><span></span><span></span>
+                                </div>
+                            </div>
+
+                            <div class="chat-row bot chat-step" data-step="message">
+                                <span class="bot-mini-avatar">VX</span>
+                                <div class="chat-bubble">
+                                    Pengeluaran <strong>Rp25.000</strong> berhasil dicatat sebagai <strong>Makanan</strong>.
+                                    <span class="bubble-detail">Sisa budget makan bulan ini Rp475.000.</span>
+                                </div>
+                            </div>
+
+                            <div class="chat-row user chat-step" data-step="message">
+                                <div class="chat-bubble">Kondisi keuanganku bulan ini bagaimana?</div>
+                                <span class="chat-time">13.43</span>
+                            </div>
+
+                            <div class="chat-row bot typing-step" data-step="typing" aria-hidden="true">
+                                <div class="chat-bubble typing-bubble" aria-label="Bot sedang mengetik">
+                                    <span></span><span></span><span></span>
+                                </div>
+                            </div>
+
+                            <div class="chat-row bot chat-step" data-step="message">
+                                <span class="bot-mini-avatar">VX</span>
+                                <div class="chat-bubble">
+                                    Masih terkendali. Pengeluaranmu baru <strong>57%</strong> dari pemasukan bulan ini.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="demo-summary" id="demoSummary">
+                            <div class="demo-summary-card accent">
+                                <small>Pengeluaran bulan ini</small>
+                                <strong>Rp2.005.000</strong>
+                                <span class="summary-caption">57% dari pemasukan</span>
+                            </div>
+                            <div class="demo-summary-card safe">
+                                <small>Sisa saldo tercatat</small>
+                                <strong>Rp1.495.000</strong>
+                                <span class="summary-caption">Masih terkendali</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="floating-note" id="budgetNote">
+                        <span class="note-icon">!</span>
+                        <span><b>Budget makan mendekati batas</b>Sisa Rp120.000. Bot mengingatkan sebelum budget habis.</span>
+                    </div>
+
+                    <div class="demo-status" aria-hidden="true">
+                        <span class="demo-status-dot"></span>
+                        Demo percakapan otomatis
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS BAR (langsung di bawah hero) -->
+<div class="stats-hero">
+    <div class="container">
+        <div class="stats-grid reveal">
+            <div><div class="stat-value">Pencatatan transaksi</div><div class="stat-label">Catat pemasukan dan pengeluaran melalui Telegram.</div></div>
+            <div><div class="stat-value">Budget bulanan</div><div class="stat-label">Atur batas pengeluaran untuk setiap kategori.</div></div>
+            <div><div class="stat-value">Dashboard keuangan</div><div class="stat-label">Pantau saldo dan ringkasan transaksi dalam satu tampilan.</div></div>
+            <div><div class="stat-value">Akun pribadi</div><div class="stat-label">Setiap pengguna hanya dapat mengakses datanya sendiri.</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- PAIN POINTS -->
+<section id="masalah" class="bg-soft">
+    <div class="container">
+        <div class="pain-grid">
+            <div class="reveal">
+                <div class="section-label">Mengapa menggunakan VHYROX?</div>
+                <h2 class="section-title">Pencatatan keuangan yang lebih mudah dilakukan setiap hari.</h2>
+                <p class="section-subtitle">Kamu tidak perlu membuka banyak formulir setiap kali melakukan transaksi. Cukup kirim pesan melalui Telegram, lalu lihat hasil pencatatannya di dashboard.</p>
+            </div>
+            <div class="pain-list reveal">
+                <div class="pain-item"><span class="pain-emoji">01</span> Pemasukan dan pengeluaran dicatat langsung melalui chat Telegram.</div>
+                <div class="pain-item"><span class="pain-emoji">02</span> Transaksi dikelompokkan agar catatan lebih mudah dibaca.</div>
+                <div class="pain-item"><span class="pain-emoji">03</span> Penggunaan budget dapat dipantau berdasarkan kategori.</div>
+                <div class="pain-item"><span class="pain-emoji">04</span> Seluruh ringkasan keuangan tersedia dalam satu dashboard pribadi.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section id="fitur">
+    <div class="container">
+        <div class="section-label reveal">Fitur utama</div>
+        <h2 class="section-title reveal">Fitur yang membantu kamu mengelola keuangan pribadi.</h2>
+        <p class="section-subtitle reveal">Gunakan Telegram untuk mencatat transaksi dan dashboard untuk melihat kondisi keuangan secara menyeluruh.</p>
+        <div class="features-grid">
+            <div class="feature-card reveal">
+                <div class="feature-icon pink">TXT</div>
+                <h3 class="feature-title">Pencatatan melalui Telegram</h3>
+                <p class="feature-desc">Kirim pesan berisi jenis transaksi dan nominal. Sistem akan menyimpannya ke akun keuanganmu.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon purple">ASK</div>
+                <h3 class="feature-title">Asisten keuangan</h3>
+                <p class="feature-desc">Tanyakan saldo, pengeluaran, atau kondisi budget untuk memperoleh jawaban berdasarkan data akunmu.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon violet">DB</div>
+                <h3 class="feature-title">Dashboard keuangan</h3>
+                <p class="feature-desc">Lihat pemasukan, pengeluaran, saldo, dan tren tanpa harus mengolah catatan sendiri.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon yellow">!</div>
+                <h3 class="feature-title">Peringatan penggunaan budget</h3>
+                <p class="feature-desc">Dapatkan informasi ketika penggunaan budget mulai mendekati batas yang telah ditentukan.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon green">%</div>
+                <h3 class="feature-title">Budget per kategori</h3>
+                <p class="feature-desc">Tentukan batas untuk makan, transportasi, hiburan, atau kategori buatanmu sendiri.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon blue">↗</div>
+                <h3 class="feature-title">Analisis keuangan</h3>
+                <p class="feature-desc">Lihat pola pengeluaran dan estimasi saldo berdasarkan transaksi yang tercatat di akunmu.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CARA KERJA -->
+<section id="cara" class="bg-soft">
+    <div class="container">
+        <div class="section-label reveal">Cara menggunakan VHYROX</div>
+        <h2 class="section-title reveal">Mulai mencatat keuangan dalam empat langkah.</h2>
+        <p class="section-subtitle reveal">Buat akun, hubungkan Telegram, kirim transaksi, lalu pantau hasilnya melalui dashboard.</p>
+        <div class="steps-grid">
+            <div class="reveal">
+                <div class="step-icon-wrap pink">01</div>
+                <div class="step-label pink">BUAT AKUN</div>
+                <h4 class="step-title">Daftar ke VHYROX</h4>
+                <p class="step-desc">Buat akun pribadi agar seluruh transaksi dan pengaturanmu tersimpan terpisah.</p>
+            </div>
+            <div class="reveal">
+                <div class="step-icon-wrap purple">02</div>
+                <div class="step-label purple">HUBUNGKAN</div>
+                <h4 class="step-title">Sambungkan Telegram</h4>
+                <p class="step-desc">Gunakan tautan pribadi dari dashboard, lalu tekan Start pada bot Telegram.</p>
+            </div>
+            <div class="reveal">
+                <div class="step-icon-wrap violet">03</div>
+                <div class="step-label violet">CATAT</div>
+                <h4 class="step-title">Kirim transaksi</h4>
+                <p class="step-desc">Tulis transaksi seperti “bensin 50 ribu”. Bot akan mencatatnya ke akunmu.</p>
+            </div>
+            <div class="reveal">
+                <div class="step-icon-wrap green">04</div>
+                <div class="step-label green">PANTAU</div>
+                <h4 class="step-title">Lihat perkembangannya</h4>
+                <p class="step-desc">Dashboard diperbarui dan budget langsung menyesuaikan dengan transaksi terbaru.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- DASHBOARD PREVIEW -->
+<section id="dashboard-preview">
+    <div class="container">
+        <div class="section-label reveal">Dashboard keuangan</div>
+        <h2 class="section-title reveal">Pantau seluruh catatan keuangan dalam satu tampilan.</h2>
+        <p class="section-subtitle reveal">Transaksi yang dikirim melalui Telegram langsung masuk ke ringkasan akun dan perhitungan budget.</p>
+        <div class="preview-box reveal">
+            <div class="preview-header">
+                <div>
+                    <div style="color:var(--text-soft);font-size:11px;text-transform:uppercase;letter-spacing:1px;">Kesehatan Finansial</div>
+                    <div style="font-size:20px;font-family:'Plus Jakarta Sans';font-weight:700;color:white;">Kondisi keuangan bulan ini <span style="color:var(--green)">terkendali</span></div>
+                </div>
+                <div class="preview-badge">✓ AMAN</div>
+            </div>
+            <div class="preview-metrics">
+                <div class="metric-card">
+                    <div class="metric-label">Pemasukan</div>
+                    <div class="metric-value green">Rp3.500.000</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Pengeluaran</div>
+                    <div class="metric-value pink">Rp2.005.000</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Sisa Saldo</div>
+                    <div class="metric-value purple">Rp1.495.000</div>
+                </div>
+            </div>
+            <div class="warning-strip">
+                <span style="font-size:18px;">⚠️</span>
+                <div>
+                    <div style="font-weight:600;color:white;font-size:13px;">Budget makan hampir habis</div>
+                    <div style="font-size:11px;color:var(--text-soft);">Sisa Rp120.000 untuk 22 hari ke depan</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- USER REVIEWS -->
+<section id="testimoni" class="bg-soft">
+    <div class="container">
+        <div class="section-label reveal">Ulasan pengguna</div>
+        <h2 class="section-title reveal">Pendapat pengguna yang telah menggunakan VHYROX.</h2>
+        <p class="section-subtitle reveal">Ulasan hanya dapat dikirim oleh pengguna yang sudah masuk ke akun dan akan ditampilkan setelah dipublikasikan.</p>
+        <div class="testimonial-grid">
+            <div class="rating-card reveal">
+                <div class="rating-big" id="averageRating">—</div>
+                <div class="stars" id="averageStars" aria-label="Belum ada rating">☆☆☆☆☆</div>
+                <div class="rating-caption" id="reviewCount">Memuat ulasan...</div>
+
+                <div class="review-form-card" id="reviewGuest">
+                    <div class="review-form-title">Punya pengalaman pakai VHYROX?</div>
+                    <p class="review-form-help">Masuk agar penilaian terhubung ke akunmu dan tidak dapat dikirim atas nama orang lain.</p>
+                    <a class="review-login-link" href="/login.html?returnTo=%2Flanding.html">Masuk untuk beri ulasan →</a>
+                </div>
+
+                <form class="review-form-card" id="reviewForm" hidden>
+                    <div class="review-form-title">Beri rating dan komentar</div>
+                    <p class="review-form-help">Setiap akun memiliki satu ulasan yang dapat diperbarui kapan saja.</p>
+                    <div class="star-picker" id="starPicker" aria-label="Pilih rating 1 sampai 5">
+                        <button type="button" data-rating="1" aria-label="1 bintang">★</button>
+                        <button type="button" data-rating="2" aria-label="2 bintang">★</button>
+                        <button type="button" data-rating="3" aria-label="3 bintang">★</button>
+                        <button type="button" data-rating="4" aria-label="4 bintang">★</button>
+                        <button type="button" data-rating="5" aria-label="5 bintang">★</button>
+                    </div>
+                    <textarea class="review-textarea" id="reviewText" maxlength="1000" placeholder="Ceritakan pengalamanmu memakai VHYROX..." required></textarea>
+                    <div class="review-form-meta">
+                        <span id="myReviewState">Ulasan baru akan diperiksa dulu.</span>
+                        <span><span id="reviewCharCount">0</span>/1000</span>
+                    </div>
+                    <button class="btn-primary review-submit" id="reviewSubmit" type="submit">Kirim Ulasan</button>
+                    <div class="review-status" id="reviewStatus" role="status" aria-live="polite"></div>
+                </form>
+            </div>
+            <div class="reveal" id="reviewList">
+                <div class="review-empty">Sedang memuat ulasan pengguna...</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+    <div class="container">
+      <div class="faq-layout">
+        <div>
+          <div class="section-label reveal">Pertanyaan umum</div>
+          <h2 class="section-title reveal">Informasi penting sebelum menggunakan VHYROX.</h2>
+          <p class="section-subtitle reveal">Penjelasan singkat mengenai biaya, keamanan data, dan penggunaan sistem.</p>
+        </div>
+        <div class="faq-list reveal">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">Apakah VHYROX bisa digunakan gratis? <span class="faq-chevron">▶</span></div>
+                <div class="faq-answer">Saat ini fitur utama dapat digunakan gratis. Kebijakan fitur dan batas pemakaian dapat disesuaikan jika layanan berkembang.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">Apakah data setiap pengguna dipisahkan? <span class="faq-chevron">▶</span></div>
+                <div class="faq-answer">Data setiap akun dipisahkan berdasarkan user ID. Backend memakai session server dan verifikasi Firebase agar pengguna tidak dapat mengambil data akun lain.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">Apakah harus memasang aplikasi baru? <span class="faq-chevron">▶</span></div>
+                <div class="faq-answer">Tidak. Pencatatan dilakukan melalui Telegram, sedangkan dashboard dapat dibuka melalui browser HP atau laptop.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">Apakah bisa digunakan untuk usaha? <span class="faq-chevron">▶</span></div>
+                <div class="faq-answer">Saat ini VHYROX dirancang untuk pencatatan keuangan pribadi. Kebutuhan pembukuan usaha belum menjadi fokus utama sistem.</div>
+            </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section>
+    <div class="container">
+        <div class="cta-box reveal">
+            <img src="assets/Vmoney.png" alt="Maskot VHYROX" class="cta-maskot" onerror="this.style.display='none'">
+            <h2 class="cta-title">Mulai kelola keuangan pribadi <span>dengan lebih teratur.</span></h2>
+            <p class="cta-desc">Buat akun, hubungkan Telegram, dan mulai catat setiap pemasukan serta pengeluaran dalam satu sistem.</p>
+            <a href="/register.html" class="btn-primary btn-lg js-primary-cta">Buat akun dan mulai mencatat</a>
+            <p class="cta-trust">Tanpa kartu kredit · Pengaturan singkat · Data terpisah per akun</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <span>© 2026 VHYROX Money — Platform pencatatan keuangan pribadi melalui Telegram.</span>
+        <div class="footer-links">
+            <a href="/privacy-policy.html">Kebijakan Privasi</a>
+            <a href="/terms-of-use.html">Ketentuan Penggunaan</a>
+            <a href="/login.html">Masuk</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    let selectedReviewRating = 0;
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.2, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // FAQ toggle
+    function toggleFaq(el) {
+        el.parentElement.classList.toggle('open');
+    }
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+
+
+    // Hero conversation animation. The panel stays useful even when motion is reduced.
+    const heroConversation = document.getElementById('heroConversation');
+    const conversationScene = document.getElementById('conversationScene');
+    const chatSequence = heroConversation
+        ? Array.from(heroConversation.querySelectorAll('[data-step]'))
+        : [];
+    const summaryCards = Array.from(document.querySelectorAll('#demoSummary .demo-summary-card'));
+    const budgetNote = document.getElementById('budgetNote');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let heroDemoVisible = false;
+    let heroDemoStarted = false;
+
+    const wait = (duration) => new Promise(resolve => window.setTimeout(resolve, duration));
+
+    function showHeroDemoInstantly() {
+        chatSequence.forEach(item => {
+            if (item.dataset.step === 'typing') return;
+            item.classList.add('is-visible');
+            item.setAttribute('aria-hidden', 'false');
+        });
+        summaryCards.forEach(card => card.classList.add('is-visible'));
+        budgetNote?.classList.add('is-visible');
+    }
+
+    function resetHeroDemo() {
+        chatSequence.forEach(item => {
+            item.classList.remove('is-visible', 'is-leaving');
+            item.setAttribute('aria-hidden', 'true');
+        });
+        summaryCards.forEach(card => card.classList.remove('is-visible'));
+        budgetNote?.classList.remove('is-visible');
+    }
+
+    async function runHeroDemo() {
+        if (!heroConversation || heroDemoStarted) return;
+        heroDemoStarted = true;
+
+        if (reduceMotion) {
+            showHeroDemoInstantly();
+            return;
+        }
+
+        while (document.body.contains(heroConversation)) {
+            while (!heroDemoVisible || document.hidden) await wait(400);
+
+            resetHeroDemo();
+            await wait(450);
+
+            for (const item of chatSequence) {
+                if (!heroDemoVisible || document.hidden) break;
+
+                const isTyping = item.dataset.step === 'typing';
+                item.classList.add('is-visible');
+                item.setAttribute('aria-hidden', 'false');
+                await wait(isTyping ? 760 : 1080);
+
+                if (isTyping) {
+                    item.classList.add('is-leaving');
+                    await wait(230);
+                    item.classList.remove('is-visible', 'is-leaving');
+                    item.setAttribute('aria-hidden', 'true');
+                }
+            }
+
+            if (!heroDemoVisible || document.hidden) continue;
+
+            for (const card of summaryCards) {
+                card.classList.add('is-visible');
+                await wait(180);
+            }
+
+            await wait(420);
+            budgetNote?.classList.add('is-visible');
+            await wait(4200);
+        }
+    }
+
+    if (conversationScene) {
+        const heroDemoObserver = new IntersectionObserver(entries => {
+            heroDemoVisible = entries.some(entry => entry.isIntersecting);
+            if (heroDemoVisible) runHeroDemo();
+        }, { threshold: 0.35 });
+        heroDemoObserver.observe(conversationScene);
+
+        const canTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduceMotion;
+        if (canTilt) {
+            conversationScene.addEventListener('pointermove', event => {
+                const rect = conversationScene.getBoundingClientRect();
+                const x = (event.clientX - rect.left) / rect.width - 0.5;
+                const y = (event.clientY - rect.top) / rect.height - 0.5;
+                conversationScene.style.setProperty('--scene-ry', `${(x * 6).toFixed(2)}deg`);
+                conversationScene.style.setProperty('--scene-rx', `${(-y * 5).toFixed(2)}deg`);
+            });
+
+            conversationScene.addEventListener('pointerleave', () => {
+                conversationScene.style.setProperty('--scene-ry', '0deg');
+                conversationScene.style.setProperty('--scene-rx', '0deg');
+            });
+        }
+    }
+
+
+    function setSelectedRating(rating) {
+        selectedReviewRating = Number(rating) || 0;
+        document.querySelectorAll('#starPicker button').forEach(button => {
+            const active = Number(button.dataset.rating) <= selectedReviewRating;
+            button.classList.toggle('active', active);
+            button.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+    }
+
+    function reviewerInitials(name) {
+        return String(name || 'Pengguna')
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map(part => part.charAt(0).toUpperCase())
+            .join('') || 'PG';
+    }
+
+    function formatReviewDate(value) {
+        if (!value) return '';
+        const parsed = new Date(String(value).replace(' ', 'T'));
+        if (Number.isNaN(parsed.getTime())) return '';
+        return new Intl.DateTimeFormat('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        }).format(parsed);
+    }
+
+    function createReviewCard(review, index) {
+        const card = document.createElement('article');
+        card.className = 'testimonial-card';
+
+        const userRow = document.createElement('div');
+        userRow.className = 'testimonial-user';
+
+        const avatar = document.createElement('div');
+        avatar.className = `avatar-circle ${['pink', 'purple', 'violet'][index % 3]}`;
+        avatar.textContent = reviewerInitials(review.reviewer_name);
+
+        if (review.avatar_url) {
+            const image = document.createElement('img');
+            image.src = review.avatar_url;
+            image.alt = '';
+            image.referrerPolicy = 'no-referrer';
+            image.addEventListener('error', () => image.remove(), { once: true });
+            avatar.appendChild(image);
+        }
+
+        const identity = document.createElement('div');
+        const name = document.createElement('div');
+        name.className = 'testimonial-name';
+        name.textContent = review.reviewer_name || 'Pengguna';
+        const date = document.createElement('div');
+        date.className = 'testimonial-date';
+        date.textContent = formatReviewDate(review.created_at);
+        identity.append(name, date);
+        userRow.append(avatar, identity);
+
+        const stars = document.createElement('div');
+        stars.className = 'testimonial-stars';
+        const rating = Math.max(1, Math.min(5, Number(review.rating) || 1));
+        stars.textContent = `${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}`;
+        stars.setAttribute('aria-label', `${rating} dari 5 bintang`);
+
+        const text = document.createElement('p');
+        text.className = 'testimonial-text';
+        text.textContent = review.review_text || '';
+
+        card.append(userRow, stars, text);
+        return card;
+    }
+
+    async function loadPublicReviews() {
+        const list = document.getElementById('reviewList');
+        const ratingElement = document.getElementById('averageRating');
+        const starsElement = document.getElementById('averageStars');
+        const countElement = document.getElementById('reviewCount');
+
+        try {
+            const response = await fetch('/api/reviews/public', {
+                credentials: 'include',
+                headers: { Accept: 'application/json' }
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Ulasan gagal dimuat.');
+
+            const average = Number(data.average_rating || 0);
+            const total = Number(data.total_reviews || 0);
+            const reviews = Array.isArray(data.reviews) ? data.reviews : [];
+            const rounded = Math.max(0, Math.min(5, Math.round(average)));
+
+            ratingElement.textContent = total > 0 ? average.toFixed(1) : '—';
+            starsElement.textContent = `${'★'.repeat(rounded)}${'☆'.repeat(5 - rounded)}`;
+            starsElement.setAttribute('aria-label', total > 0 ? `${average} dari 5 bintang` : 'Belum ada rating');
+            countElement.textContent = total > 0 ? `Dari ${total} ulasan terverifikasi` : 'Belum ada ulasan yang dipublikasikan';
+
+            list.replaceChildren();
+            if (reviews.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'review-empty';
+                empty.textContent = 'Belum ada komentar yang dipublikasikan. Jadilah pengguna pertama yang memberi ulasan.';
+                list.appendChild(empty);
+                return;
+            }
+
+            reviews.forEach((review, index) => {
+                list.appendChild(createReviewCard(review, index));
+            });
+        } catch (error) {
+            list.replaceChildren();
+            const empty = document.createElement('div');
+            empty.className = 'review-empty';
+            empty.textContent = error.message || 'Ulasan belum dapat dimuat.';
+            list.appendChild(empty);
+            countElement.textContent = 'Ulasan belum dapat dimuat';
+        }
+    }
+
+    async function loadMyReview() {
+        const state = document.getElementById('myReviewState');
+        try {
+            const response = await fetch('/api/reviews/me', {
+                credentials: 'include',
+                headers: { Accept: 'application/json' }
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Ulasan kamu gagal dimuat.');
+            if (!data.review) return;
+
+            setSelectedRating(data.review.rating);
+            document.getElementById('reviewText').value = data.review.review_text || '';
+            document.getElementById('reviewCharCount').textContent = document.getElementById('reviewText').value.length;
+
+            const labels = {
+                pending: 'Ulasanmu sedang diproses.',
+                published: 'Ulasanmu sudah tayang. Jika diedit, ulasan akan diperiksa ulang.',
+                hidden: 'Ulasanmu sedang disembunyikan.',
+                rejected: 'Ulasanmu ditolak. Kamu boleh memperbaiki dan mengirim ulang.'
+            };
+            state.textContent = labels[data.review.status] || 'Ulasanmu sudah tersimpan.';
+            document.getElementById('reviewSubmit').textContent = 'Perbarui Ulasan';
+        } catch (error) {
+            state.textContent = error.message || 'Ulasan kamu belum dapat dimuat.';
+        }
+    }
+
+    // Jika session masih aktif, semua CTA langsung membuka dashboard.
+    async function syncSessionActions() {
+        try {
+            const response = await fetch('/api/auth/session', {
+                credentials: 'include',
+                headers: { Accept: 'application/json' }
+            });
+            const data = await response.json();
+
+            if (!response.ok || !data.authenticated) return;
+
+            document.querySelectorAll('.js-primary-cta').forEach(link => {
+                link.href = '/dashboard';
+                link.textContent = 'Buka Dashboard';
+            });
+
+            document.querySelectorAll('.js-login-link').forEach(link => {
+                link.href = '/dashboard';
+                link.textContent = 'Dashboard';
+            });
+
+            document.getElementById('reviewGuest').hidden = true;
+            document.getElementById('reviewForm').hidden = false;
+            await loadMyReview();
+        } catch {
+            // Landing tetap dapat digunakan saat pengecekan session gagal.
+        }
+    }
+
+    document.querySelectorAll('#starPicker button').forEach(button => {
+        button.addEventListener('click', () => setSelectedRating(button.dataset.rating));
+    });
+
+    document.getElementById('reviewText').addEventListener('input', event => {
+        document.getElementById('reviewCharCount').textContent = event.target.value.length;
+    });
+
+    document.getElementById('reviewForm').addEventListener('submit', async event => {
+        event.preventDefault();
+
+        const status = document.getElementById('reviewStatus');
+        const submit = document.getElementById('reviewSubmit');
+        const reviewText = document.getElementById('reviewText').value.trim();
+        status.className = 'review-status';
+
+        if (selectedReviewRating < 1 || selectedReviewRating > 5) {
+            status.textContent = 'Pilih jumlah bintang terlebih dahulu.';
+            status.classList.add('error');
+            return;
+        }
+
+        if (reviewText.length < 3) {
+            status.textContent = 'Komentar minimal 3 karakter.';
+            status.classList.add('error');
+            return;
+        }
+
+        submit.disabled = true;
+        status.textContent = 'Menyimpan ulasan...';
+
+        try {
+            const response = await fetch('/api/reviews/me', {
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    rating: selectedReviewRating,
+                    review_text: reviewText
+                })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Ulasan gagal disimpan.');
+
+            status.textContent = data.message || 'Ulasan berhasil disimpan.';
+            status.classList.add('success');
+            document.getElementById('myReviewState').textContent =
+    'Ulasanmu sudah dipublikasikan.';
+
+await loadPublicReviews();
+            submit.textContent = 'Perbarui Ulasan';
+        } catch (error) {
+            status.textContent = error.message || 'Ulasan gagal disimpan.';
+            status.classList.add('error');
+        } finally {
+            submit.disabled = false;
+        }
+    });
+
+    loadPublicReviews();
+    syncSessionActions();
+</script>
+</body>
+</html>

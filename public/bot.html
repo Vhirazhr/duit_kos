@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>VHYROX | Money Bot</title>
+  <script>
+  (() => {
+    try {
+      const savedAppearance =
+        JSON.parse(
+          localStorage.getItem(
+            'vhyroxAppearance'
+          ) || 'null'
+        );
+
+      if (
+        !savedAppearance ||
+        typeof savedAppearance !== 'object'
+      ) {
+        return;
+      }
+
+      const root =
+        document.documentElement;
+
+      const variables =
+        savedAppearance.cssVariables || {};
+
+      Object.entries(variables).forEach(
+        ([name, value]) => {
+          if (
+            name.startsWith('--') &&
+            typeof value === 'string'
+          ) {
+            root.style.setProperty(
+              name,
+              value
+            );
+          }
+        }
+      );
+
+      const accent =
+        variables['--accent'];
+
+      const accentDark =
+        variables['--accent-dark'];
+
+      const secondary =
+        variables['--secondary'];
+
+      if (accent) {
+        root.style.setProperty(
+          '--pink',
+          accent
+        );
+      }
+
+      if (accentDark) {
+        root.style.setProperty(
+          '--pink-dark',
+          accentDark
+        );
+      }
+
+      if (secondary) {
+        root.style.setProperty(
+          '--purple',
+          secondary
+        );
+      }
+
+      if (savedAppearance.themeCode) {
+        root.dataset.theme =
+          savedAppearance.themeCode;
+      }
+
+      console.log(
+        '✅ Tema Money Bot diterapkan:',
+        savedAppearance.themeCode
+      );
+    } catch (error) {
+      console.error(
+        '❌ Tema Money Bot gagal:',
+        error
+      );
+    }
+  })();
+</script>
+
+  <style id="vhyrox-theme-compat">
+    :root {
+      --accent: #FF2D8A;
+      --accent-rgb: 255, 45, 138;
+      --accent-dark: #C850C0;
+      --accent-dark-rgb: 200, 80, 192;
+      --secondary: #7B5CF0;
+      --secondary-rgb: 123, 92, 240;
+      --bg-rgb: 8, 7, 26;
+    }
+  </style>
+
+  <link rel="stylesheet" href="/dashboard.css">
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --bg: #08071A;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border: rgba(255, 255, 255, 0.07);
+      --text: #F0EEF8;
+      --text-soft: #8B85B0;
+      --pink: #FF2D8A;
+      --pink-dark: #C850C0;
+      --green: #00E5A0;
+      --red: #FF3B5C;
+      --yellow: #FFB547;
+      --purple: #7B5CF0;
+      --radius: 16px;
+    }
+
+    button,
+    input {
+      font-family: inherit;
+    }
+
+    .nav-item,
+    .nav-item:link,
+    .nav-item:visited,
+    .nav-item:hover,
+    .nav-item:active {
+      text-decoration: none;
+    }
+
+    /* =====================================================
+       PAGE HEADER
+    ===================================================== */
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-title h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .page-title p {
+      font-size: 14px;
+      color: var(--text-soft);
+      margin-top: 4px;
+    }
+
+    /* =====================================================
+       CHAT LAYOUT
+    ===================================================== */
+    .chat-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+
+    .chat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(
+        135deg,
+        var(--pink),
+        var(--pink-dark)
+      );
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .chat-header-info {
+      flex: 1;
+    }
+
+    .chat-header-info h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .chat-header-info span {
+      font-size: 12px;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .online-dot {
+      width: 6px;
+      height: 6px;
+      background: #00D492;
+      border-radius: 50%;
+    }
+
+    .btn-reset-chat {
+      border: 1px solid rgba(255, 59, 92, 0.25);
+      background: rgba(255, 59, 92, 0.08);
+      color: #FF7B91;
+      border-radius: 12px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .btn-reset-chat:hover {
+      background: rgba(255, 59, 92, 0.16);
+      color: white;
+    }
+
+    .btn-reset-chat:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+    }
+
+    .msg-bubble {
+      max-width: min(520px, 82%);
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      animation: messageIn 0.2s ease;
+    }
+
+    @keyframes messageIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .msg-bubble.user {
+      align-self: flex-end;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 45, 138, 0.3),
+        rgba(200, 80, 192, 0.25)
+      );
+      border: 0.8px solid rgba(255, 45, 138, 0.3);
+      border-bottom-right-radius: 4px;
+      color: var(--text);
+    }
+
+    .msg-bubble.ai {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.05);
+      border: 0.8px solid rgba(255, 255, 255, 0.08);
+      border-bottom-left-radius: 4px;
+      color: var(--text);
+    }
+
+    .msg-bubble.loading {
+      color: var(--text-soft);
+      font-style: italic;
+    }
+
+    .chat-date {
+      align-self: center;
+      font-size: 11px;
+      color: var(--text-soft);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 5px 10px;
+      border-radius: 20px;
+    }
+
+    .chat-input {
+      padding: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      color: white;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .chat-input input:focus {
+      border-color: rgba(255, 45, 138, 0.5);
+      box-shadow: 0 0 0 3px rgba(255, 45, 138, 0.08);
+    }
+
+    .chat-input input:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .chat-input button {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(
+        135deg,
+        var(--pink),
+        var(--pink-dark)
+      );
+      border: none;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: white;
+      font-size: 18px;
+      transition: 0.2s;
+      flex-shrink: 0;
+    }
+
+    .chat-input button:hover {
+      transform: scale(1.05);
+    }
+
+    .chat-input button:disabled {
+      opacity: 0.5;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    /* =====================================================
+       RIGHT PANEL
+    ===================================================== */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .quick-card,
+    .telegram-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .quick-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .quick-question {
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      color: var(--text-soft);
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .quick-question:hover {
+      background: rgba(255, 45, 138, 0.1);
+      border-color: rgba(255, 45, 138, 0.25);
+      color: white;
+    }
+
+    .telegram-card h4 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .telegram-card p {
+      font-size: 12px;
+      color: var(--text-soft);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .btn-telegram {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 10px;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 45, 138, 0.2),
+        rgba(200, 80, 192, 0.15)
+      );
+      border: 0.8px solid rgba(255, 45, 138, 0.3);
+      border-radius: 20px;
+      color: var(--pink);
+      font-weight: 600;
+      font-size: 14px;
+      font-family: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-telegram:disabled {
+      opacity: 0.65;
+      cursor: wait;
+    }
+
+    /* =====================================================
+       RESPONSIVE NAVBAR
+    ===================================================== */
+
+    .mobile-nav-toggle {
+      display: none;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.035);
+      color: white;
+      cursor: pointer;
+    }
+
+    .mobile-nav-toggle span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      margin: 4px auto;
+      border-radius: 999px;
+      background: #F0EEF8;
+      transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+    }
+
+    .mobile-nav-toggle.is-open span:nth-child(1) {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    .mobile-nav-toggle.is-open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .mobile-nav-toggle.is-open span:nth-child(3) {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+
+    @keyframes mobileNavOpen {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .chat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-card {
+        height: 650px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      body {
+        padding: 14px;
+      }
+
+      .topbar {
+        position: relative;
+        display: grid;
+        grid-template-columns:
+          minmax(0, 1fr)
+          auto
+          auto;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 12px;
+        border-radius: 17px;
+      }
+
+      .brand {
+        min-width: 0;
+      }
+
+      .brand-link {
+        min-width: 0;
+      }
+
+      .brand-text,
+      .brand-sub {
+        white-space: nowrap;
+      }
+
+      .top-actions {
+        gap: 7px;
+      }
+
+      .mobile-nav-toggle {
+        display: block;
+      }
+
+      .topbar .nav {
+        grid-column: 1 / -1;
+        display: none;
+        width: 100%;
+        padding: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.075);
+        border-radius: 14px;
+        background: #100D24;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+      }
+
+      .topbar .nav.is-open {
+        display: flex;
+        animation: mobileNavOpen 0.2s ease;
+      }
+
+      .topbar .nav .nav-item {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 42px;
+        padding: 10px 13px;
+        border-radius: 11px;
+        font-size: 13px;
+        text-align: left;
+      }
+
+      .topbar .nav .nav-item.active {
+        border-bottom: none;
+        background:
+          linear-gradient(
+            135deg,
+            rgba(255, 45, 138, 0.23),
+            rgba(200, 80, 192, 0.15)
+          );
+        box-shadow:
+          inset 3px 0 0 var(--pink),
+          0 0 20px rgba(255, 45, 138, 0.1);
+      }
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 12px;
+      }
+
+      .brand-text {
+        font-size: 13px;
+      }
+
+      .brand-sub {
+        font-size: 10px;
+        margin-left: 1px;
+      }
+
+      .btn-refresh,
+      .avatar,
+      .mobile-nav-toggle {
+        width: 34px;
+        height: 34px;
+      }
+
+      .page-title h2 {
+        font-size: 21px;
+      }
+
+      .page-title p {
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      .chat-card {
+        height: calc(100vh - 205px);
+        min-height: 520px;
+      }
+
+      .chat-header {
+        padding: 14px;
+      }
+
+      .chat-messages {
+        padding: 14px;
+      }
+
+      .msg-bubble {
+        max-width: 90%;
+        font-size: 13px;
+      }
+
+      .btn-reset-chat {
+        padding: 7px 9px;
+        font-size: 10px;
+      }
+
+      .quick-card,
+      .telegram-card {
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .brand-sub {
+        display: none;
+      }
+
+      .btn-reset-chat {
+        max-width: 110px;
+        white-space: normal;
+        line-height: 1.25;
+      }
+    }
+  </style>
+
+  <style id="vhyrox-page-profile-style">
+    .page-profile-link {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(var(--accent-rgb, 255, 45, 138), 0.30);
+      color: #fff;
+      text-decoration: none !important;
+      cursor: pointer;
+      box-shadow: 0 0 0 0 rgba(var(--accent-rgb, 255, 45, 138), 0);
+      transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease,
+        filter .2s ease;
+    }
+
+    .page-profile-link:hover,
+    .page-profile-link:focus-visible {
+      color: #fff;
+      border-color: rgba(var(--accent-rgb, 255, 45, 138), 0.60);
+      box-shadow: 0 0 0 4px rgba(var(--accent-rgb, 255, 45, 138), 0.10);
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+      outline: none;
+    }
+
+    .page-profile-link img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      object-fit: cover;
+    }
+
+    .page-profile-link span {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="dashboard">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">
+          VX
+        </div>
+
+        <a
+          href="/"
+          class="brand-link"
+        >
+          <span class="brand-text">
+            VHYROX
+          </span>
+
+          <span class="brand-sub">
+            Money
+          </span>
+        </a>
+      </div>
+
+      <nav class="nav" id="moneyBotNav">
+        <a
+          href="/"
+          class="nav-item"
+        >
+          Dashboard
+        </a>
+
+        <a
+          href="/transaksi.html"
+          class="nav-item"
+        >
+          Transaksi
+        </a>
+
+        <a
+          href="/budget.html"
+          class="nav-item"
+        >
+          Budget
+        </a>
+        <a href="/kategori.html" class="nav-item">Kategori</a>
+        <a
+          href="/analitik.html"
+          class="nav-item"
+        >
+          Analitik
+        </a>
+
+        <a
+          href="/peringatan.html"
+          class="nav-item"
+        >
+          Peringatan
+        </a>
+
+        <span class="nav-item active">
+          Money Bot
+        </span>
+      </nav>
+
+      <div class="top-actions">
+        <button
+          type="button"
+          class="btn-refresh"
+          onclick="loadTodayChat()"
+          title="Muat ulang chat"
+          aria-label="Muat ulang chat"
+        >
+          ↻
+        </button>
+
+        <a
+          href="/profile.html"
+          class="avatar page-profile-link"
+          id="pageProfileLink"
+          title="Buka profil"
+          aria-label="Buka profil pengguna"
+        >
+          <img
+            id="pageProfileAvatarImage"
+            alt=""
+            hidden
+          >
+          <span id="pageProfileInitials">RD</span>
+        </a>
+      </div>
+
+      <button
+        type="button"
+        class="mobile-nav-toggle"
+        id="mobileNavToggle"
+        aria-label="Buka menu navigasi"
+        aria-controls="moneyBotNav"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-title">
+        <h2 id="moneyBotPageTitle">
+          VHYROX Money Bot
+        </h2>
+
+        <p>
+          Chat hari ini tersimpan otomatis
+        </p>
+      </div>
+    </div>
+
+    <!-- CHAT & PANEL -->
+    <div class="chat-grid">
+
+      <!-- CHAT AREA -->
+      <div class="chat-card">
+
+        <div class="chat-header">
+          <div class="chat-avatar">
+            🤖
+          </div>
+
+          <div class="chat-header-info">
+            <h4 id="moneyBotAiName">
+              VHYROX
+            </h4>
+
+            <span>
+              <span class="online-dot"></span>
+              Online
+            </span>
+          </div>
+
+          <button
+            type="button"
+            class="btn-reset-chat"
+            id="resetChatButton"
+            onclick="resetTodayChat()"
+          >
+            Hapus chat hari ini
+          </button>
+        </div>
+
+        <div
+          class="chat-messages"
+          id="chatMessages"
+        >
+          <!-- Riwayat chat dimuat otomatis -->
+        </div>
+
+        <div class="chat-input">
+          <input
+            type="text"
+            placeholder="Ketik pertanyaan..."
+            id="chatInput"
+            autocomplete="off"
+            maxlength="2000"
+          >
+
+          <button
+            type="button"
+            id="sendButton"
+            onclick="sendMessage()"
+            aria-label="Kirim pesan"
+          >
+            ➤
+          </button>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="right-panel">
+
+        <div class="quick-card">
+          <h3>
+            Pertanyaan Cepat
+          </h3>
+
+          <div
+            class="quick-question"
+            onclick="askQuestion('Boleh makan di luar hari ini?')"
+          >
+            Boleh makan di luar hari ini?
+          </div>
+
+          <div
+            class="quick-question"
+            onclick="askQuestion('Kapan uangku diprediksi habis?')"
+          >
+            Kapan uangku diprediksi habis?
+          </div>
+
+          <div
+            class="quick-question"
+            onclick="askQuestion('Berapa yang bisa aku tabung?')"
+          >
+            Berapa yang bisa aku tabung?
+          </div>
+
+          <div
+            class="quick-question"
+            onclick="askQuestion('Apa pengeluaran terbesar minggu ini?')"
+          >
+            Apa pengeluaran terbesar minggu ini?
+          </div>
+        </div>
+
+        <div class="telegram-card">
+          <h4>
+            <span>💬</span>
+            Telegram Bot
+          </h4>
+
+          <p>
+            Catat pengeluaran langsung dari Telegram.
+            Ketik saja "Makan 25rb" dan bot akan
+            mencatatnya otomatis.
+          </p>
+
+          <p id="telegramConnectionStatus">
+            Memeriksa koneksi akun Telegram...
+          </p>
+
+          <button
+            type="button"
+            class="btn-telegram"
+            id="telegramLinkButton"
+            onclick="connectTelegram()"
+          >
+            Hubungkan Telegram →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentUserId = 0;
+
+    let currentAiDisplayName = 'VHYROX';
+
+    function normalizeAiDisplayName(value) {
+      const normalized = String(value || '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 40);
+
+      return normalized || 'VHYROX';
+    }
+
+    function applyMoneyBotAiName(value) {
+      currentAiDisplayName =
+        normalizeAiDisplayName(value);
+
+      const pageTitle =
+        document.getElementById(
+          'moneyBotPageTitle'
+        );
+
+      const chatTitle =
+        document.getElementById(
+          'moneyBotAiName'
+        );
+
+      if (pageTitle) {
+        pageTitle.textContent =
+          `${currentAiDisplayName} Money Bot`;
+      }
+
+      if (chatTitle) {
+        chatTitle.textContent =
+          currentAiDisplayName;
+      }
+
+      if (chatInput) {
+        chatInput.placeholder =
+          `Tanya ${currentAiDisplayName} soal uangmu...`;
+      }
+
+      document.title =
+        `VHYROX | ${currentAiDisplayName} Money Bot`;
+    }
+
+    function readLocalAiDisplayName(userId = currentUserId) {
+      try {
+        const safeUserId = Number(userId);
+
+        if (safeUserId <= 0) {
+          return 'VHYROX';
+        }
+
+        const draft =
+          JSON.parse(
+            localStorage.getItem(
+              `vhyroxProfileDraft:${safeUserId}`
+            ) || '{}'
+          ) || {};
+
+        return (
+          draft.ai_display_name ||
+          draft.preferences?.ai_display_name ||
+          'VHYROX'
+        );
+      } catch {
+        return 'VHYROX';
+      }
+    }
+
+    window.applyMoneyBotAiName =
+      applyMoneyBotAiName;
+
+    const chatMessages =
+      document.getElementById(
+        'chatMessages'
+      );
+
+    const chatInput =
+      document.getElementById(
+        'chatInput'
+      );
+
+    const sendButton =
+      document.getElementById(
+        'sendButton'
+      );
+
+    const resetChatButton =
+      document.getElementById(
+        'resetChatButton'
+      );
+
+    let isSending = false;
+    let isLoadingHistory = false;
+
+    function cleanDisplayedText(text) {
+      return String(text || '')
+        .replace(
+          /\*\*(.*?)\*\*/gs,
+          '$1'
+        )
+        .replace(
+          /__(.*?)__/gs,
+          '$1'
+        )
+        .replace(
+          /`([^`]+)`/g,
+          '$1'
+        )
+        .replace(
+          /^#{1,6}\s+/gm,
+          ''
+        )
+        .replace(
+          /^\s*[-*•]\s+/gm,
+          ''
+        )
+        .replace(
+          /\n{3,}/g,
+          '\n\n'
+        )
+        .trim();
+    }
+
+    function scrollChatToBottom() {
+      chatMessages.scrollTop =
+        chatMessages.scrollHeight;
+    }
+
+    function addMessage(
+      sender,
+      text,
+      extraClass = ''
+    ) {
+      const bubble =
+        document.createElement(
+          'div'
+        );
+
+      bubble.className =
+        `msg-bubble ${sender} ${extraClass}`
+          .trim();
+
+      bubble.textContent =
+        cleanDisplayedText(
+          text
+        );
+
+      chatMessages.appendChild(
+        bubble
+      );
+
+      scrollChatToBottom();
+
+      return bubble;
+    }
+
+    function addDateLabel(dateValue) {
+      const label =
+        document.createElement(
+          'div'
+        );
+
+      label.className =
+        'chat-date';
+
+      const parsedDate =
+        dateValue
+          ? new Date(
+              `${dateValue}T00:00:00`
+            )
+          : new Date();
+
+      label.textContent =
+        parsedDate.toLocaleDateString(
+          'id-ID',
+          {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+          }
+        );
+
+      chatMessages.appendChild(
+        label
+      );
+    }
+
+    function showInitialMessage() {
+      addMessage(
+        'ai',
+        `Tanya aja soal uangmu. ${currentAiDisplayName} bakal cek saldo, pengeluaran, budget, dan tagihanmu.`
+      );
+    }
+
+    function setSendingState(active) {
+      isSending = active;
+
+      chatInput.disabled =
+        active;
+
+      sendButton.disabled =
+        active;
+
+      resetChatButton.disabled =
+        active ||
+        isLoadingHistory;
+
+      if (!active) {
+        chatInput.focus();
+      }
+    }
+
+    async function parseResponse(response) {
+      const rawText =
+        await response.text();
+
+      if (!rawText) {
+        return {};
+      }
+
+      try {
+        return JSON.parse(
+          rawText
+        );
+      } catch (error) {
+        return {
+          error:
+            rawText
+        };
+      }
+    }
+
+    function redirectToLogin() {
+      const returnTo = encodeURIComponent(
+        window.location.pathname + window.location.search
+      );
+
+      window.location.replace(
+        `/login.html?returnTo=${returnTo}`
+      );
+    }
+
+    async function connectTelegram() {
+      const button = document.getElementById('telegramLinkButton');
+      const status = document.getElementById('telegramConnectionStatus');
+
+      if (!button || button.disabled) return;
+
+      button.disabled = true;
+      button.textContent = 'Membuat link...';
+
+      try {
+        const response = await fetch('/api/me/telegram-link', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        });
+
+        const data = await parseResponse(response);
+
+        if (response.status === 401) {
+          redirectToLogin();
+          return;
+        }
+
+        if (!response.ok || data.error || !data.telegram_url) {
+          throw new Error(data.error || 'Link Telegram gagal dibuat.');
+        }
+
+        if (status) {
+          status.textContent =
+            'Link siap. Selesaikan proses melalui Telegram.';
+        }
+
+        window.location.href = data.telegram_url;
+      } catch (error) {
+        if (status) {
+          status.textContent = error.message || 'Telegram gagal dihubungkan.';
+        }
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Hubungkan Telegram →';
+      }
+    }
+
+    window.connectTelegram = connectTelegram;
+
+    async function loadTodayChat() {
+      if (
+        isLoadingHistory ||
+        isSending
+      ) {
+        return;
+      }
+
+      isLoadingHistory = true;
+
+      chatMessages.innerHTML = '';
+      resetChatButton.disabled = true;
+
+      const loadingBubble =
+        addMessage(
+          'ai',
+          'Memuat chat hari ini...',
+          'loading'
+        );
+
+      try {
+        const response =
+          await fetch(
+            '/api/ai-chat/history',
+            {
+              method: 'GET',
+
+              credentials: 'include',
+
+              headers: {
+                Accept:
+                  'application/json'
+              }
+            }
+          );
+
+        const data =
+          await parseResponse(
+            response
+          );
+
+        if (response.status === 401) {
+          redirectToLogin();
+          return;
+        }
+
+        chatMessages.innerHTML = '';
+
+        if (
+          !response.ok ||
+          data.error
+        ) {
+          addMessage(
+            'ai',
+            data.error ||
+            'Riwayat chat gagal dimuat.'
+          );
+
+          return;
+        }
+
+        addDateLabel(
+          data.sessionDate
+        );
+
+        const messages =
+          Array.isArray(
+            data.messages
+          )
+            ? data.messages
+            : [];
+
+        if (
+          messages.length === 0
+        ) {
+          showInitialMessage();
+          return;
+        }
+
+        messages.forEach(
+          (message) => {
+            const sender =
+              message.role ===
+              'assistant'
+                ? 'ai'
+                : 'user';
+
+            addMessage(
+              sender,
+              message.content
+            );
+          }
+        );
+      } catch (error) {
+        loadingBubble.remove();
+
+        chatMessages.innerHTML = '';
+
+        console.error(
+          'Gagal memuat riwayat:',
+          error
+        );
+
+        addMessage(
+          'ai',
+          'Riwayat chat gagal dimuat. Coba refresh halaman.'
+        );
+      } finally {
+        isLoadingHistory = false;
+
+        resetChatButton.disabled =
+          isSending;
+
+        chatInput.focus();
+      }
+    }
+
+    async function sendMessage() {
+      const text =
+        chatInput.value.trim();
+
+      if (
+        !text ||
+        isSending ||
+        isLoadingHistory
+      ) {
+        return;
+      }
+
+      addMessage(
+        'user',
+        text
+      );
+
+      chatInput.value = '';
+
+      setSendingState(
+        true
+      );
+
+      const loadingBubble =
+        addMessage(
+          'ai',
+          'Bentar, gue cek dulu...',
+          'loading'
+        );
+
+      try {
+        const response =
+          await fetch(
+            '/api/ai-chat',
+            {
+              method:
+                'POST',
+
+              credentials: 'include',
+
+              headers: {
+                'Content-Type':
+                  'application/json',
+
+                Accept:
+                  'application/json'
+              },
+
+              body:
+                JSON.stringify({
+                  message:
+                    text
+                })
+            }
+          );
+
+        const data =
+          await parseResponse(
+            response
+          );
+
+        if (response.status === 401) {
+          loadingBubble.remove();
+          redirectToLogin();
+          return;
+        }
+
+        loadingBubble.remove();
+
+        if (
+          !response.ok ||
+          data.error
+        ) {
+          addMessage(
+            'ai',
+            data.error ||
+            'AI gagal menjawab.'
+          );
+
+          return;
+        }
+
+        addMessage(
+          'ai',
+          data.reply ||
+          'Gue belum dapat jawaban yang jelas.'
+        );
+      } catch (error) {
+        loadingBubble.remove();
+
+        console.error(
+          'Gagal menghubungi AI:',
+          error
+        );
+
+        addMessage(
+          'ai',
+          'Koneksi ke AI gagal. Coba lagi sebentar.'
+        );
+      } finally {
+        setSendingState(
+          false
+        );
+      }
+    }
+
+    function askQuestion(question) {
+      if (
+        isSending ||
+        isLoadingHistory
+      ) {
+        return;
+      }
+
+      chatInput.value =
+        question;
+
+      sendMessage();
+    }
+
+    async function resetTodayChat() {
+      if (
+        isSending ||
+        isLoadingHistory
+      ) {
+        return;
+      }
+
+      const confirmed =
+        window.confirm(
+          'Hapus seluruh chat hari ini?'
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      resetChatButton.disabled =
+        true;
+
+      chatInput.disabled =
+        true;
+
+      sendButton.disabled =
+        true;
+
+      try {
+        const response =
+          await fetch(
+            '/api/ai-chat/reset',
+            {
+              method:
+                'POST',
+
+              credentials: 'include',
+
+              headers: {
+                'Content-Type':
+                  'application/json',
+
+                Accept:
+                  'application/json'
+              },
+
+              body:
+                JSON.stringify({})
+            }
+          );
+
+        const data =
+          await parseResponse(
+            response
+          );
+
+        if (response.status === 401) {
+          redirectToLogin();
+          return;
+        }
+
+        if (
+          !response.ok ||
+          data.error
+        ) {
+          window.alert(
+            data.error ||
+            'Gagal menghapus chat.'
+          );
+
+          return;
+        }
+
+        chatMessages.innerHTML = '';
+
+        addDateLabel(
+          new Date()
+            .toISOString()
+            .slice(0, 10)
+        );
+
+        showInitialMessage();
+      } catch (error) {
+        console.error(
+          'Reset chat gagal:',
+          error
+        );
+
+        window.alert(
+          'Koneksi gagal. Chat belum dihapus.'
+        );
+      } finally {
+        resetChatButton.disabled =
+          false;
+
+        chatInput.disabled =
+          false;
+
+        sendButton.disabled =
+          false;
+
+        chatInput.focus();
+      }
+    }
+
+    chatInput.addEventListener(
+      'keydown',
+      function (event) {
+        if (
+          event.key ===
+            'Enter' &&
+          !event.shiftKey
+        ) {
+          event.preventDefault();
+
+          sendMessage();
+        }
+      }
+    );
+
+    function initializeMobileNavigation() {
+      const topbar =
+        document.querySelector(
+          '.topbar'
+        );
+
+      const nav =
+        document.getElementById(
+          'moneyBotNav'
+        );
+
+      const toggle =
+        document.getElementById(
+          'mobileNavToggle'
+        );
+
+      if (
+        !topbar ||
+        !nav ||
+        !toggle
+      ) {
+        return;
+      }
+
+      const closeNavigation = () => {
+        nav.classList.remove(
+          'is-open'
+        );
+
+        toggle.classList.remove(
+          'is-open'
+        );
+
+        toggle.setAttribute(
+          'aria-expanded',
+          'false'
+        );
+
+        toggle.setAttribute(
+          'aria-label',
+          'Buka menu navigasi'
+        );
+      };
+
+      toggle.addEventListener(
+        'click',
+        function () {
+          const isOpen =
+            nav.classList.toggle(
+              'is-open'
+            );
+
+          toggle.classList.toggle(
+            'is-open',
+            isOpen
+          );
+
+          toggle.setAttribute(
+            'aria-expanded',
+            String(isOpen)
+          );
+
+          toggle.setAttribute(
+            'aria-label',
+            isOpen
+              ? 'Tutup menu navigasi'
+              : 'Buka menu navigasi'
+          );
+        }
+      );
+
+      nav
+        .querySelectorAll('a')
+        .forEach(
+          function (link) {
+            link.addEventListener(
+              'click',
+              closeNavigation
+            );
+          }
+        );
+
+      document.addEventListener(
+        'click',
+        function (event) {
+          if (
+            window.innerWidth <= 860 &&
+            !topbar.contains(
+              event.target
+            )
+          ) {
+            closeNavigation();
+          }
+        }
+      );
+
+      document.addEventListener(
+        'keydown',
+        function (event) {
+          if (
+            event.key ===
+            'Escape'
+          ) {
+            closeNavigation();
+          }
+        }
+      );
+
+      window.addEventListener(
+        'resize',
+        function () {
+          if (
+            window.innerWidth > 860
+          ) {
+            closeNavigation();
+          }
+        }
+      );
+    }
+
+    applyMoneyBotAiName('VHYROX');
+
+    window.addEventListener(
+      'DOMContentLoaded',
+      function () {
+        applyMoneyBotAiName(
+          readLocalAiDisplayName()
+        );
+
+        initializeMobileNavigation();
+        loadTodayChat();
+      }
+    );
+  </script>
+
+  <script id="vhyrox-page-profile-script">
+    (() => {
+      const initialsFromName = (name) => {
+        const parts = String(name || 'User')
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean)
+          .slice(0, 2);
+
+        return parts
+          .map((part) => part.charAt(0).toUpperCase())
+          .join('') || 'U';
+      };
+
+      const readDraft = (userId) => {
+        try {
+          if (Number(userId) <= 0) return {};
+
+          return JSON.parse(
+            localStorage.getItem(
+              `vhyroxProfileDraft:${Number(userId)}`
+            ) || '{}'
+          ) || {};
+        } catch {
+          return {};
+        }
+      };
+
+      const applyProfileShortcut = (payload = {}) => {
+        const source = payload?.data || payload || {};
+        const user = source.user || {};
+        const profile = source.profile || source.user_profile || {};
+        const preferences =
+          source.preferences ||
+          source.user_preferences ||
+          {};
+
+        const userId = Number(user.id || 0);
+        const draft = readDraft(userId);
+
+        if (userId > 0) {
+          currentUserId = userId;
+        }
+
+        const displayName =
+          draft.display_name ||
+          profile.display_name ||
+          draft.nama ||
+          user.nama ||
+          'User';
+
+        const avatarUrl = String(
+          draft.avatar_url ||
+          user.avatar_url ||
+          ''
+        ).trim();
+
+        const aiDisplayName =
+          draft.ai_display_name ||
+          preferences.ai_display_name ||
+          'VHYROX';
+
+        if (
+          typeof window.applyMoneyBotAiName ===
+          'function'
+        ) {
+          window.applyMoneyBotAiName(
+            aiDisplayName
+          );
+        }
+
+        const telegramStatus =
+          document.getElementById('telegramConnectionStatus');
+
+        const telegramButton =
+          document.getElementById('telegramLinkButton');
+
+        const telegramConnected = Boolean(
+          source.telegram_connected ||
+          user.telegram_connected
+        );
+
+        if (telegramStatus) {
+          telegramStatus.textContent = telegramConnected
+            ? 'Telegram sudah terhubung dengan akun ini.'
+            : 'Telegram belum terhubung dengan akun ini.';
+        }
+
+        if (telegramButton) {
+          telegramButton.textContent = telegramConnected
+            ? 'Hubungkan Ulang Telegram →'
+            : 'Hubungkan Telegram →';
+        }
+
+        const link = document.getElementById('pageProfileLink');
+        const image = document.getElementById('pageProfileAvatarImage');
+        const initials = document.getElementById('pageProfileInitials');
+
+        if (!link || !image || !initials) return;
+
+        link.title = `Buka profil ${displayName}`;
+        link.setAttribute('aria-label', `Buka profil ${displayName}`);
+        initials.textContent = initialsFromName(displayName);
+
+        if (avatarUrl) {
+          image.src = avatarUrl;
+          image.alt = `Foto profil ${displayName}`;
+          image.hidden = false;
+          initials.hidden = true;
+
+          image.onerror = () => {
+            image.hidden = true;
+            image.removeAttribute('src');
+            initials.hidden = false;
+          };
+        } else {
+          image.hidden = true;
+          image.removeAttribute('src');
+          initials.hidden = false;
+        }
+      };
+
+      const loadProfileShortcut = async () => {
+        let payload = {};
+
+        try {
+          const response = await fetch('/api/me/appearance', {
+            credentials: 'include',
+            headers: { Accept: 'application/json' }
+          });
+
+          if (response.ok) {
+            payload = await response.json();
+          } else if (response.status === 401) {
+            redirectToLogin();
+            return;
+          }
+        } catch {}
+
+        applyProfileShortcut(payload);
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadProfileShortcut, { once: true });
+      } else {
+        loadProfileShortcut();
+      }
+
+      window.addEventListener('storage', (event) => {
+        if (
+          event.key === 'vhyroxAppearance' ||
+          String(event.key || '').startsWith('vhyroxProfileDraft:')
+        ) {
+          loadProfileShortcut();
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>
