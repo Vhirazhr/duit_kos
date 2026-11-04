@@ -1,9 +1,10 @@
 # Dependency
 node_modules/
 
-# Environment
+# Environment secrets
 .env
 .env.*
+!.env.example
 
 # Firebase secret
 secrets/*.json
